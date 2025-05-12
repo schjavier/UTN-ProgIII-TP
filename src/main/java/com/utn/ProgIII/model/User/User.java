@@ -1,8 +1,7 @@
-package com.utn.ProgIII.model;
+package com.utn.ProgIII.model.User;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.utn.ProgIII.model.Credentials.Credentials;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -11,11 +10,12 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserProfile {
+@Entity
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idUser;
+    private Integer iduser;
 
     @NotBlank(message = "El nombre no debe estar vacio")
     @Size(min = 3, message = "El nombre debe tener al menos 3 letras")
@@ -29,5 +29,10 @@ public class UserProfile {
     @Size(min = 7, max = 8, message = "El DNI debe tener entre 7 y 8 digitos")
     private String dni;
 
-    private UserStatus status = UserStatus.ENABLED;
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+
+    @OneToOne
+    @JoinColumn(name = "iduser",referencedColumnName = "iduser")
+    private Credentials credentials;
 }

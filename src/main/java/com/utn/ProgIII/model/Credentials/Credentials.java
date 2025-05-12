@@ -1,5 +1,6 @@
-package com.utn.ProgIII.model;
+package com.utn.ProgIII.model.Credentials;
 
+import com.utn.ProgIII.model.User.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -12,13 +13,15 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Credential {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Entity
+public class Credentials {
     @Id
-    private int idCredentials;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer idcredentials;
 
-    @OneToOne(mappedBy = "idUser", cascade = CascadeType.ALL)
-    private int idUser;
+    @OneToOne
+    @JoinColumn(name = "iduser",referencedColumnName = "iduser")
+    private User profile;
 
     @NotBlank(message = "El usuario no debe estar vacio")
     @Size(min = 3, max = 50, message = "El nombre de usuario debe tener entre 3 y 50 caracteres")
@@ -28,5 +31,6 @@ public class Credential {
     @Size(min = 3, max = 20, message = "La contrasenia debe tener entre 3 y 50 caracteres")
     private String password;
 
+    @Enumerated(EnumType.STRING)
     private Role role;
 }

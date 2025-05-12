@@ -1,11 +1,11 @@
-package com.utn.ProgIII.model;
+package com.utn.ProgIII.model.User;
 
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum UserStatus {
-    ENABLED("Enabled"),
-    DISABLED("Disabled");
+    ENABLED("enabled"),
+    DISABLED("disabled");
 
     final String description;
 }
