@@ -1,4 +1,4 @@
 package com.utn.ProgIII.controller;
 
-public class supplierController {
+public class SupplierController {
 }
