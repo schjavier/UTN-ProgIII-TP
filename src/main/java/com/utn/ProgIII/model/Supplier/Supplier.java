@@ -1,6 +1,6 @@
 package com.utn.ProgIII.model.Supplier;
 
-import com.utn.ProgIII.model.Address;
+import com.utn.ProgIII.model.Address.Address;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -24,7 +24,7 @@ public class Supplier {
     private String email;
 
     @OneToOne
-    @JoinColumn(name = "idSupplier")
+    @JoinColumn(name = "idSupplier", referencedColumnName = "idSupplier")
     private Address address;
 
 }

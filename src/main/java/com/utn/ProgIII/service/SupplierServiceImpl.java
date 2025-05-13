@@ -1,5 +1,9 @@
-package com.utn.ProgIII.model.Supplier;
+package com.utn.ProgIII.service;
 
+import com.utn.ProgIII.dto.AddSupplierDTO;
+import com.utn.ProgIII.model.Supplier.Supplier;
+import com.utn.ProgIII.dto.ViewSupplierDTO;
+import com.utn.ProgIII.repository.SupplierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class SupplierServices implements SupplierService {
+public class SupplierServiceImpl implements SupplierService {
     @Autowired
     private SupplierRepository supplierRepository;
 
@@ -23,8 +27,10 @@ public class SupplierServices implements SupplierService {
         supplier_toadd.setPhoneNumber(supplierDTO.phoneNumber());
         supplier_toadd.setEmail(supplierDTO.email());
         supplier_toadd.setAddress(supplierDTO.address());
-        supplierRepository.save(supplier_toadd);
-        return supplierDTO;
+        Supplier sup = supplierRepository.save(supplier_toadd);
+
+
+        return null;// hacer mapper;
     }
 
     @Override

@@ -1,6 +1,9 @@
 package com.utn.ProgIII.controller;
 
+import com.utn.ProgIII.dto.AddSupplierDTO;
+import com.utn.ProgIII.dto.ViewSupplierDTO;
 import com.utn.ProgIII.model.Supplier.*;
+import com.utn.ProgIII.service.SupplierServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +18,7 @@ import static org.springframework.http.ResponseEntity.status;
 public class SupplierController {
 
     @Autowired
-    private SupplierServices supplierService;
+    private SupplierServiceImpl supplierService;
 
     // tengo que ver si todo esto esta bien...
     @PostMapping
@@ -38,7 +41,7 @@ public class SupplierController {
     @PutMapping("/{id}")
     public ResponseEntity<?> changeSupplier(@PathVariable Long id)
     {
-        // todavia no hay nada
+        return null;// todavia no hay nada
     }
 }
 

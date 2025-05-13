@@ -1,4 +1,4 @@
-package com.utn.ProgIII.model;
+package com.utn.ProgIII.model.Address;
 
 import com.utn.ProgIII.model.Supplier.Supplier;
 import jakarta.persistence.*;
@@ -12,18 +12,13 @@ import lombok.Setter;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
     @NotBlank
     private String street;
     @NotBlank
     private String number;
     @NotBlank
     private String city;
-
-    @OneToOne
-    @JoinColumn(name = "idSupplier")
-    private Supplier supplier;
-
 
 
 
