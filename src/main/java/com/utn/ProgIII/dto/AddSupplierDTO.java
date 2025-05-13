@@ -15,4 +15,5 @@ public record AddSupplierDTO(
         @Email
         String email,
         @NotEmpty
-        Address address){}
+        Address address) {
+}

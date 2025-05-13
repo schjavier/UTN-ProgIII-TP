@@ -1,6 +1,8 @@
 package com.utn.ProgIII.service;
 
 import com.utn.ProgIII.dto.AddSupplierDTO;
+import com.utn.ProgIII.exceptions.SupplierNotFoundException;
+import com.utn.ProgIII.mapper.SupplierMapper;
 import com.utn.ProgIII.model.Supplier.Supplier;
 import com.utn.ProgIII.dto.ViewSupplierDTO;
 import com.utn.ProgIII.repository.SupplierRepository;
@@ -10,56 +12,75 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class SupplierServiceImpl implements SupplierService {
     @Autowired
     private SupplierRepository supplierRepository;
 
-    // es algo asi? o entendi mal?
+    @Autowired
+    private SupplierMapper mapper;
+
+
+    /**
+     * El provedor es agregado una vez de que se transforma el a un DTO
+     * @param supplierDTO El objeto de transferencia recivido desde el frontend
+     * @return Un objeto DTO para mostrar los datos como una respuesta frontend
+     */
     @Override
-    public AddSupplierDTO createSupplier(AddSupplierDTO supplierDTO) {
-        Supplier supplier_toadd = new Supplier();
-
-        supplier_toadd.setCompanyName(supplierDTO.companyName());
-        supplier_toadd.setCuit(supplierDTO.cuit());
-        supplier_toadd.setPhoneNumber(supplierDTO.phoneNumber());
-        supplier_toadd.setEmail(supplierDTO.email());
-        supplier_toadd.setAddress(supplierDTO.address());
-        Supplier sup = supplierRepository.save(supplier_toadd);
-
-
-        return null;// hacer mapper;
+    public ViewSupplierDTO createSupplier(AddSupplierDTO supplierDTO) {
+        Supplier sup = supplierRepository.save(mapper.toObjectFromAddSupplierDTO(supplierDTO));
+        return mapper.toViewSupplierDTO(sup);// hacer mapper;
     }
 
+    /**
+     * Devuelve un DTO de un provedor que sea pedido.
+     * @param id El id del provedor.
+     * @return {@link ViewSupplierDTO} un objeto para ver el resultado.
+     */
     @Override
     public ViewSupplierDTO viewOneSupplier(long id) {
-        Optional<Supplier> supplier_op = supplierRepository.findById(id);
-        // en caso de que no esté como lanzo una exception?
+        Supplier sup = supplierRepository.findById(id)
+                .orElseThrow(() -> new SupplierNotFoundException("Provedor no encontrado!"));
 
-        // deberia tener un check de if present para ver si está, si no se deberia tirar un error (o no?)
-        return new ViewSupplierDTO(
-                supplier_op.get().getIdSupplier(),
-                supplier_op.get().getCompanyName(),
-                supplier_op.get().getCuit(),
-                supplier_op.get().getPhoneNumber(),
-                supplier_op.get().getEmail(),
-                supplier_op.get().getAddress()
-        );
+        return mapper.toViewSupplierDTO(sup);
     }
 
+    /**
+     * Devuelve una "pagina" de los provedores segun la posicion y tamaño de una pagina
+     *
+     * @param page El numero de la pagina (comienza en 0)
+     * @param size El tamaño de la pagina
+     * @return Una pagina de provedores
+     */
     @Override
-    // esto esta bastante bueno...
-    public Page<Supplier> listSuppliers(int page, int size) {
+    public List<ViewSupplierDTO> listSuppliers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return supplierRepository.findAll(pageable);
+        Page<Supplier> query_page = supplierRepository.findAll(pageable);
+
+
+        return query_page.stream().map(mapper::toViewSupplierDTO).toList();
     }
 
-
+    /**
+     * Elimina un provedor en caso de que exista
+     * @param id El id del provedor
+     * @return un booleano representando el exito.
+     */
     @Override
     public boolean deleteSupplier(long id) {
-        return false;
+        boolean response = false;
+
+        if(supplierRepository.existsById(id))
+        {
+            supplierRepository.deleteById(id);
+            response = true;
+        } else {
+            throw new SupplierNotFoundException("Ese provedor no existe!");
+        }
+
+        return response;
     }
 
     @Override

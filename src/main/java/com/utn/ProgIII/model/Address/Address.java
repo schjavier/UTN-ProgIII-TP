@@ -12,7 +12,7 @@ import lombok.Setter;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long idAddress;
     @NotBlank
     private String street;
     @NotBlank
@@ -20,6 +20,10 @@ public class Address {
     @NotBlank
     private String city;
 
+        /*
+    @OneToOne
+    @JoinColumn(name = "idSupplier", referencedColumnName = "idSupplier")
+    private Address address;*/
 
 
 }

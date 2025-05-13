@@ -10,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.springframework.http.ResponseEntity.status;
 
 @RestController
@@ -22,13 +25,13 @@ public class SupplierController {
 
     // tengo que ver si todo esto esta bien...
     @PostMapping
-    public ResponseEntity<AddSupplierDTO> addSupplier(@RequestBody AddSupplierDTO supplier_DTO)
+    public ResponseEntity<ViewSupplierDTO> addSupplier(@RequestBody AddSupplierDTO supplier_DTO)
     {
         return ResponseEntity.ok(supplierService.createSupplier(supplier_DTO));
     }
 
     @GetMapping("/page{page}/{size}")
-    public ResponseEntity<Page<Supplier>> getSuppliers(@PathVariable int page, @PathVariable int size)
+    public ResponseEntity<List<ViewSupplierDTO>> getSuppliers(@PathVariable int page, @PathVariable int size)
     {
         return ResponseEntity.ok(supplierService.listSuppliers(page,size));
     }
