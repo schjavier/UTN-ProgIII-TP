@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record ViewSupplierDTO(
         @NotNull
-        Long id,
+        int id,
         @NotBlank
         String companyName,
         @NotBlank

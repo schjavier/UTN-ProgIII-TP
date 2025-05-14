@@ -46,7 +46,9 @@ public class SupplierController {
     {
         return null;// todavia no hay nada
     }
+
+
+    /*
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deletesupplier*/
 }
-
-    //@DeleteMapping("/")
-

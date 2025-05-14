@@ -18,13 +18,14 @@ public class SupplierMapper {
      * @param supplier Objeto Java Supplier
      * @return Un objeto DTO
      */
-    public ViewSupplierDTO toViewSupplierDTO(Supplier supplier)
+    public ViewSupplierDTO toViewSupplierDTO(Supplier supplier) // fix this
     {
+        System.out.println(supplier.toString());
         return new ViewSupplierDTO(
-                supplier.getIdSupplier(),
-                supplier.getCompanyName(),
+                supplier.getIdsupplier(),
+                supplier.getCompanyname(),
                 supplier.getCuit(),
-                supplier.getPhoneNumber(),
+                supplier.getPhonenumber(),
                 supplier.getEmail(),
                 supplier.getAddress()
         );
@@ -37,12 +38,16 @@ public class SupplierMapper {
      */
     public Supplier toObjectFromAddSupplierDTO(AddSupplierDTO supplierDTO) {
         Supplier sup = new Supplier();
-
-        sup.setCompanyName(supplierDTO.companyName());
+        Address address = new Address();
+        sup.setCompanyname(supplierDTO.companyname());
         sup.setCuit(supplierDTO.cuit());
-        sup.setPhoneNumber(supplierDTO.phoneNumber());
+        sup.setPhonenumber(supplierDTO.phonenumber());
         sup.setEmail(supplierDTO.email());
-        sup.setAddress(supplierDTO.address());
+
+        address.setStreet(supplierDTO.address().street());
+        address.setNumber(supplierDTO.address().number());
+        address.setCity(supplierDTO.address().city());
+        sup.setAddress(address);
 
         return sup;
     }

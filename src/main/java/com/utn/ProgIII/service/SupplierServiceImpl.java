@@ -5,6 +5,7 @@ import com.utn.ProgIII.exceptions.SupplierNotFoundException;
 import com.utn.ProgIII.mapper.SupplierMapper;
 import com.utn.ProgIII.model.Supplier.Supplier;
 import com.utn.ProgIII.dto.ViewSupplierDTO;
+import com.utn.ProgIII.repository.AddressRepository;
 import com.utn.ProgIII.repository.SupplierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,9 +19,10 @@ import java.util.List;
 public class SupplierServiceImpl implements SupplierService {
     @Autowired
     private SupplierRepository supplierRepository;
+    private AddressRepository addressRepository;
 
     @Autowired
-    private SupplierMapper mapper;
+    private SupplierMapper suppliermapper;
 
 
     /**
@@ -30,8 +32,9 @@ public class SupplierServiceImpl implements SupplierService {
      */
     @Override
     public ViewSupplierDTO createSupplier(AddSupplierDTO supplierDTO) {
-        Supplier sup = supplierRepository.save(mapper.toObjectFromAddSupplierDTO(supplierDTO));
-        return mapper.toViewSupplierDTO(sup);// hacer mapper;
+        System.out.println(suppliermapper.toObjectFromAddSupplierDTO(supplierDTO).toString());
+        Supplier sup = supplierRepository.save(suppliermapper.toObjectFromAddSupplierDTO(supplierDTO));
+        return suppliermapper.toViewSupplierDTO(sup);// hacer mapper;
     }
 
     /**
@@ -44,7 +47,7 @@ public class SupplierServiceImpl implements SupplierService {
         Supplier sup = supplierRepository.findById(id)
                 .orElseThrow(() -> new SupplierNotFoundException("Provedor no encontrado!"));
 
-        return mapper.toViewSupplierDTO(sup);
+        return suppliermapper.toViewSupplierDTO(sup);
     }
 
     /**
@@ -60,7 +63,7 @@ public class SupplierServiceImpl implements SupplierService {
         Page<Supplier> query_page = supplierRepository.findAll(pageable);
 
 
-        return query_page.stream().map(mapper::toViewSupplierDTO).toList();
+        return query_page.stream().map(suppliermapper::toViewSupplierDTO).toList();
     }
 
     /**

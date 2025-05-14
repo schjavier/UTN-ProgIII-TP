@@ -7,13 +7,24 @@ import jakarta.validation.constraints.NotEmpty;
 
 public record AddSupplierDTO(
         @NotBlank
-        String companyName,
+        String companyname,
         @NotBlank
         String cuit,
         @NotBlank
-        String phoneNumber,
+        String phonenumber,
         @Email
         String email,
         @NotEmpty
-        Address address) {
+        AddAddressDTO address) {
+
+        @Override
+        public String toString() {
+                return "AddSupplierDTO{" +
+                        "companyname='" + companyname + '\'' +
+                        ", cuit='" + cuit + '\'' +
+                        ", phonenumber='" + phonenumber + '\'' +
+                        ", email='" + email + '\'' +
+                        ", address=" + address.toString() +
+                        '}';
+        }
 }

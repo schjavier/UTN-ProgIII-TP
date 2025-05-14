@@ -3,19 +3,21 @@ package com.utn.ProgIII.model.Address;
 import com.utn.ProgIII.model.Supplier.Supplier;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long idAddress;
-    @NotBlank
+    private int idaddress;
+    @NotBlank(message = "La calle no puede estar vacia!")
     private String street;
-    @NotBlank
+    @NotBlank(message = "El numero de calle no puede estar vacio!")
     private String number;
     @NotBlank
     private String city;
@@ -25,5 +27,9 @@ public class Address {
     @JoinColumn(name = "idSupplier", referencedColumnName = "idSupplier")
     private Address address;*/
 
-
+    public Address(String city, String number, String street) {
+        this.city = city;
+        this.number = number;
+        this.street = street;
+    }
 }
