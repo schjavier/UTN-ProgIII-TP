@@ -1,5 +1,6 @@
 package com.utn.ProgIII.model.Credentials;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.utn.ProgIII.model.User.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -19,6 +20,7 @@ public class Credentials {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idcredentials;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "iduser",referencedColumnName = "iduser")
     private User profile;

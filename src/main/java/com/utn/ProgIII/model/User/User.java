@@ -19,7 +19,7 @@ public class User {
 
     @NotBlank(message = "El nombre no debe estar vacio")
     @Size(min = 3, message = "El nombre debe tener al menos 3 letras")
-    private String firstname;
+    private String name;
 
     @NotBlank(message = "El apellido no debe estar vacio")
     @Size(min = 3, message = "El apellido debe tener al menos 3 letras")
@@ -36,8 +36,8 @@ public class User {
     @JoinColumn(name = "iduser",referencedColumnName = "iduser")
     private Credentials credentials;
 
-    public User(String firstname, String lastname, String dni, UserStatus status) {
-        this.firstname = firstname;
+    public User(String name, String lastname, String dni, UserStatus status) {
+        this.name = name;
         this.lastname = lastname;
         this.dni = dni;
         this.status = status;

@@ -1,5 +1,6 @@
 package com.utn.ProgIII.dto;
 
+import com.utn.ProgIII.model.Credentials.Credentials;
 import jakarta.validation.constraints.NotBlank;
 
 public record UserWithCredentialsDTO(Integer iduser,
@@ -17,10 +18,4 @@ public record UserWithCredentialsDTO(Integer iduser,
                                      String status,
 
                                      @NotBlank
-                                     String username,
-
-                                     @NotBlank
-                                     String password,
-
-                                     @NotBlank
-                                     String role) {}
+                                     Credentials credentials) {}
