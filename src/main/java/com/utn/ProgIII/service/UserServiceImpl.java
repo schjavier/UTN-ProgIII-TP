@@ -1,10 +1,12 @@
 package com.utn.ProgIII.service;
 
-import com.utn.ProgIII.dto.GetUserWithCredentialsDTO;
+import com.utn.ProgIII.dto.CreateUserDTO;
+import com.utn.ProgIII.dto.UserWithCredentialsDTO;
 import com.utn.ProgIII.exceptions.CredentialsNotFoundException;
 import com.utn.ProgIII.exceptions.UserNotFoundException;
 import com.utn.ProgIII.mapper.UserMapper;
 import com.utn.ProgIII.model.Credentials.Credentials;
+import com.utn.ProgIII.model.Credentials.Role;
 import com.utn.ProgIII.model.User.User;
 import com.utn.ProgIII.repository.CredentialsRepository;
 import com.utn.ProgIII.repository.UserRepository;
@@ -26,7 +28,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GetUserWithCredentialsDTO getUserById(int id) {
+    public UserWithCredentialsDTO createUserWithCredentials(CreateUserDTO dto) {
+        User user = userMapper.toEntity(dto);
+        user = userRepository.save(user);
+
+        Credentials credentials = new Credentials();
+        credentials.setUsername(dto.username());
+        credentials.setPassword(dto.password());
+        credentials.setRole(dto.role().isBlank() ? Role.EMPLOYEE : Role.valueOf(dto.role()));
+        credentials.setProfile(user);
+        credentialsRepository.save(credentials);
+
+        return userMapper.toUserWithCredentialsDTO(user, credentials);
+    }
+
+    @Override
+    public UserWithCredentialsDTO getUserById(int id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado!"));
         Credentials credentials = credentialsRepository.findByProfile(user)
@@ -36,9 +53,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<GetUserWithCredentialsDTO> getAllUsers() {
+    public List<UserWithCredentialsDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
-        List<GetUserWithCredentialsDTO> usersWithCredentials = new ArrayList<>();
+        List<UserWithCredentialsDTO> usersWithCredentials = new ArrayList<>();
 
         for (User user : users) {
             usersWithCredentials.add(userMapper.

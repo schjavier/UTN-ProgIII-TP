@@ -1,13 +1,12 @@
 package com.utn.ProgIII.controller;
 
-import com.utn.ProgIII.dto.GetUserWithCredentialsDTO;
+import com.utn.ProgIII.dto.CreateUserDTO;
+import com.utn.ProgIII.dto.UserWithCredentialsDTO;
 import com.utn.ProgIII.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,14 +22,20 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetUserWithCredentialsDTO> getUserById(@PathVariable int id) {
-        GetUserWithCredentialsDTO response = userService.getUserById(id);
+    public ResponseEntity<UserWithCredentialsDTO> getUserById(@PathVariable int id) {
+        UserWithCredentialsDTO response = userService.getUserById(id);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping()
-    public ResponseEntity<List<GetUserWithCredentialsDTO>> getAllUsers() {
-        List<GetUserWithCredentialsDTO> response = userService.getAllUsers();
+    public ResponseEntity<List<UserWithCredentialsDTO>> getAllUsers() {
+        List<UserWithCredentialsDTO> response = userService.getAllUsers();
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping()
+    public ResponseEntity<UserWithCredentialsDTO> createProduct(@RequestBody CreateUserDTO dto) {
+        UserWithCredentialsDTO response = userService.createUserWithCredentials(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

@@ -1,14 +1,16 @@
 package com.utn.ProgIII.mapper;
 
-import com.utn.ProgIII.dto.GetUserWithCredentialsDTO;
+import com.utn.ProgIII.dto.CreateUserDTO;
+import com.utn.ProgIII.dto.UserWithCredentialsDTO;
 import com.utn.ProgIII.model.Credentials.Credentials;
 import com.utn.ProgIII.model.User.User;
+import com.utn.ProgIII.model.User.UserStatus;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
 
-    public GetUserWithCredentialsDTO toUserWithCredentialsDTO(User user, Credentials credentials) {
+    public UserWithCredentialsDTO toUserWithCredentialsDTO(User user, Credentials credentials) {
         Integer iduser = user.getIduser();
         String firstname = user.getFirstname();
         String lastname = user.getLastname();
@@ -18,6 +20,17 @@ public class UserMapper {
         String password = credentials.getPassword();
         String role = credentials.getRole().toString();
 
-        return new GetUserWithCredentialsDTO(iduser,firstname,lastname,dni,status,username,password,role);
+        return new UserWithCredentialsDTO(iduser,firstname,lastname,dni,status,username,password,role);
+    }
+
+    public User toEntity(CreateUserDTO dto) {
+        User result = new User();
+
+        result.setFirstname(dto.firstname());
+        result.setLastname(dto.lastname());
+        result.setDni(dto.dni());
+        result.setStatus(dto.status().isBlank() ? UserStatus.ENABLED : UserStatus.valueOf(dto.status()));
+
+        return result;
     }
 }

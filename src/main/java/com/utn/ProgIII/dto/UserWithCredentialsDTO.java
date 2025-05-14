@@ -2,25 +2,25 @@ package com.utn.ProgIII.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record GetUserWithCredentialsDTO(Integer iduser,
+public record UserWithCredentialsDTO(Integer iduser,
 
-                                        @NotBlank
+                                     @NotBlank
                                      String firstname,
 
-                                        @NotBlank
+                                     @NotBlank
                                      String lastname,
 
-                                        @NotBlank
+                                     @NotBlank
                                      String dni,
 
-                                        @NotBlank
+                                     @NotBlank
                                      String status,
 
-                                        @NotBlank
+                                     @NotBlank
                                      String username,
 
-                                        @NotBlank
+                                     @NotBlank
                                      String password,
 
-                                        @NotBlank
+                                     @NotBlank
                                      String role) {}

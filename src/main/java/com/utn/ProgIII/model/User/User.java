@@ -35,4 +35,11 @@ public class User {
     @OneToOne
     @JoinColumn(name = "iduser",referencedColumnName = "iduser")
     private Credentials credentials;
+
+    public User(String firstname, String lastname, String dni, UserStatus status) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.dni = dni;
+        this.status = status;
+    }
 }

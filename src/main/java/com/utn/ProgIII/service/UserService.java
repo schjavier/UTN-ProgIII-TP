@@ -1,10 +1,12 @@
 package com.utn.ProgIII.service;
 
-import com.utn.ProgIII.dto.GetUserWithCredentialsDTO;
+import com.utn.ProgIII.dto.CreateUserDTO;
+import com.utn.ProgIII.dto.UserWithCredentialsDTO;
 
 import java.util.List;
 
 public interface UserService {
-    GetUserWithCredentialsDTO getUserById(int id);
-    List<GetUserWithCredentialsDTO> getAllUsers();
+    UserWithCredentialsDTO createUserWithCredentials(CreateUserDTO dto);
+    UserWithCredentialsDTO getUserById(int id);
+    List<UserWithCredentialsDTO> getAllUsers();
 }
