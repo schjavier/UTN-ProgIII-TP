@@ -25,19 +25,19 @@ public class SupplierController {
 
     // tengo que ver si todo esto esta bien...
     @PostMapping
-    public ResponseEntity<ViewSupplierDTO> addSupplier(@RequestBody AddSupplierDTO supplier_DTO)
+    public ResponseEntity<ViewSupplierDTO> addSupplier(@RequestBody AddSupplierDTO supplier_DTO) // Field 'idSupplier' doesn't have a default value?
     {
         return ResponseEntity.ok(supplierService.createSupplier(supplier_DTO));
     }
 
-    @GetMapping("/page{page}/{size}")
+    @GetMapping("/page{page}/{size}") // No funciona Cannot invoke "com.utn.ProgIII.model.Address.Address.getIdaddress()" because the return value of "com.utn.ProgIII.model.Supplier.Supplier.getAddress()" is null
     public ResponseEntity<List<ViewSupplierDTO>> getSuppliers(@PathVariable int page, @PathVariable int size)
     {
         return ResponseEntity.ok(supplierService.listSuppliers(page,size));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ViewSupplierDTO> getSupplier(@PathVariable Long id) {
+    public ResponseEntity<ViewSupplierDTO> getSupplier(@PathVariable Long id) { // No funciona Cannot invoke "com.utn.ProgIII.model.Address.Address.getIdaddress()" because the return value of "com.utn.ProgIII.model.Supplier.Supplier.getAddress()" is null
         return ResponseEntity.ok(supplierService.viewOneSupplier(id));
     }
 
@@ -48,7 +48,10 @@ public class SupplierController {
     }
 
 
-    /*
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deletesupplier*/
+
+    @DeleteMapping("/{id}") // funciona
+    public ResponseEntity<Boolean> deleteSupplier(@PathVariable int id)
+    {
+        return ResponseEntity.ok(supplierService.deleteSupplier(id));
+    }
 }

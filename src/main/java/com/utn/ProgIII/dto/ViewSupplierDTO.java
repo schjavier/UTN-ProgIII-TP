@@ -18,4 +18,4 @@ public record ViewSupplierDTO(
         @Email
         String email,
         @NotEmpty
-        Address address){}
+        ViewAddressDTO address){}

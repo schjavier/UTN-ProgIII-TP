@@ -1,6 +1,7 @@
 package com.utn.ProgIII.mapper;
 
 import com.utn.ProgIII.dto.AddSupplierDTO;
+import com.utn.ProgIII.dto.ViewAddressDTO;
 import com.utn.ProgIII.dto.ViewSupplierDTO;
 import com.utn.ProgIII.model.Address.Address;
 import com.utn.ProgIII.model.Supplier.Supplier;
@@ -27,7 +28,7 @@ public class SupplierMapper {
                 supplier.getCuit(),
                 supplier.getPhonenumber(),
                 supplier.getEmail(),
-                supplier.getAddress()
+                new ViewAddressDTO(supplier.getAddress().getIdaddress(),supplier.getAddress().getStreet(),supplier.getAddress().getNumber(),supplier.getAddress().getCity())
         );
     }
 
