@@ -16,15 +16,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({UserNotFoundException.class})
-    public ResponseEntity<Object> handleStudentNotFoundException(UserNotFoundException exception) {
+    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException exception) {
         return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .status(HttpStatus.NOT_FOUND)
                 .body(exception.getMessage());
     }
     @ExceptionHandler({CredentialsNotFoundException.class})
-    public ResponseEntity<Object> handleStudentAlreadyExistsException(CredentialsNotFoundException exception) {
+    public ResponseEntity<Object> handleCredentialsNotFoundException(CredentialsNotFoundException exception) {
         return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .status(HttpStatus.NOT_FOUND)
                 .body(exception.getMessage());
     }
 
