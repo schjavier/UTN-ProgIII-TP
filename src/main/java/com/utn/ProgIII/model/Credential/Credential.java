@@ -1,7 +1,5 @@
-package com.utn.ProgIII.model.Credentials;
+package com.utn.ProgIII.model.Credential;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.utn.ProgIII.model.User.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -15,15 +13,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class Credentials {
+public class Credential {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idcredentials;
-
-    @JsonIgnore
-    @OneToOne
-    @JoinColumn(name = "iduser",referencedColumnName = "iduser")
-    private User profile;
+    private Long idcredential;
 
     @NotBlank(message = "El usuario no debe estar vacio")
     @Size(min = 3, max = 50, message = "El nombre de usuario debe tener entre 3 y 50 caracteres")

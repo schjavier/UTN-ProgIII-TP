@@ -21,8 +21,8 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(exception.getMessage());
     }
-    @ExceptionHandler({CredentialsNotFoundException.class})
-    public ResponseEntity<Object> handleCredentialsNotFoundException(CredentialsNotFoundException exception) {
+    @ExceptionHandler({CredentialNotFoundException.class})
+    public ResponseEntity<Object> handleCredentialNotFoundException(CredentialNotFoundException exception) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(exception.getMessage());

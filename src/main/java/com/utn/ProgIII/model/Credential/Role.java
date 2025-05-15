@@ -1,4 +1,4 @@
-package com.utn.ProgIII.model.Credentials;
+package com.utn.ProgIII.model.Credential;
 
 import lombok.AllArgsConstructor;
 

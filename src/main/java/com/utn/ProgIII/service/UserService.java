@@ -1,12 +1,14 @@
 package com.utn.ProgIII.service;
 
 import com.utn.ProgIII.dto.CreateUserDTO;
-import com.utn.ProgIII.dto.UserWithCredentialsDTO;
+import com.utn.ProgIII.dto.UserWithCredentialDTO;
 
 import java.util.List;
 
 public interface UserService {
-    UserWithCredentialsDTO createUserWithCredentials(CreateUserDTO dto);
-    UserWithCredentialsDTO getUserById(int id);
-    List<UserWithCredentialsDTO> getAllUsers();
+    UserWithCredentialDTO createUserWithCredential(CreateUserDTO dto);
+    UserWithCredentialDTO getUserById(Long id);
+    List<UserWithCredentialDTO> getAllUsers();
+    UserWithCredentialDTO updateUser(Long id, CreateUserDTO dto);
+    void deleteUser(Long id);
 }

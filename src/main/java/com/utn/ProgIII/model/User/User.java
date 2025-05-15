@@ -1,6 +1,6 @@
 package com.utn.ProgIII.model.User;
 
-import com.utn.ProgIII.model.Credentials.Credentials;
+import com.utn.ProgIII.model.Credential.Credential;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -15,11 +15,11 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer iduser;
+    private Long iduser;
 
     @NotBlank(message = "El nombre no debe estar vacio")
     @Size(min = 3, message = "El nombre debe tener al menos 3 letras")
-    private String name;
+    private String firstname;
 
     @NotBlank(message = "El apellido no debe estar vacio")
     @Size(min = 3, message = "El apellido debe tener al menos 3 letras")
@@ -32,14 +32,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
-    @OneToOne
-    @JoinColumn(name = "iduser",referencedColumnName = "iduser")
-    private Credentials credentials;
-
-    public User(String name, String lastname, String dni, UserStatus status) {
-        this.name = name;
-        this.lastname = lastname;
-        this.dni = dni;
-        this.status = status;
-    }
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idcredential")
+    private Credential credential;
 }

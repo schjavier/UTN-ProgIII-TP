@@ -1,15 +1,15 @@
 package com.utn.ProgIII.service;
 
 import com.utn.ProgIII.dto.CreateUserDTO;
-import com.utn.ProgIII.dto.UserWithCredentialsDTO;
-import com.utn.ProgIII.exceptions.CredentialsNotFoundException;
+import com.utn.ProgIII.dto.UserWithCredentialDTO;
 import com.utn.ProgIII.exceptions.UserNotFoundException;
 import com.utn.ProgIII.mapper.UserMapper;
-import com.utn.ProgIII.model.Credentials.Credentials;
-import com.utn.ProgIII.model.Credentials.Role;
+import com.utn.ProgIII.model.Credential.Credential;
+import com.utn.ProgIII.model.Credential.Role;
 import com.utn.ProgIII.model.User.User;
-import com.utn.ProgIII.repository.CredentialsRepository;
+import com.utn.ProgIII.model.User.UserStatus;
 import com.utn.ProgIII.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,52 +18,71 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final CredentialsRepository credentialsRepository;
     private final UserMapper userMapper;
 
-    public UserServiceImpl(UserRepository userRepository, CredentialsRepository credentialsRepository, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
-        this.credentialsRepository = credentialsRepository;
         this.userMapper = userMapper;
     }
 
     @Override
-    public UserWithCredentialsDTO createUserWithCredentials(CreateUserDTO dto) {
+    @Transactional
+    public UserWithCredentialDTO createUserWithCredential(CreateUserDTO dto) {
         User user = userMapper.toEntity(dto);
         user = userRepository.save(user);
 
-        Credentials credentials = new Credentials();
-        credentials.setUsername(dto.username());
-        credentials.setPassword(dto.password());
-        credentials.setRole(dto.role().isBlank() ? Role.EMPLOYEE : Role.valueOf(dto.role()));
-        credentials.setProfile(user);
-        credentialsRepository.save(credentials);
-
-        return userMapper.toUserWithCredentialsDTO(user, credentials);
+        return userMapper.toUserWithCredentialDTO(user);
     }
 
     @Override
-    public UserWithCredentialsDTO getUserById(int id) {
+    public UserWithCredentialDTO getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado!"));
-        Credentials credentials = credentialsRepository.findByProfile(user)
-                .orElseThrow(() -> new CredentialsNotFoundException("Credenciales no encontradas!"));
 
-        return userMapper.toUserWithCredentialsDTO(user, credentials);
+        return userMapper.toUserWithCredentialDTO(user);
     }
 
     @Override
-    public List<UserWithCredentialsDTO> getAllUsers() {
+    public List<UserWithCredentialDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
-        List<UserWithCredentialsDTO> usersWithCredentials = new ArrayList<>();
+        List<UserWithCredentialDTO> usersWithCredential = new ArrayList<>();
 
         for (User user : users) {
-            usersWithCredentials.add(userMapper.
-                    toUserWithCredentialsDTO(user,credentialsRepository.
-                        findByProfile(user).
-                        orElseThrow(() -> new CredentialsNotFoundException("Credenciales no encontradas!"))));
+            usersWithCredential.add(userMapper.
+                    toUserWithCredentialDTO(user));
         }
 
-        return usersWithCredentials;
+        return usersWithCredential;
+    }
+
+    @Override
+    @Transactional
+    public UserWithCredentialDTO updateUser(Long id, CreateUserDTO dto) {
+        User userToUpdate = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado!"));
+
+        userToUpdate.setFirstname(dto.firstname());
+        userToUpdate.setLastname(dto.lastname());
+        userToUpdate.setDni(dto.dni());
+        userToUpdate.setStatus(UserStatus.valueOf(dto.status()));
+
+        Credential credentialToUpdate = userToUpdate.getCredential();
+        credentialToUpdate.setUsername(dto.username());
+        credentialToUpdate.setPassword(dto.password());
+        credentialToUpdate.setRole(Role.valueOf(dto.role()));
+
+        userToUpdate = userRepository.save(userToUpdate);
+
+        return userMapper.toUserWithCredentialDTO(userToUpdate);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long id) {
+        if (userRepository.findById(id).isEmpty()) {
+            throw new UserNotFoundException("Usuario no encontrado!");
+        } else {
+            userRepository.deleteById(id);
+        }
     }
 }
