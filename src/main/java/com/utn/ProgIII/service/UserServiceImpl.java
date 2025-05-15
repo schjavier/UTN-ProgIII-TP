@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Clase que se encarga de la logica entre el repositorio y el mapper
+ */
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
@@ -25,6 +28,11 @@ public class UserServiceImpl implements UserService {
         this.userMapper = userMapper;
     }
 
+    /**
+     * Se crea un nuevo usuario y credenciales en el sistema, a partir de la informacion recibida en la request
+     * @param dto El objeto de transferencia recibido desde la request
+     * @return Un DTO para mostrar los datos cargados y su id correspondiente, como una respuesta
+     */
     @Override
     @Transactional
     public UserWithCredentialDTO createUserWithCredential(CreateUserDTO dto) {
@@ -34,6 +42,12 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserWithCredentialDTO(user);
     }
 
+    /**
+     * Muestra los datos del usuario con el id solicitado por parametro
+     * @param id El id correspondiente al usuario que se solicito ver sus datos
+     * @return Un DTO para mostrar la informacion de tal usuario
+     * @throws UserNotFoundException Si el usuario no existe
+     */
     @Override
     public UserWithCredentialDTO getUserById(Long id) {
         User user = userRepository.findById(id)
@@ -42,6 +56,10 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserWithCredentialDTO(user);
     }
 
+    /**
+     * Muestra los datos de todos los usuarios presentes en el sistema
+     * @return Una lista con los DTO de cada usuario existente en el sistema
+     */
     @Override
     public List<UserWithCredentialDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
@@ -55,6 +73,14 @@ public class UserServiceImpl implements UserService {
         return usersWithCredential;
     }
 
+    /**
+     * Obtiene los datos del usuario solicitado por parametro y los reemplaza por los enviados en la request.
+     * Apto para baja logica
+     * @param id El id correspondiente al usuario que se solicito modificar sus datos
+     * @param dto El objeto de transferencia con los nuevos datos recibidos desde la request
+     * @return Un DTO para mostrar los nuevos datos cargados, como una respuesta
+     * @throws UserNotFoundException Si el usuario no existe
+     */
     @Override
     @Transactional
     public UserWithCredentialDTO updateUser(Long id, CreateUserDTO dto) {
@@ -76,6 +102,10 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserWithCredentialDTO(userToUpdate);
     }
 
+    /**
+     * Elimina fisicamente del sistema al usuario con el id solicitado por parametro
+     * @param id El id correspondiente al usuario que se solicito eliminar
+     */
     @Override
     @Transactional
     public void deleteUser(Long id) {

@@ -8,9 +8,17 @@ import com.utn.ProgIII.model.User.User;
 import com.utn.ProgIII.model.User.UserStatus;
 import org.springframework.stereotype.Component;
 
+/**
+ * Clase que se encarga de transformar un usuario en un DTO (objeto de transferencia de datos) o viceversa
+ */
 @Component
 public class UserMapper {
 
+    /**
+     * Convierte una instancia de User en un DTO para ser mostrado en una respuesta json
+     * @param user La instancia de usuario recibida desde el servicio
+     * @return Un DTO con los datos del usuario
+     */
     public UserWithCredentialDTO toUserWithCredentialDTO(User user) {
         Long iduser = user.getIduser();
         String firstname = user.getFirstname();
@@ -21,6 +29,11 @@ public class UserMapper {
         return new UserWithCredentialDTO(iduser,firstname,lastname,dni,status,user.getCredential());
     }
 
+    /**
+     * Convierte un DTO en una instancia de User para ser enviada al repositorio. Incluye sus credenciales (Credential)
+     * @param dto Los datos recibidos en la request
+     * @return Una instancia de User con su Credential correspondiente
+     */
     public User toEntity(CreateUserDTO dto) {
         User result = new User();
 

@@ -6,6 +6,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+/**
+ * Clase que se encarga de representar los usuarios recibidos desde el repositorio, emulando la estructura de la tabla
+ * homonima que se encuentra en la base de datos
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

@@ -8,6 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Clase que se encarga de representar las credenciales recibidas desde el repositorio, emulando la estructura de la tabla
+ * homonima que se encuentra en la base de datos
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
