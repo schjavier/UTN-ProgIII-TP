@@ -9,10 +9,10 @@ import java.util.List;
 public interface SupplierService {
     ViewSupplierDTO viewOneSupplier(long id);
     boolean deleteSupplier(long id);
-    ViewSupplierDTO modifySupplier(ViewSupplierDTO supplierDTO,long id);
+    ViewSupplierDTO modifySupplier(AddSupplierDTO supplierDTO, Long id);
     ViewSupplierDTO createSupplier(AddSupplierDTO supplierDTO);
     List<ViewSupplierDTO> listSuppliers(int page, int size);
-
+    List<ViewSupplierDTO> listAllSuppliers();
 
 
 }

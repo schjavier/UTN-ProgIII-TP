@@ -19,32 +19,58 @@ public class SupplierMapper {
      * @param supplier Objeto Java Supplier
      * @return Un objeto DTO
      */
-    public ViewSupplierDTO toViewSupplierDTO(Supplier supplier) // fix this
+    public ViewSupplierDTO toViewSupplierDTO(Supplier supplier)
     {
         System.out.println(supplier.toString());
         return new ViewSupplierDTO(
                 supplier.getIdsupplier(),
-                supplier.getCompanyname(),
+                supplier.getCompanyName(),
                 supplier.getCuit(),
-                supplier.getPhonenumber(),
+                supplier.getPhoneNumber(),
                 supplier.getEmail(),
-                new ViewAddressDTO(supplier.getAddress().getIdaddress(),supplier.getAddress().getStreet(),supplier.getAddress().getNumber(),supplier.getAddress().getCity())
+                new ViewAddressDTO(supplier.getIdsupplier(), supplier.getAddress().getStreet(),supplier.getAddress().getNumber(),supplier.getAddress().getCity())
         );
     }
 
     /**
      * Hace un objeto java para cargar datos a la DB
      * @param supplierDTO Un objeto AddSupplierDTO
-     * @return
+     * @return un Objeto Java de provedor
      */
     public Supplier toObjectFromAddSupplierDTO(AddSupplierDTO supplierDTO) {
         Supplier sup = new Supplier();
         Address address = new Address();
-        sup.setCompanyname(supplierDTO.companyname());
+
+        sup.setCompanyName(supplierDTO.companyName());
         sup.setCuit(supplierDTO.cuit());
-        sup.setPhonenumber(supplierDTO.phonenumber());
+        sup.setPhoneNumber(supplierDTO.phoneNumber());
         sup.setEmail(supplierDTO.email());
 
+        address.setStreet(supplierDTO.address().street());
+        address.setNumber(supplierDTO.address().number());
+        address.setCity(supplierDTO.address().city());
+        sup.setAddress(address);
+
+        return sup;
+    }
+
+    /**
+     * Hace un objeto java para cargar datos a la DB
+     * @param supplierDTO Un Objeto de SupplierDTO
+     * @return un Objeto Java de provedor
+     */
+    public Supplier toObjectFromViewSupplierDTO(ViewSupplierDTO supplierDTO)
+    {
+        Supplier sup = new Supplier();
+        Address address = new Address();
+
+        sup.setIdsupplier(supplierDTO.id());
+        sup.setCompanyName(supplierDTO.companyName());
+        sup.setCuit(supplierDTO.cuit());
+        sup.setPhoneNumber(supplierDTO.phoneNumber());
+        sup.setEmail(supplierDTO.email());
+
+        address.setIdaddress(supplierDTO.address().idaddress());
         address.setStreet(supplierDTO.address().street());
         address.setNumber(supplierDTO.address().number());
         address.setCity(supplierDTO.address().city());

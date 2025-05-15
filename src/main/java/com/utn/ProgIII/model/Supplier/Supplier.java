@@ -4,7 +4,10 @@ import com.utn.ProgIII.model.Address.Address;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Getter
@@ -13,29 +16,37 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class Supplier {
-    /*@GeneratedValue(strategy = GenerationType.IDENTITY)*/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idsupplier")
-    private int idsupplier;
+    private long idsupplier;
+
     @NotBlank(message = "El nombre de la compania no puede estar vacio")
-    private String companyname;
-    @NotBlank(message = "El cuit no puede estar vacio")
+    @Length(min = 3,max = 75, message = "El largo del nombre de la compania no es valido")
+    private String companyName; // row MUST be named company_name at the db otherwise it doesn't work for some reason.
+
+    @Pattern(regexp = "\\b(20|23|24|27|30|33|34)(\\D)?[0-9]{8}(\\D)?[0-9]") // como un CUIL 23-24220759-9 o 23242207599 o 23/24220759/9
+    @NotBlank(message = "El cuit de la compania no puede estar vacio!")
     private String cuit;
-    @NotBlank
-    private String phonenumber;
-    @NotBlank
-    @Email
+
+    // @Pattern(regexp = "") necesito algun regex para esto...
+    @NotBlank(message = "El numbero de telefono no puede estar vacio!")
+    private String phoneNumber; // row MUST be named phone_number at the db otherwise it doesn't work for some reason.
+
+    @Email(message = "El email no es valido!!")
+    @NotBlank(message = "El email no puede estar vacio!")
     private String email;
 
+
+
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "idsupplier", referencedColumnName = "idsupplier")
+    @JoinColumn(name = "idaddress")
     private Address address;
 
+
     public Supplier(String companyname, String cuit, String phonenumber, String email, Address address) {
-        this.companyname = companyname;
+        this.companyName = companyname;
         this.cuit = cuit;
-        this.phonenumber = phonenumber;
+        this.phoneNumber = phonenumber;
         this.email = email;
         this.address = address;
     }

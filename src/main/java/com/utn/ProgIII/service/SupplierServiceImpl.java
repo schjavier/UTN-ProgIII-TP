@@ -1,8 +1,10 @@
 package com.utn.ProgIII.service;
 
 import com.utn.ProgIII.dto.AddSupplierDTO;
+import com.utn.ProgIII.exceptions.InvalidRequestException;
 import com.utn.ProgIII.exceptions.SupplierNotFoundException;
 import com.utn.ProgIII.mapper.SupplierMapper;
+import com.utn.ProgIII.model.Address.Address;
 import com.utn.ProgIII.model.Supplier.Supplier;
 import com.utn.ProgIII.dto.ViewSupplierDTO;
 import com.utn.ProgIII.repository.AddressRepository;
@@ -32,7 +34,6 @@ public class SupplierServiceImpl implements SupplierService {
      */
     @Override
     public ViewSupplierDTO createSupplier(AddSupplierDTO supplierDTO) {
-        System.out.println(suppliermapper.toObjectFromAddSupplierDTO(supplierDTO).toString());
         Supplier sup = supplierRepository.save(suppliermapper.toObjectFromAddSupplierDTO(supplierDTO));
         return suppliermapper.toViewSupplierDTO(sup);// hacer mapper;
     }
@@ -53,17 +54,45 @@ public class SupplierServiceImpl implements SupplierService {
     /**
      * Devuelve una "pagina" de los provedores segun la posicion y tamaño de una pagina
      *
-     * @param page El numero de la pagina (comienza en 0)
+     * @param page El numero de la pagina (comienza en 1)
      * @param size El tamaño de la pagina
      * @return Una pagina de provedores
      */
     @Override
     public List<ViewSupplierDTO> listSuppliers(int page, int size) {
+        page = page - 1;
+
+        if(page < 0 || size < 1)
+        {
+            throw new InvalidRequestException("El tamaño o numero de la pagina es invalido!");
+        }
+
         Pageable pageable = PageRequest.of(page, size);
         Page<Supplier> query_page = supplierRepository.findAll(pageable);
 
 
+        if(query_page.isEmpty())
+        {
+            throw new SupplierNotFoundException("No hay provedores!");
+        }
+
         return query_page.stream().map(suppliermapper::toViewSupplierDTO).toList();
+    }
+
+    /**
+     * Retorna todos los provedores
+     * @return Lista de DTOs de provedores
+     */
+    @Override
+    public List<ViewSupplierDTO> listAllSuppliers() {
+        List<ViewSupplierDTO> supplier_list = supplierRepository.findAll().stream().map(suppliermapper::toViewSupplierDTO).toList();
+
+        if(supplier_list.isEmpty())
+        {
+            throw new SupplierNotFoundException("No hay provedores!");
+        }
+
+        return supplier_list;
     }
 
     /**
@@ -86,9 +115,29 @@ public class SupplierServiceImpl implements SupplierService {
         return response;
     }
 
+    /**
+     * Modifica un provedor segun los datos enviados
+     * @param supplierDTO
+     * @return
+     */
     @Override
-    public ViewSupplierDTO modifySupplier(ViewSupplierDTO supplierDTO, long id) {
-        return null;
+    public ViewSupplierDTO modifySupplier(AddSupplierDTO supplierDTO, Long id) {
+        Supplier supplier_to_update = supplierRepository.findById(id).orElseThrow(() -> new SupplierNotFoundException("El provedor no existe!!"));
+
+        supplier_to_update.setCompanyName(supplierDTO.companyName());
+        supplier_to_update.setCuit(supplierDTO.cuit());
+        supplier_to_update.setPhoneNumber(supplierDTO.phoneNumber());
+        supplier_to_update.setEmail(supplier_to_update.getEmail());
+
+        Address address = supplier_to_update.getAddress();
+
+        address.setStreet(supplierDTO.address().street());
+        address.setNumber(supplierDTO.address().number());
+        address.setCity(supplierDTO.address().city());
+
+        supplier_to_update.setAddress(address);
+
+        return suppliermapper.toViewSupplierDTO(supplierRepository.save(supplier_to_update));
     }
 
 

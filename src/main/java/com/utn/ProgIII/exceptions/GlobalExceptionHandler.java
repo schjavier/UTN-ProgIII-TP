@@ -15,10 +15,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-
-
-
-
     @ExceptionHandler({SupplierNotFoundException.class})
     public ResponseEntity<Object> supplierNotFoundException(SupplierNotFoundException exception)
     {
@@ -26,4 +22,16 @@ public class GlobalExceptionHandler {
                 .body(exception);
     }
 
+    @ExceptionHandler({AddressNotFoundException.class})
+    public ResponseEntity<Object> addressNotFoundException(AddressNotFoundException exception)
+    {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(exception);
+    }
+
+    @ExceptionHandler({InvalidRequestException.class})
+    public ResponseEntity<Object> invalidRequestException(InvalidRequestException exception)
+    {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception);
+    }
 }
