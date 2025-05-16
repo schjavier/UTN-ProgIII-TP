@@ -28,7 +28,7 @@ public class Supplier {
     @NotBlank(message = "El cuit de la compania no puede estar vacio!")
     private String cuit;
 
-    // @Pattern(regexp = "") necesito algun regex para esto...
+    @Pattern(regexp = "/^(?:(?:00)?549?)?0?(?:11|[2368]\\d)(?:(?=\\d{0,2}15)\\d{2})??\\d{8}$/", message = "El formato del numero de telefono no es valido!")
     @NotBlank(message = "El numbero de telefono no puede estar vacio!")
     private String phoneNumber; // row MUST be named phone_number at the db otherwise it doesn't work for some reason.
 
