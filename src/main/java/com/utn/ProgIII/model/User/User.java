@@ -19,7 +19,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long iduser;
+    private Long idUser;
 
     @NotBlank(message = "El nombre no debe estar vacio")
     @Size(min = 3, message = "El nombre debe tener al menos 3 letras")
@@ -37,6 +37,6 @@ public class User {
     private UserStatus status;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "idcredential")
+    @JoinColumn(name = "id_credential")
     private Credential credential;
 }

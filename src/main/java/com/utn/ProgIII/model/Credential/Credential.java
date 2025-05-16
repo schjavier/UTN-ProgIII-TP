@@ -20,7 +20,7 @@ import lombok.Setter;
 public class Credential {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idcredential;
+    private Long idCredential;
 
     @NotBlank(message = "El usuario no debe estar vacio")
     @Size(min = 3, max = 50, message = "El nombre de usuario debe tener entre 3 y 50 caracteres")

@@ -20,7 +20,7 @@ public class UserMapper {
      * @return Un DTO con los datos del usuario
      */
     public UserWithCredentialDTO toUserWithCredentialDTO(User user) {
-        Long iduser = user.getIduser();
+        Long iduser = user.getIdUser();
         String firstname = user.getFirstname();
         String lastname = user.getLastname();
         String dni = user.getDni();
