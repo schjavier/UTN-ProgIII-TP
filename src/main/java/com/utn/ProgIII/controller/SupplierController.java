@@ -67,7 +67,7 @@ public class SupplierController {
      * @return Un DTO que muestra todo el provedor con sus cambios.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<?> changeSupplier(@RequestBody AddSupplierDTO supplier_DTO, @PathVariable Long id)
+    public ResponseEntity<?> updateSupplier(@RequestBody AddSupplierDTO supplier_DTO, @PathVariable Long id)
     {
         return ResponseEntity.ok(supplierService.modifySupplier(supplier_DTO,id));
     }
