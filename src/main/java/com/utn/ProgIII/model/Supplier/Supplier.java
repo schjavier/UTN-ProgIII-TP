@@ -18,7 +18,7 @@ import org.hibernate.validator.constraints.Length;
 public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long idsupplier;
+    private long idSupplier;
 
     @NotBlank(message = "El nombre de la compania no puede estar vacio")
     @Length(min = 3,max = 75, message = "El largo del nombre de la compania no es valido")
