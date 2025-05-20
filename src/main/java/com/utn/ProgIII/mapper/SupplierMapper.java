@@ -23,12 +23,12 @@ public class SupplierMapper {
     {
         System.out.println(supplier.toString());
         return new ViewSupplierDTO(
-                supplier.getIdsupplier(),
+                supplier.getIdSupplier(),
                 supplier.getCompanyName(),
                 supplier.getCuit(),
                 supplier.getPhoneNumber(),
                 supplier.getEmail(),
-                new ViewAddressDTO(supplier.getIdsupplier(), supplier.getAddress().getStreet(),supplier.getAddress().getNumber(),supplier.getAddress().getCity())
+                new ViewAddressDTO(supplier.getIdSupplier(), supplier.getAddress().getStreet(),supplier.getAddress().getNumber(),supplier.getAddress().getCity())
         );
     }
 
@@ -64,13 +64,13 @@ public class SupplierMapper {
         Supplier sup = new Supplier();
         Address address = new Address();
 
-        sup.setIdsupplier(supplierDTO.id());
+        sup.setIdSupplier(supplierDTO.id());
         sup.setCompanyName(supplierDTO.companyName());
         sup.setCuit(supplierDTO.cuit());
         sup.setPhoneNumber(supplierDTO.phoneNumber());
         sup.setEmail(supplierDTO.email());
 
-        address.setIdaddress(supplierDTO.address().idaddress());
+        address.setIdAddress(supplierDTO.address().idaddress());
         address.setStreet(supplierDTO.address().street());
         address.setNumber(supplierDTO.address().number());
         address.setCity(supplierDTO.address().city());
