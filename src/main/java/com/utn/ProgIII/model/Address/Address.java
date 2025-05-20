@@ -16,7 +16,7 @@ import org.hibernate.validator.constraints.Length;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long idaddress;
+    private long idAddress;
     @NotBlank(message = "La calle no puede estar vacia!")
     @Length(min = 3, max = 50, message = "El largo de la calle no es correcto")
     private String street;
