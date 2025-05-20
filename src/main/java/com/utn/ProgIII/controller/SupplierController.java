@@ -18,7 +18,6 @@ import static org.springframework.http.ResponseEntity.status;
 
 @RestController
 @RequestMapping("/supplier")
-@Controller
 /**
  * <h1>Necesita documentacion de swagger</h1>
  */
