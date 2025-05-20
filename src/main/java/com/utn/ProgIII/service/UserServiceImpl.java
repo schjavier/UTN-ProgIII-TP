@@ -9,6 +9,7 @@ import com.utn.ProgIII.model.Credential.Role;
 import com.utn.ProgIII.model.User.User;
 import com.utn.ProgIII.model.User.UserStatus;
 import com.utn.ProgIII.repository.UserRepository;
+import com.utn.ProgIII.validations.UserValidations;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +24,12 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+    private final UserValidations userValidations;
+
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, UserValidations userValidations) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.userValidations = userValidations;
     }
 
     /**
@@ -37,6 +41,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserWithCredentialDTO createUserWithCredential(CreateUserDTO dto) {
         User user = userMapper.toEntity(dto);
+
+        userValidations.validateUserByDni(dto.dni());
+
         user = userRepository.save(user);
 
         return userMapper.toUserWithCredentialDTO(user);
@@ -86,6 +93,8 @@ public class UserServiceImpl implements UserService {
     public UserWithCredentialDTO updateUser(Long id, CreateUserDTO dto) {
         User userToUpdate = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado!"));
+
+        userValidations.validateUserByDni(dto.dni());
 
         userToUpdate.setFirstname(dto.firstname());
         userToUpdate.setLastname(dto.lastname());

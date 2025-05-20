@@ -15,6 +15,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(DuplicateUserException.class)
+        public ResponseEntity<String> handleDuplicateUserException(DuplicateUserException ex){
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT).
+                body(ex.getMessage());
+    }
+
     @ExceptionHandler({UserNotFoundException.class})
     public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException exception) {
         return ResponseEntity
