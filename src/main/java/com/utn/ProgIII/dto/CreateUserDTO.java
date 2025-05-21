@@ -19,11 +19,5 @@ public record CreateUserDTO(
         String status,
 
         @NotBlank
-        String username,
-
-        @NotBlank
-        String password,
-
-        @NotBlank
-        String role) {
+        CreateCredentialDTO credential) {
 }

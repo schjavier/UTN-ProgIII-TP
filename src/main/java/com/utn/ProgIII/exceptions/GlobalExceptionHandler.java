@@ -15,6 +15,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(InvalidCharactersException.class)
+    public ResponseEntity<String> handleInvalidCharactersException(InvalidCharactersException ex){
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST).
+                body(ex.getMessage());
+    }
+
     @ExceptionHandler(DuplicateUserException.class)
         public ResponseEntity<String> handleDuplicateUserException(DuplicateUserException ex){
         return ResponseEntity

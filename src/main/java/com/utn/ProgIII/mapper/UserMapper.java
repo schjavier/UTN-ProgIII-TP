@@ -43,9 +43,9 @@ public class UserMapper {
         result.setStatus(dto.status().isBlank() ? UserStatus.ENABLED : UserStatus.valueOf(dto.status()));
 
         Credential credential = new Credential();
-        credential.setUsername(dto.username());
-        credential.setPassword(dto.password());
-        credential.setRole(dto.role().isBlank() ? Role.EMPLOYEE : Role.valueOf(dto.role()));
+        credential.setUsername(dto.credential().username());
+        credential.setPassword(dto.credential().password());
+        credential.setRole(dto.credential().role().isBlank() ? Role.EMPLOYEE : Role.valueOf(dto.credential().role()));
 
         result.setCredential(credential);
 
