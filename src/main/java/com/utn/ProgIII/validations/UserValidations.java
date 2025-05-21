@@ -14,6 +14,12 @@ public class UserValidations {
         this.userRepository = userRepository;
     }
 
+    public void validateDniCharacters(String dni) {
+        if(!dni.matches("^\\d{7,8}$")) {
+            throw new InvalidCharactersException("El dni solo puede tener numeros y entre 7 y 8 caracteres");
+        }
+    }
+
 
     public void validateUserByDni(String dni){
         if(userRepository.existsByDni(dni)){
@@ -30,8 +36,9 @@ public class UserValidations {
     }
 
     public void validateNameCharacters(String name) {
-        if (!name.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$")) {
-            throw new InvalidCharactersException("El nombre solo puede tener letras y espacios");
+        if (!name.matches("^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+( [A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)*$")) {
+            throw new InvalidCharactersException("El nombre solo puede tener letras y espacios" +
+                    " y las inciales deben estar en mayusculas");
         }
     }
 

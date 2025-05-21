@@ -47,6 +47,7 @@ public class UserServiceImpl implements UserService {
 
         userValidations.validateNameCharacters(dto.firstname());
         userValidations.validateNameCharacters(dto.lastname());
+        userValidations.validateDniCharacters(dto.dni());
         userValidations.validateUserByDni(dto.dni());
         credentialValidations.validateUsernameCharacters(dto.credential().username());
         credentialValidations.validateUsernameNotExists(dto.credential().username());
@@ -102,9 +103,10 @@ public class UserServiceImpl implements UserService {
         User userToUpdate = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado!"));
 
-        userValidations.validateModifiedUserByDni(userToUpdate.getDni(),dto.dni());
         userValidations.validateNameCharacters(dto.firstname());
         userValidations.validateNameCharacters(dto.lastname());
+        userValidations.validateDniCharacters(dto.dni());
+        userValidations.validateModifiedUserByDni(userToUpdate.getDni(),dto.dni());
         credentialValidations.validateModifiedUsernameNotExists(userToUpdate.getCredential().getUsername(),
                 dto.credential().username());
         credentialValidations.validateUsernameCharacters(dto.credential().username());
