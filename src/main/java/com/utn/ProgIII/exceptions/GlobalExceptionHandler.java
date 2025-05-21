@@ -24,10 +24,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({AddressNotFoundException.class})
-    public ResponseEntity<Object> addressNotFoundException(AddressNotFoundException exception)
-    {
+    public ResponseEntity<Object> addressNotFoundException(AddressNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(exception);
+    }
 
     @ExceptionHandler({UserNotFoundException.class})
     public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException exception) {
