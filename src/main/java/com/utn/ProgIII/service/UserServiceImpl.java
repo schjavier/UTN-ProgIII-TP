@@ -57,8 +57,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserWithCredentialDTO getUserById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado!"));
+
+        userValidations.userExist(id);
+
+        User user = userRepository.getReferenceById(id);
 
         return userMapper.toUserWithCredentialDTO(user);
     }
@@ -91,10 +93,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserWithCredentialDTO updateUser(Long id, CreateUserDTO dto) {
-        User userToUpdate = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado!"));
 
+        userValidations.userExist(id);
         userValidations.validateUserByDni(dto.dni());
+
+        User userToUpdate = userRepository.getReferenceById(id);
 
         userToUpdate.setFirstname(dto.firstname());
         userToUpdate.setLastname(dto.lastname());
