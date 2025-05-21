@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,11 +19,12 @@ public class Product {
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private Integer idProduct;
+    private Long idProduct;
 
-    @OneToMany(mappedBy = "idSupplier", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "idSupplier",referencedColumnName = "idSupplier")
-    private int idSupplier;
+//    @ManyToMany(mappedBy = "idSupplier")
+//    @JoinTable(name = "supplier")
+//    @JoinColumn(name = "idSupplier",referencedColumnName = "idSupplier")
+//    private int idSupplier;
 
     @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 50, message = "El nombre no puede tener mas de 50 caracteres")
@@ -29,17 +32,17 @@ public class Product {
 
     @NotBlank(message = "El costo no puede ser nulo")
     @Positive(message = "El costo no puede ser menor a 0")
-    private double cost;
+    private BigDecimal cost;
 
     @NotBlank(message = "El margen dee ganancia no puede ser nulo")
     @Positive(message = "El margen de ganancia debe ser superior a 0")
-    private double profitMargin;
+    private BigDecimal profitMargin;
 
     //@NotBlank(message = "El precio de venta no puede ser nulo")
     @Positive(message = "El precio de venta debe ser superiro a 0")
-    private double price;
+    private BigDecimal price;
 
-    public Product(String name, double cost, double profitMargin, double price) {
+    public Product(String name, BigDecimal cost, BigDecimal profitMargin, BigDecimal price) {
         this.name = name;
         this.cost = cost;
         this.profitMargin = profitMargin;

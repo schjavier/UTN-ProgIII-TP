@@ -2,16 +2,21 @@ package com.utn.ProgIII.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record ProductDTO (Integer idProduct,
+import java.math.BigDecimal;
+
+public record ProductDTO (Long idProduct,
 
                           @NotBlank
                           String name,
 
                           @NotBlank
-                          double cost,
+                          BigDecimal cost,
 
                           @NotBlank
-                          double profitMargin,
+                          BigDecimal profitMargin,
 
                           @NotBlank
-                          double price) {}
+                          BigDecimal price) {
+
+
+}

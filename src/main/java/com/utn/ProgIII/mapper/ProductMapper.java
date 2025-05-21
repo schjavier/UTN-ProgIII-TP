@@ -4,16 +4,18 @@ import com.utn.ProgIII.dto.ProductDTO;
 import com.utn.ProgIII.model.Product.Product;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 public class ProductMapper {
 
 
     public ProductDTO toProductDTO (Product product) {
-        Integer idProduct = product.getIdProduct();
+        Long idProduct = product.getIdProduct();
         String name = product.getName();
-        double cost = product.getCost();
-        double profitMargin = product.getProfitMargin();
-        double price = product.getPrice();
+        BigDecimal cost = product.getCost();
+        BigDecimal profitMargin = product.getProfitMargin();
+        BigDecimal price = product.getPrice();
 
         return new ProductDTO(idProduct,name,cost,profitMargin,price);
     }
@@ -25,7 +27,7 @@ public class ProductMapper {
         result.setName(productDTO.name());
         result.setCost(productDTO.cost());
         result.setProfitMargin(productDTO.profitMargin());
-        result.setPrice(productDTO.price());
+        result.setPrice(productDTO.cost().multiply(productDTO.profitMargin()));
 
         return result;
     }

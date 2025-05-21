@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Service
 public class ProductServiceImpl implements I_ProductService {
 
@@ -25,9 +26,9 @@ public class ProductServiceImpl implements I_ProductService {
 
 
     @Override
-    public ProductDTO getProductById(int id) {
+    public ProductDTO getProductById(Long id) {
 
-        Product product = productRepository.findById(id)
+        Product product = productRepository.findById(id.intValue())
                 .orElseThrow(()-> new ProductNotFoundException("Prodcuto no encontrado"));
         return productMapper.toProductDTO(product);
     }
@@ -42,6 +43,18 @@ public class ProductServiceImpl implements I_ProductService {
             productDTOList.add(productMapper.toProductDTO(product));
         }
         return productDTOList;
+    }
+
+    @Override
+    public List<ProductDTO> getProductByName(String name) {
+        List<Product> products = productRepository.getByname(name);
+        List<ProductDTO> productDTOS = new ArrayList<>();
+
+        for(Product product:products){
+            productDTOS.add(productMapper.toProductDTO(product));
+        }
+
+        return productDTOS;
     }
 
     @Override
@@ -64,12 +77,12 @@ public class ProductServiceImpl implements I_ProductService {
     }
 
     @Override
-    public void deleteProduct(int idProduct) {
+    public void deleteProduct(Long idProduct) {
 
-        if (!productRepository.existsById(idProduct)){
+        if (!productRepository.existsById(idProduct.intValue())){
             throw new ProductNotFoundException("Producto con ID: " + idProduct + " no encontrado");
         }
-        productRepository.deleteById(idProduct);
+        productRepository.deleteById(idProduct.intValue());
     }
 
 }
