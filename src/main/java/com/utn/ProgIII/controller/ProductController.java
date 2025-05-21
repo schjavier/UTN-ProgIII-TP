@@ -82,23 +82,5 @@ public class ProductController {
         }
     }
 
-
-
-    //En caso de usar el delete, deberiamos tener un campo de baja logica en el producto.
-
-  /*
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProduct (@PathVariable Long id){
-
-        productService.deleteProduct(id);
-
-        return ResponseEntity.noContent().build();
-    }
-
-   */
-
-
-
-
-
+    
 }
