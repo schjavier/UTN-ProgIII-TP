@@ -4,7 +4,7 @@ import com.utn.ProgIII.dto.ProductDTO;
 
 import java.util.List;
 
-public interface I_ProductService {
+public interface ProductService {
 
     ProductDTO getProductById(Long id);
     List <ProductDTO>  getAllProduct ();

@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Entity
 @Getter
 @Setter
-@NotBlank
+
 
 public class Product {
 
@@ -30,15 +30,15 @@ public class Product {
     @Size(max = 50, message = "El nombre no puede tener mas de 50 caracteres")
     private String name;
 
-    @NotBlank(message = "El costo no puede ser nulo")
+    @NotNull(message = "El costo no puede ser nulo")
     @Positive(message = "El costo no puede ser menor a 0")
     private BigDecimal cost;
 
-    @NotBlank(message = "El margen dee ganancia no puede ser nulo")
+    @NotNull(message = "El margen dee ganancia no puede ser nulo")
     @Positive(message = "El margen de ganancia debe ser superior a 0")
     private BigDecimal profitMargin;
 
-    //@NotBlank(message = "El precio de venta no puede ser nulo")
+
     @Positive(message = "El precio de venta debe ser superiro a 0")
     private BigDecimal price;
 

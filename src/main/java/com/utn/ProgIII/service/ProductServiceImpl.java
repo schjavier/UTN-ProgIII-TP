@@ -5,7 +5,7 @@ import com.utn.ProgIII.dto.ProductDTO;
 import com.utn.ProgIII.exceptions.ProductNotFoundException;
 import com.utn.ProgIII.mapper.ProductMapper;
 import com.utn.ProgIII.model.Product.Product;
-import com.utn.ProgIII.repository.I_ProductRepository;
+import com.utn.ProgIII.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,12 +13,12 @@ import java.util.List;
 
 
 @Service
-public class ProductServiceImpl implements I_ProductService {
+public class ProductServiceImpl implements ProductService {
 
-    private final I_ProductRepository productRepository;
+    private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
-    public ProductServiceImpl(I_ProductRepository productRepository, ProductMapper productMapper) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
 
         this.productRepository = productRepository;
         this.productMapper = productMapper;
@@ -47,7 +47,7 @@ public class ProductServiceImpl implements I_ProductService {
 
     @Override
     public List<ProductDTO> getProductByName(String name) {
-        List<Product> products = productRepository.getByname(name);
+        List<Product> products = productRepository.findByName(name);
         List<ProductDTO> productDTOS = new ArrayList<>();
 
         for(Product product:products){
