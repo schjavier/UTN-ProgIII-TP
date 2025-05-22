@@ -25,10 +25,4 @@ public class CredentialValidations {
         }
     }
 
-    public void validateUsernameCharacters(String username) {
-        if (!username.matches("^[a-zA-Z0-9_]+$")) {
-            throw new InvalidCharactersException("El nombre de usuario solo puede tener letras, numeros, y guiones bajos");
-        }
-    }
-
 }

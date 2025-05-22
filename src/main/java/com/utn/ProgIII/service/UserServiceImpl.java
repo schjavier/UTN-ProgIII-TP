@@ -45,13 +45,13 @@ public class UserServiceImpl implements UserService {
     public UserWithCredentialDTO createUserWithCredential(CreateUserDTO dto) {
         User user = userMapper.toEntity(dto);
 
-        userValidations.validateNameCharacters(dto.firstname());
-        userValidations.validateNameCharacters(dto.lastname());
-        userValidations.validateDniCharacters(dto.dni());
+        //userValidations.validateNameCharacters(dto.firstname());
+        //userValidations.validateNameCharacters(dto.lastname());
+        //userValidations.validateDniCharacters(dto.dni());
         userValidations.validateUserByDni(dto.dni());
-        credentialValidations.validateUsernameCharacters(dto.credential().username());
+        //credentialValidations.validateUsernameCharacters(dto.credential().username());
         credentialValidations.validateUsernameNotExists(dto.credential().username());
-        credentialValidations.validateUsernameCharacters(dto.credential().username());
+        //credentialValidations.validateUsernameCharacters(dto.credential().username());
 
         user = userRepository.save(user);
 
@@ -103,13 +103,13 @@ public class UserServiceImpl implements UserService {
         User userToUpdate = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado!"));
 
-        userValidations.validateNameCharacters(dto.firstname());
-        userValidations.validateNameCharacters(dto.lastname());
-        userValidations.validateDniCharacters(dto.dni());
-        userValidations.validateModifiedUserByDni(userToUpdate.getDni(),dto.dni());
+        //userValidations.validateNameCharacters(dto.firstname());
+        //userValidations.validateNameCharacters(dto.lastname());
+        //userValidations.validateDniCharacters(dto.dni());
+        //userValidations.validateModifiedUserByDni(userToUpdate.getDni(),dto.dni());
         credentialValidations.validateModifiedUsernameNotExists(userToUpdate.getCredential().getUsername(),
                 dto.credential().username());
-        credentialValidations.validateUsernameCharacters(dto.credential().username());
+        //credentialValidations.validateUsernameCharacters(dto.credential().username());
 
         userToUpdate.setFirstname(dto.firstname());
         userToUpdate.setLastname(dto.lastname());

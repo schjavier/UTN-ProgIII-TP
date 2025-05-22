@@ -3,6 +3,7 @@ package com.utn.ProgIII.model.User;
 import com.utn.ProgIII.model.Credential.Credential;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -21,16 +22,20 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUser;
 
+    @Pattern(regexp = "^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+( [A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)*$",
+            message = "El nombre debe contener letras y las iniciales deben estar en mayusculas")
     @NotBlank(message = "El nombre no debe estar vacio")
     @Size(min = 3, message = "El nombre debe tener al menos 3 letras")
     private String firstname;
 
+    @Pattern(regexp = "^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+( [A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)*$",
+            message = "El nombre debe contener letras y las iniciales deben estar en mayusculas")
     @NotBlank(message = "El apellido no debe estar vacio")
     @Size(min = 3, message = "El apellido debe tener al menos 3 letras")
     private String lastname;
 
+    @Pattern(regexp = "^\\d{7,8}$", message = "El dni solo puede tener numeros y entre 7 y 8 caracteres")
     @NotBlank(message = "El DNI no debe estar vacio")
-    @Size(min = 7, max = 8, message = "El DNI debe tener entre 7 y 8 digitos")
     private String dni;
 
     @Enumerated(EnumType.STRING)
