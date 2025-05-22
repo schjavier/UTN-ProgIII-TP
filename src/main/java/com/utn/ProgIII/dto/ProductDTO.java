@@ -10,13 +10,7 @@ public record ProductDTO (Long idProduct,
                           String name,
 
                           @NotBlank
-                          BigDecimal cost,
-
-                          @NotBlank
-                          BigDecimal profitMargin,
-
-                          @NotBlank
-                          BigDecimal price) {
+                          String status) {
 
 
 }

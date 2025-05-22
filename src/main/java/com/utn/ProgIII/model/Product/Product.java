@@ -6,6 +6,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 
 @AllArgsConstructor
@@ -21,31 +22,33 @@ public class Product {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long idProduct;
 
-//    @ManyToMany(mappedBy = "idSupplier")
-//    @JoinTable(name = "supplier")
-//    @JoinColumn(name = "idSupplier",referencedColumnName = "idSupplier")
-//    private int idSupplier;
-
     @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 50, message = "El nombre no puede tener mas de 50 caracteres")
     private String name;
 
-    @NotNull(message = "El costo no puede ser nulo")
-    @Positive(message = "El costo no puede ser menor a 0")
-    private BigDecimal cost;
+    @OneToMany (mappedBy = "id_product_supplier")
+   // private List<ProductSupplier> productSuppliers;
 
-    @NotNull(message = "El margen dee ganancia no puede ser nulo")
-    @Positive(message = "El margen de ganancia debe ser superior a 0")
-    private BigDecimal profitMargin;
+    @Enumerated(EnumType.STRING)
+    private ProductStatus status;
 
 
-    @Positive(message = "El precio de venta debe ser superiro a 0")
-    private BigDecimal price;
+    //    @NotNull(message = "El costo no puede ser nulo")
+//    @Positive(message = "El costo no puede ser menor a 0")
+//    private BigDecimal cost;
+//
+//    @NotNull(message = "El margen dee ganancia no puede ser nulo")
+//    @Positive(message = "El margen de ganancia debe ser superior a 0")
+//    private BigDecimal profitMargin;
+//
+//
+//    @Positive(message = "El precio de venta debe ser superiro a 0")
+//    private BigDecimal price;
 
-    public Product(String name, BigDecimal cost, BigDecimal profitMargin, BigDecimal price) {
-        this.name = name;
-        this.cost = cost;
-        this.profitMargin = profitMargin;
-        this.price = price;
-    }
+//    public Product(String name, BigDecimal cost, BigDecimal profitMargin, BigDecimal price) {
+//        this.name = name;
+//        this.cost = cost;
+//        this.profitMargin = profitMargin;
+//        this.price = price;
+//    }
 }

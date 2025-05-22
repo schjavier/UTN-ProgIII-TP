@@ -1,17 +1,16 @@
 package com.utn.ProgIII.repository;
 
 import com.utn.ProgIII.model.Product.Product;
+import com.utn.ProgIII.model.Product.ProductStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    //metodo propio buscar por nombre de producto
-    @Query("SELECT p FROM Product p WHERE p.name like '%:name%'")
-    List<Product> getByname (@Param("name") String name);
-    
-    List<Product> findByName (String name);
+    // Busca por igualdad exacta del Enum
+    List<Product> findByStatus(ProductStatus status);
+
+    //Busca por contener todo o parte del string
+    List<Product> findByNameContaining (String name);
 }

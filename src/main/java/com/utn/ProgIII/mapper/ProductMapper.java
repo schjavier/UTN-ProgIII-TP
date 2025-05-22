@@ -2,9 +2,8 @@ package com.utn.ProgIII.mapper;
 
 import com.utn.ProgIII.dto.ProductDTO;
 import com.utn.ProgIII.model.Product.Product;
+import com.utn.ProgIII.model.Product.ProductStatus;
 import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
 
 @Component
 public class ProductMapper {
@@ -13,11 +12,9 @@ public class ProductMapper {
     public ProductDTO toProductDTO (Product product) {
         Long idProduct = product.getIdProduct();
         String name = product.getName();
-        BigDecimal cost = product.getCost();
-        BigDecimal profitMargin = product.getProfitMargin();
-        BigDecimal price = product.getPrice();
+        String status = product.getStatus().toString();
 
-        return new ProductDTO(idProduct,name,cost,profitMargin,price);
+        return new ProductDTO(idProduct,name,status);
     }
 
 
@@ -25,9 +22,7 @@ public class ProductMapper {
         Product result = new Product();
 
         result.setName(productDTO.name());
-        result.setCost(productDTO.cost());
-        result.setProfitMargin(productDTO.profitMargin());
-        result.setPrice(productDTO.cost().multiply(productDTO.profitMargin()));
+        result.setStatus(productDTO.status().isBlank() ? ProductStatus.ENABLED : ProductStatus.valueOf(productDTO.status()));
 
         return result;
     }
