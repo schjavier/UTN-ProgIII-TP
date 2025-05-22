@@ -1,8 +1,7 @@
 package com.utn.ProgIII.controller;
 
 import com.utn.ProgIII.dto.ProductDTO;
-import com.utn.ProgIII.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.utn.ProgIII.service.interfaces.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +50,7 @@ public class ProductController {
     }
 
     //muestra lista de productos (busca por nombre)
-    @GetMapping("{name}")
+    @GetMapping("/buscar/{name}")
     public ResponseEntity<List<ProductDTO>> getProductByName(@PathVariable String name){
 
         List<ProductDTO> response =productService.getProductByName(name);

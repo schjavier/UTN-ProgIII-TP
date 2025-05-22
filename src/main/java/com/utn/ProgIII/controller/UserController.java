@@ -2,8 +2,7 @@ package com.utn.ProgIII.controller;
 
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
-import com.utn.ProgIII.exceptions.UserNotFoundException;
-import com.utn.ProgIII.service.UserService;
+import com.utn.ProgIII.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

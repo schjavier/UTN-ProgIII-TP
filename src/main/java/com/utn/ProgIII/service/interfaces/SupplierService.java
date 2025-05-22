@@ -1,4 +1,4 @@
-package com.utn.ProgIII.service;
+package com.utn.ProgIII.service.interfaces;
 
 import com.utn.ProgIII.dto.AddSupplierDTO;
 import com.utn.ProgIII.dto.ViewSupplierDTO;

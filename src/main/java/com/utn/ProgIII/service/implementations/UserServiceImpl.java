@@ -1,4 +1,4 @@
-package com.utn.ProgIII.service;
+package com.utn.ProgIII.service.implementations;
 
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
@@ -9,6 +9,7 @@ import com.utn.ProgIII.model.Credential.Role;
 import com.utn.ProgIII.model.User.User;
 import com.utn.ProgIII.model.User.UserStatus;
 import com.utn.ProgIII.repository.UserRepository;
+import com.utn.ProgIII.service.interfaces.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

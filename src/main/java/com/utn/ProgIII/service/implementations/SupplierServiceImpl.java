@@ -1,4 +1,4 @@
-package com.utn.ProgIII.service;
+package com.utn.ProgIII.service.implementations;
 
 import com.utn.ProgIII.dto.AddSupplierDTO;
 import com.utn.ProgIII.exceptions.InvalidRequestException;
@@ -9,6 +9,7 @@ import com.utn.ProgIII.model.Supplier.Supplier;
 import com.utn.ProgIII.dto.ViewSupplierDTO;
 import com.utn.ProgIII.repository.AddressRepository;
 import com.utn.ProgIII.repository.SupplierRepository;
+import com.utn.ProgIII.service.interfaces.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

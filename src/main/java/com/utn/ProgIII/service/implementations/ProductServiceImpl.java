@@ -1,4 +1,4 @@
-package com.utn.ProgIII.service;
+package com.utn.ProgIII.service.implementations;
 
 import com.utn.ProgIII.dto.ProductDTO;
 
@@ -6,6 +6,7 @@ import com.utn.ProgIII.exceptions.ProductNotFoundException;
 import com.utn.ProgIII.mapper.ProductMapper;
 import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.repository.ProductRepository;
+import com.utn.ProgIII.service.interfaces.ProductService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
