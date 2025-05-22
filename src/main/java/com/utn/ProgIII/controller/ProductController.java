@@ -60,24 +60,10 @@ public class ProductController {
 
     //modificar un producto
     @PutMapping("/{id}")
-    public ResponseEntity <ProductDTO> update (
-            @PathVariable Long id,
-            @RequestBody ProductDTO modifyProductDTO
-            ){
-        try {
+    public ProductDTO update (@PathVariable Long id, @RequestBody ProductDTO modifyProductDTO){
 
-            if (id == modifyProductDTO.idProduct()){
+       return productService.updateProduct(id,modifyProductDTO);
 
-                productService.updateProduct(modifyProductDTO);
-                return ResponseEntity.ok(modifyProductDTO);
-            }
-            else {
-                return ResponseEntity.notFound().build();
-            }
-
-        } catch (Exception e) {
-           throw e;
-        }
     }
 
     

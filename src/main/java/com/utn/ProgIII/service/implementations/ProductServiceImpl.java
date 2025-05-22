@@ -29,8 +29,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO getProductById(Long id) {
 
-        Product product = productRepository.findById(id.intValue())
-                .orElseThrow(()-> new ProductNotFoundException("Prodcuto no encontrado"));
+        Product product = productRepository.findById(id)
+                .orElseThrow(()-> new ProductNotFoundException("Producto no encontrado"));
+
         return productMapper.toProductDTO(product);
     }
 
@@ -68,22 +69,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO updateProduct(ProductDTO productDto) {
+    public ProductDTO updateProduct(Long id, ProductDTO productDto) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado"));
 
-        Product product = productMapper.toEntity(productDto);
+        product.setName(productDto.name());
+        product.setCost(productDto.cost());
+        product.setProfitMargin(productDto.profitMargin());
 
         product = productRepository.save(product);
 
         return productMapper.toProductDTO(product);
     }
 
-    @Override
-    public void deleteProduct(Long idProduct) {
 
-        if (!productRepository.existsById(idProduct.intValue())){
-            throw new ProductNotFoundException("Producto con ID: " + idProduct + " no encontrado");
-        }
-        productRepository.deleteById(idProduct.intValue());
-    }
 
 }
