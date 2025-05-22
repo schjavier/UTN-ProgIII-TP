@@ -49,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> getProductByName(String name) {
-        List<Product> products = productRepository.findByName(name);
+        List<Product> products = productRepository.getByname(name);
         List<ProductDTO> productDTOS = new ArrayList<>();
 
         for(Product product:products){
