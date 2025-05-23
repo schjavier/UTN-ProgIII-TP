@@ -35,7 +35,7 @@ public class SupplierMapper {
     /**
      * Hace un objeto java para cargar datos a la DB
      * @param supplierDTO Un objeto AddSupplierDTO
-     * @return un Objeto Java de provedor
+     * @return un Objeto Java de proveedor
      */
     public Supplier toObjectFromAddSupplierDTO(AddSupplierDTO supplierDTO) {
         Supplier sup = new Supplier();
@@ -57,7 +57,7 @@ public class SupplierMapper {
     /**
      * Hace un objeto java para cargar datos a la DB
      * @param supplierDTO Un Objeto de SupplierDTO
-     * @return un Objeto Java de provedor
+     * @return un Objeto Java de proveedor
      */
     public Supplier toObjectFromViewSupplierDTO(ViewSupplierDTO supplierDTO)
     {

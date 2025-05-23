@@ -1,7 +1,6 @@
 package com.utn.ProgIII.validations;
 
 import com.utn.ProgIII.exceptions.DuplicateUserException;
-import com.utn.ProgIII.exceptions.InvalidCharactersException;
 import com.utn.ProgIII.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
