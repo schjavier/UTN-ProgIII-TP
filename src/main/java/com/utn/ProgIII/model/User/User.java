@@ -25,17 +25,18 @@ public class User {
     @Pattern(regexp = "^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+( [A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)*$",
             message = "El nombre debe contener letras y las iniciales deben estar en mayusculas")
     @NotBlank(message = "El nombre no debe estar vacio")
-    @Size(min = 3, message = "El nombre debe tener al menos 3 letras")
+    @Size(min = 3, max = 50, message = "El nombre debe contener entre 3 y 50 letras")
     private String firstname;
 
     @Pattern(regexp = "^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+( [A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)*$",
             message = "El nombre debe contener letras y las iniciales deben estar en mayusculas")
     @NotBlank(message = "El apellido no debe estar vacio")
-    @Size(min = 3, message = "El apellido debe tener al menos 3 letras")
+    @Size(min = 3, max = 50, message = "El apellido debe contener entre 3 y 50 letras")
     private String lastname;
 
-    @Pattern(regexp = "^\\d{7,8}$", message = "El dni solo puede tener numeros y entre 7 y 8 caracteres")
+    @Pattern(regexp = "^\\d+$", message = "El dni solo puede tener numeros")
     @NotBlank(message = "El DNI no debe estar vacio")
+    @Size(min = 7, max = 8, message = "El dni solo puede tener entre 7 y 8 caracteres")
     private String dni;
 
     @Enumerated(EnumType.STRING)

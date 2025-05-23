@@ -23,14 +23,14 @@ public class Credential {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCredential;
 
-    @NotBlank(message = "El usuario no debe estar vacio")
-    @Size(min = 3, max = 50, message = "El nombre de usuario debe tener entre 3 y 50 caracteres")
+    @NotBlank(message = "El nombre de usuario no debe estar vacio")
+    @Size(min = 3, max = 16, message = "El nombre de usuario debe tener entre 3 y 16 caracteres")
     @Pattern(regexp = "^[a-zA-Z0-9_]+$",
             message = "El nombre de usuario solo puede tener letras, numeros, y guiones bajos")
     private String username;
 
-    @NotBlank(message = "La clave no debe estar vacia")
-    @Size(min = 3, max = 20, message = "La contrasenia debe tener entre 3 y 50 caracteres")
+    @NotBlank(message = "La contrasenia no debe estar vacia")
+    @Size(min = 8, max = 64, message = "La contrasenia debe tener entre 8 y 64 caracteres")
     private String password;
 
     @Enumerated(EnumType.STRING)
