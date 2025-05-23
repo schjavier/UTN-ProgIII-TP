@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserWithCredentialDTO updateUser(Long id, CreateUserDTO dto) {
         User userToUpdate = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado!"));
+                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
 
         userToUpdate.setFirstname(dto.firstname());
         userToUpdate.setLastname(dto.lastname());

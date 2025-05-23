@@ -1,6 +1,7 @@
 package com.utn.ProgIII.controller;
 
 import com.utn.ProgIII.dto.ProductDTO;
+import com.utn.ProgIII.model.Product.ProductStatus;
 import com.utn.ProgIII.service.interfaces.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +50,15 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
+    //muestra la lista de todos los productos por estado
+    @GetMapping()
+    public ResponseEntity<List<ProductDTO>> getAllProductByStatus(@PathVariable ProductStatus status){
+
+        List <ProductDTO> response = productService.getAllProductByStatus(status);
+
+        return ResponseEntity.ok(response);
+    }
+
     //muestra lista de productos (busca por nombre)
     @GetMapping("/buscar/{name}")
     public ResponseEntity<List<ProductDTO>> getProductByName(@PathVariable String name){
@@ -60,24 +70,15 @@ public class ProductController {
 
     //modificar un producto
     @PutMapping("/{id}")
-    public ResponseEntity <ProductDTO> update (
-            @PathVariable Long id,
-            @RequestBody ProductDTO modifyProductDTO
-            ){
-        try {
+    public ProductDTO update (@PathVariable Long id, @RequestBody ProductDTO modifyProductDTO){
 
-            if (id == modifyProductDTO.idProduct()){
+       return productService.updateProduct(id,modifyProductDTO);
+    }
 
-                productService.updateProduct(modifyProductDTO);
-                return ResponseEntity.ok(modifyProductDTO);
-            }
-            else {
-                return ResponseEntity.notFound().build();
-            }
-
-        } catch (Exception e) {
-           throw e;
-        }
+    //Baja logica de un producto (modifica solo el estado)
+    @PatchMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        productService.deleteProduct(id);
     }
 
     

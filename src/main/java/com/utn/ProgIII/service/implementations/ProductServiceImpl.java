@@ -5,6 +5,7 @@ import com.utn.ProgIII.dto.ProductDTO;
 import com.utn.ProgIII.exceptions.ProductNotFoundException;
 import com.utn.ProgIII.mapper.ProductMapper;
 import com.utn.ProgIII.model.Product.Product;
+import com.utn.ProgIII.model.Product.ProductStatus;
 import com.utn.ProgIII.repository.ProductRepository;
 import com.utn.ProgIII.service.interfaces.ProductService;
 import org.springframework.stereotype.Service;
@@ -29,8 +30,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO getProductById(Long id) {
 
-        Product product = productRepository.findById(id.intValue())
-                .orElseThrow(()-> new ProductNotFoundException("Prodcuto no encontrado"));
+        Product product = productRepository.findById(id)
+                .orElseThrow(()-> new ProductNotFoundException("Producto no encontrado"));
+
         return productMapper.toProductDTO(product);
     }
 
@@ -47,8 +49,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDTO> getAllProductByStatus(ProductStatus status) {
+
+        List<Product> products = productRepository.findByStatus(status);
+        List<ProductDTO> productDTOList = new ArrayList<>();
+
+        for (Product product : products){
+            productDTOList.add(productMapper.toProductDTO(product));
+        }
+        return productDTOList;
+    }
+
+    @Override
     public List<ProductDTO> getProductByName(String name) {
-        List<Product> products = productRepository.findByName(name);
+        List<Product> products = productRepository.findByNameContaining(name);
         List<ProductDTO> productDTOS = new ArrayList<>();
 
         for(Product product:products){
@@ -68,9 +82,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO updateProduct(ProductDTO productDto) {
+    public ProductDTO updateProduct(Long id, ProductDTO productDto) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado"));
 
-        Product product = productMapper.toEntity(productDto);
+        product.setName(productDto.name());
+        product.setStatus(ProductStatus.valueOf(productDto.status()));
 
         product = productRepository.save(product);
 
@@ -78,12 +95,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(Long idProduct) {
+    public void deleteProduct(Long id) {
 
-        if (!productRepository.existsById(idProduct.intValue())){
-            throw new ProductNotFoundException("Producto con ID: " + idProduct + " no encontrado");
-        }
-        productRepository.deleteById(idProduct.intValue());
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado"));
+
+        product.setStatus(ProductStatus.DISABLED);
+
+        productRepository.save(product);
+
     }
-
 }
