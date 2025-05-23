@@ -26,8 +26,8 @@ public class Product {
     @Size(max = 50, message = "El nombre no puede tener mas de 50 caracteres")
     private String name;
 
-    @OneToMany (mappedBy = "id_product_supplier")
-   // private List<ProductSupplier> productSuppliers;
+    //@OneToMany (mappedBy = "id_product_supplier")
+    // private List<ProductSupplier> productSuppliers;
 
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
