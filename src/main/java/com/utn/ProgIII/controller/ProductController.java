@@ -51,7 +51,7 @@ public class ProductController {
     }
 
     //muestra la lista de todos los productos por estado
-    @GetMapping()
+    @GetMapping("/search/status/{status}")
     public ResponseEntity<List<ProductDTO>> getAllProductByStatus(@PathVariable ProductStatus status){
 
         List <ProductDTO> response = productService.getAllProductByStatus(status);
@@ -60,7 +60,7 @@ public class ProductController {
     }
 
     //muestra lista de productos (busca por nombre)
-    @GetMapping("/buscar/{name}")
+    @GetMapping("/search/name/{name}")
     public ResponseEntity<List<ProductDTO>> getProductByName(@PathVariable String name){
 
         List<ProductDTO> response =productService.getProductByName(name);
