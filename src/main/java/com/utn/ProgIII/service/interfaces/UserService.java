@@ -1,4 +1,4 @@
-package com.utn.ProgIII.service;
+package com.utn.ProgIII.service.interfaces;
 
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;

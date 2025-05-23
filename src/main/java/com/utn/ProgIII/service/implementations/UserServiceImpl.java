@@ -1,4 +1,4 @@
-package com.utn.ProgIII.service;
+package com.utn.ProgIII.service.implementations;
 
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
@@ -11,6 +11,7 @@ import com.utn.ProgIII.model.User.UserStatus;
 import com.utn.ProgIII.repository.UserRepository;
 import com.utn.ProgIII.validations.CredentialValidations;
 import com.utn.ProgIII.validations.UserValidations;
+import com.utn.ProgIII.service.interfaces.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -101,7 +102,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserWithCredentialDTO updateUser(Long id, CreateUserDTO dto) {
         User userToUpdate = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado!"));
+                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
 
         //userValidations.validateNameCharacters(dto.firstname());
         //userValidations.validateNameCharacters(dto.lastname());

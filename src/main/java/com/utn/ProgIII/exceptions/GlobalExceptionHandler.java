@@ -20,6 +20,20 @@ import java.util.Set;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+
+    @ExceptionHandler({SupplierNotFoundException.class})
+    public ResponseEntity<Object> supplierNotFoundException(SupplierNotFoundException exception)
+    {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(exception);
+    }
+
+    @ExceptionHandler({AddressNotFoundException.class})
+    public ResponseEntity<Object> addressNotFoundException(AddressNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(exception);
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(getViolatedConstraints(ex));
@@ -45,6 +59,11 @@ public class GlobalExceptionHandler {
                 .body(exception.getMessage());
     }
 
+    @ExceptionHandler({InvalidRequestException.class})
+    public ResponseEntity<Object> invalidRequestException(InvalidRequestException exception)
+    {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception);
+    }
     private String getViolatedConstraints(ConstraintViolationException ex) {
         List<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations().stream().toList();
         StringBuilder constraintViolationMessages = new StringBuilder("Restricciones violadas: \n");
