@@ -1,10 +1,10 @@
 package com.utn.ProgIII.model.Supplier;
 
 import com.utn.ProgIII.model.Address.Address;
+import com.utn.ProgIII.model.ProductSupplier.ProductSupplier;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
@@ -28,7 +28,7 @@ public class Supplier {
     @Pattern(regexp = "^(20|23|24|27|30|33|34)-?\\d{8}-?\\d$", message = "El formato del CUIT no es valido") // como un CUIL 23-24220759-9 o 23242207599 o 23/24220759/9
     private String cuit;
 
-    @NotBlank(message = "El numbero de telefono no puede estar vacio!")
+    @NotBlank(message = "El numbero de telefono no puede estar vacio")
     @Pattern(regexp = "^(?:(?:00)?549?)?0?(?:11|[2368]\\d)(?:(?=\\d{0,2}15)\\d{2})?\\d{8}$", message = "El formato del numero de telefono no es valido")
     private String phoneNumber;
 
@@ -39,6 +39,9 @@ public class Supplier {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_address")
     private Address address;
+
+    @OneToMany(mappedBy = "id_product_supplier")
+    private ProductSupplier productSupplier;
 
 
     public Supplier(String companyname, String cuit, String phonenumber, String email, Address address) {

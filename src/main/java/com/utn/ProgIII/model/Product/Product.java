@@ -33,7 +33,7 @@ public class Product {
     private ProductStatus status;
 
 
-    //    @NotNull(message = "El costo no puede ser nulo")
+//    @NotNull(message = "El costo no puede ser nulo")
 //    @Positive(message = "El costo no puede ser menor a 0")
 //    private BigDecimal cost;
 //
