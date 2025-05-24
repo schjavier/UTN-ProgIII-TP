@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserWithCredentialDTO getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado!"));
+                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
 
         return userMapper.toUserWithCredentialDTO(user);
     }
@@ -85,9 +85,43 @@ public class UserServiceImpl implements UserService {
         return usersWithCredential;
     }
 
+
+    /**
+     * Muestra los datos de todos los usuarios activos en el sistema
+     * @return Una lista con los DTO de cada usuario activo existente en el sistema
+     */
+    @Override
+    public List<UserWithCredentialDTO> getEnabledUsers() {
+        List<User> users = userRepository.findAllByStatus((UserStatus.ENABLED));
+        List<UserWithCredentialDTO> enabledUsersWithCredential = new ArrayList<>();
+
+        for (User user : users) {
+            enabledUsersWithCredential.add(userMapper.
+                    toUserWithCredentialDTO(user));
+        }
+
+        return enabledUsersWithCredential;
+    }
+
+    /**
+     * Muestra los datos de todos los usuarios dados de baja en el sistema
+     * @return Una lista con los DTO de cada usuario dado de baja existente en el sistema
+     */
+    @Override
+    public List<UserWithCredentialDTO> getDisabledUsers() {
+        List<User> users = userRepository.findAllByStatus((UserStatus.DISABLED));
+        List<UserWithCredentialDTO> disabledUsersWithCredential = new ArrayList<>();
+
+        for (User user : users) {
+            disabledUsersWithCredential.add(userMapper.
+                    toUserWithCredentialDTO(user));
+        }
+
+        return disabledUsersWithCredential;
+    }
+
     /**
      * Obtiene los datos del usuario solicitado por parametro y los reemplaza por los enviados en la request.
-     * Apto para baja logica
      * @param id El id correspondiente al usuario que se solicito modificar sus datos
      * @param dto El objeto de transferencia con los nuevos datos recibidos desde la request
      * @return Un DTO para mostrar los nuevos datos cargados, como una respuesta
@@ -106,16 +140,31 @@ public class UserServiceImpl implements UserService {
         userToUpdate.setFirstname(dto.firstname());
         userToUpdate.setLastname(dto.lastname());
         userToUpdate.setDni(dto.dni());
-        userToUpdate.setStatus(UserStatus.valueOf(dto.status()));
+        userToUpdate.setStatus(UserStatus.valueOf(dto.status().toUpperCase()));
 
         Credential credentialToUpdate = userToUpdate.getCredential();
         credentialToUpdate.setUsername(dto.credential().username());
         credentialToUpdate.setPassword(dto.credential().password());
-        credentialToUpdate.setRole(Role.valueOf(dto.credential().role()));
+        credentialToUpdate.setRole(Role.valueOf(dto.credential().role().toUpperCase()));
 
         userToUpdate = userRepository.save(userToUpdate);
 
         return userMapper.toUserWithCredentialDTO(userToUpdate);
+    }
+
+    /**
+     * Hace baja logica del sistema al usuario con el id solicitado por parametro
+     * @param id El id correspondiente al usuario que se solicito dar de baja
+     */
+    @Override
+    @Transactional
+    public void deleteUserSoft(Long id) {
+        User userToDelete = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
+
+        userToDelete.setStatus(UserStatus.DISABLED);
+
+        userRepository.save(userToDelete);
     }
 
     /**
@@ -124,11 +173,12 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public void deleteUser(Long id) {
+    public void deleteUserHard(Long id) {
         if (userRepository.findById(id).isEmpty()) {
-            throw new UserNotFoundException("Usuario no encontrado!");
+            throw new UserNotFoundException("Usuario no encontrado");
         } else {
             userRepository.deleteById(id);
         }
     }
+
 }
