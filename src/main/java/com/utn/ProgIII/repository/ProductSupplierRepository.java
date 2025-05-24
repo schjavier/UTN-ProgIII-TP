@@ -1,7 +1,9 @@
 package com.utn.ProgIII.repository;
 
+import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.ProductSupplier.dto.ExtendedProductDTO;
 import com.utn.ProgIII.model.ProductSupplier.ProductSupplier;
+import com.utn.ProgIII.model.Supplier.Supplier;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,4 +18,6 @@ public interface ProductSupplierRepository extends JpaRepository<ProductSupplier
             "WHERE ps.supplier.id = :idSupplier")
     List<ExtendedProductDTO> productsBySupplier(@Param("idSupplier") Long idSupplier);
 
+    boolean existsBySupplier(Supplier supplier);
+    boolean existsByProduct(Product product);
 }

@@ -47,4 +47,14 @@ public class GlobalExceptionHandler {
     {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(exception);
     }
+
+    @ExceptionHandler(DuplicateRelationshipException.class)
+    public ResponseEntity<String> handleDuplicateRelationshipException(DuplicateRelationshipException ex){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(ProductSupplierNotExistException.class)
+    public ResponseEntity<String> handleProductSupplierNotExistException(ProductSupplierNotExistException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
 }

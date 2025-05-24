@@ -1,5 +1,6 @@
 package com.utn.ProgIII.service.implementations;
 
+import com.utn.ProgIII.exceptions.DuplicateRelationshipException;
 import com.utn.ProgIII.exceptions.ProductNotFoundException;
 import com.utn.ProgIII.exceptions.ProductSupplierNotExistException;
 import com.utn.ProgIII.exceptions.SupplierNotFoundException;
@@ -51,6 +52,8 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
                 createProductSupplierDTO.profitMargin()
         );
 
+        validateRelationship(productSupplier);
+
         productSupplierRepository.save(productSupplier);
 
         return mapper.fromEntityToDto(productSupplier);
@@ -84,4 +87,15 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         );
 
     }
+
+
+//    Esto iría en la carpeta de validation que todavía no está en la rama develop, pero cuando este, refactorizamos!
+    public void validateRelationship(ProductSupplier productSupplier){
+        if (productSupplierRepository.existsByProduct(productSupplier.getProduct())
+                && productSupplierRepository.existsBySupplier(productSupplier.getSupplier())){
+            throw new DuplicateRelationshipException("La relación del proveedor con el producto ya se encuentra registrada");
+        }
+
+    }
+
 }
