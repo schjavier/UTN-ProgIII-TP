@@ -63,11 +63,13 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     public ResponseProductSupplierDTO updateProductSupplier(UpdateProductSupplierDTO updateProductSupplierDTO, Long id) {
 
         ProductSupplier productSupplier = productSupplierRepository.findById(id)
-                .orElseThrow(() -> new ProductSupplierNotExistException("El relación que quiere editar no se encuentra"));
+                .orElseThrow(() -> new ProductSupplierNotExistException("La relación que quiere editar no se encuentra"));
 
         productSupplier.setCost(updateProductSupplierDTO.cost());
         productSupplier.setProfitMargin(updateProductSupplierDTO.profitMargin());
         productSupplier.calculatePrice();
+
+        productSupplierRepository.save(productSupplier);
 
         return mapper.fromEntityToDto(productSupplier);
     }

@@ -1,5 +1,8 @@
 package com.utn.ProgIII.model.Supplier;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.utn.ProgIII.model.Address.Address;
 import com.utn.ProgIII.model.ProductSupplier.ProductSupplier;
 import jakarta.persistence.*;
@@ -43,6 +46,7 @@ public class Supplier {
     private Address address;
 
     @OneToMany(mappedBy = "idProductSupplier")
+    @ToString.Exclude
     private List<ProductSupplier> productSupplier;
 
     public Supplier(String companyname, String cuit, String phonenumber, String email, Address address) {

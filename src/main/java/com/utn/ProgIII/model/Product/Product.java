@@ -1,6 +1,8 @@
 package com.utn.ProgIII.model.Product;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.utn.ProgIII.model.ProductSupplier.ProductSupplier;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -27,6 +29,7 @@ public class Product {
     private String name;
 
     @OneToMany (mappedBy = "idProductSupplier")
+    @ToString.Exclude
     private List<ProductSupplier> productSuppliers;
 
     @Enumerated(EnumType.STRING)

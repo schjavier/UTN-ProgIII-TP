@@ -1,5 +1,8 @@
 package com.utn.ProgIII.model.ProductSupplier;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.Supplier.Supplier;
 import jakarta.persistence.*;
@@ -23,10 +26,12 @@ public class ProductSupplier {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_supplier")
+    @ToString.Exclude
     private Supplier supplier;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_product")
+    @ToString.Exclude
     private Product product;
 
     private BigDecimal cost;
