@@ -1,7 +1,7 @@
 package com.utn.ProgIII.mapper;
 
 import com.utn.ProgIII.model.ProductSupplier.ProductSupplier;
-import com.utn.ProgIII.model.ProductSupplier.ResponseProductSupplierDTO;
+import com.utn.ProgIII.model.ProductSupplier.dto.ResponseProductSupplierDTO;
 import org.springframework.stereotype.Component;
 
 @Component

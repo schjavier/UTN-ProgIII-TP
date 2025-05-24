@@ -1,9 +1,9 @@
 package com.utn.ProgIII.controller;
 
-import com.utn.ProgIII.model.ProductSupplier.CreateProductSupplierDTO;
-import com.utn.ProgIII.model.ProductSupplier.ResponseProductSupplierDTO;
-import com.utn.ProgIII.model.ProductSupplier.SupplierProductListDTO;
-import com.utn.ProgIII.model.ProductSupplier.UpdateProductSupplierDTO;
+import com.utn.ProgIII.model.ProductSupplier.dto.CreateProductSupplierDTO;
+import com.utn.ProgIII.model.ProductSupplier.dto.ResponseProductSupplierDTO;
+import com.utn.ProgIII.model.ProductSupplier.dto.SupplierProductListDTO;
+import com.utn.ProgIII.model.ProductSupplier.dto.UpdateProductSupplierDTO;
 import com.utn.ProgIII.service.interfaces.ProductSupplierService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

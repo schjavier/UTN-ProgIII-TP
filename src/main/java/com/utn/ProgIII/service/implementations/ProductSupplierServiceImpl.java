@@ -6,6 +6,7 @@ import com.utn.ProgIII.exceptions.SupplierNotFoundException;
 import com.utn.ProgIII.mapper.ProductSupplierMapper;
 import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.ProductSupplier.*;
+import com.utn.ProgIII.model.ProductSupplier.dto.*;
 import com.utn.ProgIII.model.Supplier.Supplier;
 import com.utn.ProgIII.repository.ProductRepository;
 import com.utn.ProgIII.repository.ProductSupplierRepository;

@@ -1,7 +1,4 @@
-package com.utn.ProgIII.model.ProductSupplier;
-
-import com.utn.ProgIII.dto.ProductDTO;
-import com.utn.ProgIII.model.Product.Product;
+package com.utn.ProgIII.model.ProductSupplier.dto;
 
 import java.util.List;
 

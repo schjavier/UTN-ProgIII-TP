@@ -1,4 +1,4 @@
-package com.utn.ProgIII.model.ProductSupplier;
+package com.utn.ProgIII.model.ProductSupplier.dto;
 
 import java.math.BigDecimal;
 
