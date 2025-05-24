@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Clase para gestionar de manera global las excepciones.
@@ -22,16 +21,16 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler({SupplierNotFoundException.class})
-    public ResponseEntity<Object> supplierNotFoundException(SupplierNotFoundException exception)
+    public ResponseEntity<Object> supplierNotFoundException(SupplierNotFoundException ex)
     {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(exception);
+                .body(ex.getMessage());
     }
 
     @ExceptionHandler({AddressNotFoundException.class})
-    public ResponseEntity<Object> addressNotFoundException(AddressNotFoundException exception) {
+    public ResponseEntity<Object> addressNotFoundException(AddressNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(exception);
+                .body(ex.getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -39,30 +38,30 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(getViolatedConstraints(ex));
     }
 
-    @ExceptionHandler(DuplicateUserException.class)
-        public ResponseEntity<String> handleDuplicateUserException(DuplicateUserException ex){
+    @ExceptionHandler(DuplicateEntityException.class)
+        public ResponseEntity<String> handleDuplicateEntityException(DuplicateEntityException ex){
         return ResponseEntity
                 .status(HttpStatus.CONFLICT).
                 body(ex.getMessage());
     }
 
     @ExceptionHandler({UserNotFoundException.class})
-    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException exception) {
+    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(exception.getMessage());
+                .body(ex.getMessage());
     }
     @ExceptionHandler({CredentialNotFoundException.class})
-    public ResponseEntity<Object> handleCredentialNotFoundException(CredentialNotFoundException exception) {
+    public ResponseEntity<Object> handleCredentialNotFoundException(CredentialNotFoundException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(exception.getMessage());
+                .body(ex.getMessage());
     }
 
     @ExceptionHandler({InvalidRequestException.class})
-    public ResponseEntity<Object> invalidRequestException(InvalidRequestException exception)
+    public ResponseEntity<Object> invalidRequestException(InvalidRequestException ex)
     {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex);
     }
     private String getViolatedConstraints(ConstraintViolationException ex) {
         List<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations().stream().toList();

@@ -1,6 +1,6 @@
 package com.utn.ProgIII.validations;
 
-import com.utn.ProgIII.exceptions.DuplicateUserException;
+import com.utn.ProgIII.exceptions.DuplicateEntityException;
 import com.utn.ProgIII.repository.SupplierRepository;
 import org.springframework.stereotype.Component;
 
@@ -14,13 +14,13 @@ public class SupplierValidations {
 
     public void validateSupplierByCuit(String cuit) {
         if(supplierRepository.existsByCuit(cuit)) {
-            throw new DuplicateUserException("El CUIT ingresado ya se encuentra registrado");
+            throw new DuplicateEntityException("El CUIT ingresado ya se encuentra registrado");
         }
     }
 
     public void validateModifiedSupplierByCuit(String currentCuit, String newCuit){
         if(supplierRepository.existsByCuit(newCuit) && !currentCuit.equals(newCuit)){
-            throw new DuplicateUserException("El CUIT ingresado ya se encuentra registrado");
+            throw new DuplicateEntityException("El CUIT ingresado ya se encuentra registrado");
         }
     }
 }

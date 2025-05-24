@@ -1,6 +1,6 @@
 package com.utn.ProgIII.validations;
 
-import com.utn.ProgIII.exceptions.DuplicateUserException;
+import com.utn.ProgIII.exceptions.DuplicateEntityException;
 import com.utn.ProgIII.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
@@ -16,14 +16,14 @@ public class UserValidations {
 
     public void validateUserByDni(String dni){
         if(userRepository.existsByDni(dni)){
-            throw new DuplicateUserException("El dni ingresado ya se encuentra registrado");
+            throw new DuplicateEntityException("El dni ingresado ya se encuentra registrado");
         }
 
     }
 
     public void validateModifiedUserByDni(String currentDni, String newDni){
         if(userRepository.existsByDni(newDni) && !currentDni.equals(newDni)){
-            throw new DuplicateUserException("El dni ingresado ya se encuentra registrado");
+            throw new DuplicateEntityException("El dni ingresado ya se encuentra registrado");
         }
 
     }
