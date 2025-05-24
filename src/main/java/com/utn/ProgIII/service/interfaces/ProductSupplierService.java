@@ -1,15 +1,17 @@
 package com.utn.ProgIII.service.interfaces;
 
 import com.utn.ProgIII.model.ProductSupplier.CreateProductSupplierDTO;
-import com.utn.ProgIII.model.ProductSupplier.DatosProductSupplierDTO;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.utn.ProgIII.model.ProductSupplier.ResponseProductSupplierDTO;
+import com.utn.ProgIII.model.ProductSupplier.SupplierProductListDTO;
+import com.utn.ProgIII.model.ProductSupplier.UpdateProductSupplierDTO;
 
 public interface ProductSupplierService {
 
-    DatosProductSupplierDTO createProductSupplier(CreateProductSupplierDTO createProductSupplierDTO);
-    DatosProductSupplierDTO getOneProductSupplier(Long id);
-    Page<DatosProductSupplierDTO> getAllProductsSupplier(Pageable pagination);
-    boolean deleteProductSupplier(Long id);
+    ResponseProductSupplierDTO createProductSupplier(CreateProductSupplierDTO createProductSupplierDTO);
+    ResponseProductSupplierDTO updateProductSupplier(UpdateProductSupplierDTO updateProductSupplierDTO, Long id);
+
+    SupplierProductListDTO listProductsBySupplier(String companyName);
+
+
 
 }

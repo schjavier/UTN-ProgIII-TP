@@ -5,6 +5,8 @@ import com.utn.ProgIII.model.Supplier.Supplier;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "product_supplier")
 @Getter
@@ -12,11 +14,12 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+
 public class ProductSupplier {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idProductSupplier;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_supplier")
@@ -26,12 +29,23 @@ public class ProductSupplier {
     @JoinColumn(name = "id_product")
     private Product product;
 
-    private Float cost;
+    private BigDecimal cost;
 
-    private Float profitMargin;
+    private BigDecimal profitMargin;
 
-    private Float price;
+    private BigDecimal price;
+
+    public BigDecimal calculatePrice(){
+        return this.cost.multiply(this.profitMargin);
+    }
 
 
+    public ProductSupplier(Supplier supplier, Product product, BigDecimal cost, BigDecimal profitMargin){
+        this.supplier = supplier;
+        this.product = product;
+        this.cost = cost;
+        this.profitMargin = profitMargin;
+        this.price = calculatePrice();
+    }
 
 }

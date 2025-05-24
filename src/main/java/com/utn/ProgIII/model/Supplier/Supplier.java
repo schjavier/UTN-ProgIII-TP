@@ -9,6 +9,8 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -40,9 +42,8 @@ public class Supplier {
     @JoinColumn(name = "id_address")
     private Address address;
 
-    @OneToMany(mappedBy = "id_product_supplier")
-    private ProductSupplier productSupplier;
-
+    @OneToMany(mappedBy = "idProductSupplier")
+    private List<ProductSupplier> productSupplier;
 
     public Supplier(String companyname, String cuit, String phonenumber, String email, Address address) {
         this.companyName = companyname;

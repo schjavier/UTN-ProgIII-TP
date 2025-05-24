@@ -1,6 +1,7 @@
 package com.utn.ProgIII.model.Product;
 
 
+import com.utn.ProgIII.model.ProductSupplier.ProductSupplier;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -9,13 +10,12 @@ import java.math.BigDecimal;
 import java.util.List;
 
 
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Getter
 @Setter
-
-
+@ToString
 public class Product {
 
     @Id
@@ -26,12 +26,13 @@ public class Product {
     @Size(max = 50, message = "El nombre no puede tener mas de 50 caracteres")
     private String name;
 
-    //@OneToMany (mappedBy = "id_product_supplier")
-    // private List<ProductSupplier> productSuppliers;
+    @OneToMany (mappedBy = "idProductSupplier")
+    private List<ProductSupplier> productSuppliers;
 
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
+// -> Remove this on the next commit <-
 
 //    @NotNull(message = "El costo no puede ser nulo")
 //    @Positive(message = "El costo no puede ser menor a 0")
