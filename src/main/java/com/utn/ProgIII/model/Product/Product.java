@@ -23,17 +23,16 @@ public class Product {
     private Long idProduct;
 
     @NotBlank(message = "El nombre es obligatorio")
-    @Size(max = 50, message = "El nombre no puede tener mas de 50 caracteres")
+    @Size(min = 3,max = 50, message = "El nombre del producto debe contener entre 3 y 50 caracteres")
     private String name;
 
-    //@OneToMany (mappedBy = "id_product_supplier")
+    // @OneToMany (mappedBy = "id_product_supplier")
     // private List<ProductSupplier> productSuppliers;
 
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
-
-    //    @NotNull(message = "El costo no puede ser nulo")
+//    @NotNull(message = "El costo no puede ser nulo")
 //    @Positive(message = "El costo no puede ser menor a 0")
 //    private BigDecimal cost;
 //
@@ -42,7 +41,7 @@ public class Product {
 //    private BigDecimal profitMargin;
 //
 //
-//    @Positive(message = "El precio de venta debe ser superiro a 0")
+//    @Positive(message = "El precio de venta debe ser superior a 0")
 //    private BigDecimal price;
 
 //    public Product(String name, BigDecimal cost, BigDecimal profitMargin, BigDecimal price) {

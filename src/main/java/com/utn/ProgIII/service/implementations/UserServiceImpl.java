@@ -9,6 +9,8 @@ import com.utn.ProgIII.model.Credential.Role;
 import com.utn.ProgIII.model.User.User;
 import com.utn.ProgIII.model.User.UserStatus;
 import com.utn.ProgIII.repository.UserRepository;
+import com.utn.ProgIII.validations.CredentialValidations;
+import com.utn.ProgIII.validations.UserValidations;
 import com.utn.ProgIII.service.interfaces.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -23,10 +25,15 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final UserValidations userValidations;
+    private final CredentialValidations credentialValidations;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, UserValidations userValidations, CredentialValidations credentialValidations) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.userValidations = userValidations;
+        this.credentialValidations = credentialValidations;
     }
 
     /**
@@ -38,6 +45,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserWithCredentialDTO createUserWithCredential(CreateUserDTO dto) {
         User user = userMapper.toEntity(dto);
+
+        userValidations.validateUserByDni(dto.dni());
+        credentialValidations.validateUsernameNotExists(dto.credential().username());
+
         user = userRepository.save(user);
 
         return userMapper.toUserWithCredentialDTO(user);
@@ -88,15 +99,19 @@ public class UserServiceImpl implements UserService {
         User userToUpdate = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
 
+        userValidations.validateModifiedUserByDni(userToUpdate.getDni(),dto.dni());
+        credentialValidations.validateModifiedUsernameNotExists(userToUpdate.getCredential().getUsername(),
+                dto.credential().username());
+
         userToUpdate.setFirstname(dto.firstname());
         userToUpdate.setLastname(dto.lastname());
         userToUpdate.setDni(dto.dni());
         userToUpdate.setStatus(UserStatus.valueOf(dto.status()));
 
         Credential credentialToUpdate = userToUpdate.getCredential();
-        credentialToUpdate.setUsername(dto.username());
-        credentialToUpdate.setPassword(dto.password());
-        credentialToUpdate.setRole(Role.valueOf(dto.role()));
+        credentialToUpdate.setUsername(dto.credential().username());
+        credentialToUpdate.setPassword(dto.credential().password());
+        credentialToUpdate.setRole(Role.valueOf(dto.credential().role()));
 
         userToUpdate = userRepository.save(userToUpdate);
 

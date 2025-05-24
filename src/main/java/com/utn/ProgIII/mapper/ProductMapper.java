@@ -22,7 +22,7 @@ public class ProductMapper {
         Product result = new Product();
 
         result.setName(productDTO.name());
-        result.setStatus(productDTO.status().isBlank() ? ProductStatus.ENABLED : ProductStatus.valueOf(productDTO.status()));
+        result.setStatus(productDTO.status().isBlank() ? ProductStatus.ENABLED : ProductStatus.valueOf(productDTO.status().toUpperCase()));
 
         return result;
     }

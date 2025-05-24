@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Clase que se encarga de interactuar con el ORM y el servicio de credenciales
  */
 public interface CredentialRepository extends JpaRepository<Credential,Long> {
+    boolean existsByUsername(String username);
 }
