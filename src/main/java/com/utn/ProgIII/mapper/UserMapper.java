@@ -40,12 +40,12 @@ public class UserMapper {
         result.setFirstname(dto.firstname());
         result.setLastname(dto.lastname());
         result.setDni(dto.dni());
-        result.setStatus(dto.status().isBlank() ? UserStatus.ENABLED : UserStatus.valueOf(dto.status()));
+        result.setStatus(dto.status().isBlank() ? UserStatus.ENABLED : UserStatus.valueOf(dto.status().toUpperCase()));
 
         Credential credential = new Credential();
         credential.setUsername(dto.credential().username());
         credential.setPassword(dto.credential().password());
-        credential.setRole(dto.credential().role().isBlank() ? Role.EMPLOYEE : Role.valueOf(dto.credential().role()));
+        credential.setRole(dto.credential().role().isBlank() ? Role.EMPLOYEE : Role.valueOf(dto.credential().role().toUpperCase()));
 
         result.setCredential(credential);
 
