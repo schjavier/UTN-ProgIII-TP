@@ -87,7 +87,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado"));
 
         product.setName(productDto.name());
-        product.setStatus(ProductStatus.valueOf(productDto.status()));
+        product.setStatus(ProductStatus.valueOf(productDto.status().toUpperCase()));
 
         product = productRepository.save(product);
 

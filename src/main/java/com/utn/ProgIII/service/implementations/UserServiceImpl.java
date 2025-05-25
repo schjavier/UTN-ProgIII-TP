@@ -9,6 +9,8 @@ import com.utn.ProgIII.model.Credential.Role;
 import com.utn.ProgIII.model.User.User;
 import com.utn.ProgIII.model.User.UserStatus;
 import com.utn.ProgIII.repository.UserRepository;
+import com.utn.ProgIII.validations.CredentialValidations;
+import com.utn.ProgIII.validations.UserValidations;
 import com.utn.ProgIII.service.interfaces.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -23,10 +25,15 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final UserValidations userValidations;
+    private final CredentialValidations credentialValidations;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, UserValidations userValidations, CredentialValidations credentialValidations) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.userValidations = userValidations;
+        this.credentialValidations = credentialValidations;
     }
 
     /**
@@ -38,6 +45,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserWithCredentialDTO createUserWithCredential(CreateUserDTO dto) {
         User user = userMapper.toEntity(dto);
+
+        userValidations.validateUserByDni(dto.dni());
+        credentialValidations.validateUsernameNotExists(dto.credential().username());
+
         user = userRepository.save(user);
 
         return userMapper.toUserWithCredentialDTO(user);
@@ -52,7 +63,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserWithCredentialDTO getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado!"));
+                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
 
         return userMapper.toUserWithCredentialDTO(user);
     }
@@ -74,9 +85,43 @@ public class UserServiceImpl implements UserService {
         return usersWithCredential;
     }
 
+
+    /**
+     * Muestra los datos de todos los usuarios activos en el sistema
+     * @return Una lista con los DTO de cada usuario activo existente en el sistema
+     */
+    @Override
+    public List<UserWithCredentialDTO> getEnabledUsers() {
+        List<User> users = userRepository.findAllByStatus((UserStatus.ENABLED));
+        List<UserWithCredentialDTO> enabledUsersWithCredential = new ArrayList<>();
+
+        for (User user : users) {
+            enabledUsersWithCredential.add(userMapper.
+                    toUserWithCredentialDTO(user));
+        }
+
+        return enabledUsersWithCredential;
+    }
+
+    /**
+     * Muestra los datos de todos los usuarios dados de baja en el sistema
+     * @return Una lista con los DTO de cada usuario dado de baja existente en el sistema
+     */
+    @Override
+    public List<UserWithCredentialDTO> getDisabledUsers() {
+        List<User> users = userRepository.findAllByStatus((UserStatus.DISABLED));
+        List<UserWithCredentialDTO> disabledUsersWithCredential = new ArrayList<>();
+
+        for (User user : users) {
+            disabledUsersWithCredential.add(userMapper.
+                    toUserWithCredentialDTO(user));
+        }
+
+        return disabledUsersWithCredential;
+    }
+
     /**
      * Obtiene los datos del usuario solicitado por parametro y los reemplaza por los enviados en la request.
-     * Apto para baja logica
      * @param id El id correspondiente al usuario que se solicito modificar sus datos
      * @param dto El objeto de transferencia con los nuevos datos recibidos desde la request
      * @return Un DTO para mostrar los nuevos datos cargados, como una respuesta
@@ -88,19 +133,38 @@ public class UserServiceImpl implements UserService {
         User userToUpdate = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
 
+        userValidations.validateModifiedUserByDni(userToUpdate.getDni(),dto.dni());
+        credentialValidations.validateModifiedUsernameNotExists(userToUpdate.getCredential().getUsername(),
+                dto.credential().username());
+
         userToUpdate.setFirstname(dto.firstname());
         userToUpdate.setLastname(dto.lastname());
         userToUpdate.setDni(dto.dni());
-        userToUpdate.setStatus(UserStatus.valueOf(dto.status()));
+        userToUpdate.setStatus(UserStatus.valueOf(dto.status().toUpperCase()));
 
         Credential credentialToUpdate = userToUpdate.getCredential();
-        credentialToUpdate.setUsername(dto.username());
-        credentialToUpdate.setPassword(dto.password());
-        credentialToUpdate.setRole(Role.valueOf(dto.role()));
+        credentialToUpdate.setUsername(dto.credential().username());
+        credentialToUpdate.setPassword(dto.credential().password());
+        credentialToUpdate.setRole(Role.valueOf(dto.credential().role().toUpperCase()));
 
         userToUpdate = userRepository.save(userToUpdate);
 
         return userMapper.toUserWithCredentialDTO(userToUpdate);
+    }
+
+    /**
+     * Hace baja logica del sistema al usuario con el id solicitado por parametro
+     * @param id El id correspondiente al usuario que se solicito dar de baja
+     */
+    @Override
+    @Transactional
+    public void deleteUserSoft(Long id) {
+        User userToDelete = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
+
+        userToDelete.setStatus(UserStatus.DISABLED);
+
+        userRepository.save(userToDelete);
     }
 
     /**
@@ -109,11 +173,12 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public void deleteUser(Long id) {
+    public void deleteUserHard(Long id) {
         if (userRepository.findById(id).isEmpty()) {
-            throw new UserNotFoundException("Usuario no encontrado!");
+            throw new UserNotFoundException("Usuario no encontrado");
         } else {
             userRepository.deleteById(id);
         }
     }
+
 }

@@ -28,19 +28,31 @@ public class UserController {
      * @param id El id del usuario que se desea ver su informacion
      * @return Una respuesta en formato json para mostrar los datos del usuario deseado
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<UserWithCredentialDTO> getUserById(@PathVariable Long id) {
+    @GetMapping()
+    public ResponseEntity<UserWithCredentialDTO> getUserById(@RequestParam Long id) {
         UserWithCredentialDTO response = userService.getUserById(id);
         return ResponseEntity.ok(response);
     }
 
     /**
-     * Muestra los datos de todos los usuarios presentes en el sistema
-     * @return Una respuesta en formato json con los datos de todos los usuarios existentes en el sistema
+     * Muestra los datos de los usuarios según su estado (activo, dado de baja o ambos)
+     * @param status El estado de los usuarios que se desea ver (ENABLED, DISABLED o ALL (todos))
+     * @return Una respuesta en formato json con los datos de los usuarios filtrados por estado
      */
-    @GetMapping()
-    public ResponseEntity<List<UserWithCredentialDTO>> getAllUsers() {
-        List<UserWithCredentialDTO> response = userService.getAllUsers();
+    @GetMapping("/filter")
+    public ResponseEntity<List<UserWithCredentialDTO>> getUsersByStatus(
+            @RequestParam(defaultValue = "ENABLED") String status) {
+        List<UserWithCredentialDTO> response;
+        if (status.equalsIgnoreCase("ENABLED")) {
+            response = userService.getEnabledUsers();
+        } else if (status.equalsIgnoreCase("DISABLED")) {
+            response = userService.getDisabledUsers();
+        } else if (status.equalsIgnoreCase("ALL")) {
+            response = userService.getAllUsers();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+
         return ResponseEntity.ok(response);
     }
 
@@ -58,25 +70,33 @@ public class UserController {
     /**
      * Obtiene los datos del usuario con el id enviado por parametro y los reemplaza por los enviados en el
      * cuerpo de la request
-     * Apto para baja logica
      * @param id El id correspondiente al usuario que se solicito modificar sus datos
      * @param dto El objeto de transferencia con los nuevos datos creado a partir del cuerpo de la request
      * @return Una respuesta en formato json para mostrar los nuevos datos del usuario modificado
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<UserWithCredentialDTO> updateUser(@PathVariable Long id, @RequestBody CreateUserDTO dto) {
+    @PutMapping()
+    public ResponseEntity<UserWithCredentialDTO> updateUser(@RequestParam Long id, @RequestBody CreateUserDTO dto) {
         UserWithCredentialDTO response = userService.updateUser(id, dto);
         return ResponseEntity.ok().body(response);
     }
 
     /**
-     * Elimina al usuario con el id enviado por parametro del sistema
+     * Elimina al usuario con el id enviado por parametro del sistema, pudiendo especificar si es por medio
+     * de baja logica o fisica
      * @param id El id correspondiente al usuario que se solicito eliminar
+     * @param deletionType El tipo de eliminacion (dura/fisica o blanda/logica)
      * @return Una respuesta sin contenido (HTTP 204) para indicar que no hubo errores
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+    @DeleteMapping()
+    public ResponseEntity<?> delete(@RequestParam Long id, @RequestParam(defaultValue = "soft") String deletionType) {
+        if (deletionType.equalsIgnoreCase("soft")) {
+            userService.deleteUserSoft(id);
+        } else if (deletionType.equalsIgnoreCase("hard")) {
+            userService.deleteUserHard(id);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+
         return ResponseEntity.noContent().build();
     }
 }

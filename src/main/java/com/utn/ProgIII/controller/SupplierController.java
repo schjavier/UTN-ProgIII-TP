@@ -37,7 +37,7 @@ public class SupplierController {
      * Responde a peticiones http con la url "/page{page}/{size}"
      * @param page Page denota una "pagina" que contiene una cantidad de "size". Comienza en 1
      * @param size Define el tamaño de la pagina
-     * @return Una pagina con todos los provedores que pueda conseguir.
+     * @return Una pagina con todos los proveedores que pueda conseguir.
      */
     @GetMapping("/page{page}/{size}")
     public ResponseEntity<List<ViewSupplierDTO>> getSuppliers(@PathVariable int page, @PathVariable int size)
@@ -46,9 +46,9 @@ public class SupplierController {
     }
 
     /**
-     * Consigue un provedor con su respectivo id
-     * @param id El id del provedor
-     * @return Un DTO de provedor
+     * Consigue un proveedor con su respectivo id
+     * @param id El id del proveedor
+     * @return Un DTO de proveedor
      */
     @GetMapping("/{id}")
     public ResponseEntity<ViewSupplierDTO> getSupplier(@PathVariable Long id) {
@@ -56,20 +56,20 @@ public class SupplierController {
     }
 
     /**
-     * Actualiza un provedor existente con todos sus datos segun la id que tiene. Responde a peticiones http con la url "/{id}"
-     * @param supplier_DTO Un objeto DTO que tiene todos los datos del provedor
-     * @param id El id del provedor para modificar
-     * @return Un DTO que muestra todo el provedor con sus cambios.
+     * Actualiza un proveedor existente con todos sus datos segun la id que tiene. Responde a peticiones http con la url "/{id}"
+     * @param supplier_DTO Un objeto DTO que tiene todos los datos del proveedor
+     * @param id El id del proveedor para modificar
+     * @return Un DTO que muestra todo el proveedor con sus cambios.
      */
     @PutMapping("/{id}")
     public ResponseEntity<?> updateSupplier(@RequestBody AddSupplierDTO supplier_DTO, @PathVariable Long id)
     {
-        return ResponseEntity.ok(supplierService.modifySupplier(supplier_DTO,id));
+        return ResponseEntity.ok(supplierService.updateSupplier(supplier_DTO,id));
     }
 
     /**
-     * Elimina un provedor de la base de datos. Responde a peticiones http con la url "/{id}"
-     * @param id El id del provedor para eliminar
+     * Elimina un proveedor de la base de datos. Responde a peticiones http con la url "/{id}"
+     * @param id El id del proveedor para eliminar
      * @return Un booleano verdadero, en caso de exito.
      */
     @DeleteMapping("/{id}")

@@ -76,10 +76,9 @@ public class ProductController {
     }
 
     //Baja logica de un producto (modifica solo el estado)
-    @PatchMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
     }
-
-    
 }
