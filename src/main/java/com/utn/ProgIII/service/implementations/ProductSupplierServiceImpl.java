@@ -93,11 +93,9 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
 
 //    Esto iría en la carpeta de validation que todavía no está en la rama develop, pero cuando este, refactorizamos!
     public void validateRelationship(ProductSupplier productSupplier){
-        if (productSupplierRepository.existsByProduct(productSupplier.getProduct())
-                && productSupplierRepository.existsBySupplier(productSupplier.getSupplier())){
+        if (productSupplierRepository.existsByProductAndSupplier(productSupplier.getProduct(),productSupplier.getSupplier())){
             throw new DuplicateRelationshipException("La relación del proveedor con el producto ya se encuentra registrada");
         }
-
     }
 
 }
