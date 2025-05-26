@@ -23,7 +23,7 @@ public class Product {
     private Long idProduct;
 
     @NotBlank(message = "El nombre es obligatorio")
-    @Size(max = 50, message = "El nombre no puede tener mas de 50 caracteres")
+    @Size(min = 3, max = 50, message = "El nombre debe tener entre 3 y 50 caracteres")
     private String name;
 
     @OneToMany (mappedBy = "id_product_supplier")
