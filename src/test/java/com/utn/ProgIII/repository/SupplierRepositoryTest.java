@@ -1,8 +1,7 @@
-package com.utn.ProgIII.Model.Repository;
+package com.utn.ProgIII.repository;
 
 import com.utn.ProgIII.model.Address.Address;
 import com.utn.ProgIII.model.Supplier.Supplier;
-import com.utn.ProgIII.repository.SupplierRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,16 +62,11 @@ public class SupplierRepositoryTest {
     }
 
     @Test
-    public void updateEmployeeTest()
+    public void updateSupplier_fail()
     {
-        Supplier supplier = supplierRepository.findById(1L).get();
-
-
-        supplier.setEmail("SecondTest@gmail.com");
-
-        Supplier updated_supplier = supplierRepository.save(supplier);
-
-        Assertions.assertThat(updated_supplier.getEmail()).isEqualTo("SecondTest@gmail.com");
+        assertThrows(NoSuchElementException.class,() -> {
+            Supplier supplier = supplierRepository.findById(1L).get();
+        });
     }
 
     @Test

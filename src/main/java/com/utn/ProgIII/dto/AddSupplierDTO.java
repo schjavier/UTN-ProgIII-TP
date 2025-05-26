@@ -4,8 +4,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 import org.hibernate.validator.constraints.Length;
 
+@Builder
 public record AddSupplierDTO(
         @NotBlank(message = "El nombre de la compania no puede estar vacio")
         @Length(min = 3,max = 75, message = "El largo del nombre de la compania no es valido")
@@ -16,7 +18,7 @@ public record AddSupplierDTO(
         String cuit,
 
         @NotBlank(message = "El numbero de telefono no puede estar vacio!")
-//        @Pattern(regexp = "^(?:(?:00)?549?)?0?(?:11|[2368]\\d)(?:(?=\\d{0,2}15)\\d{2})?\\d{8}$", message = "El formato del numero de telefono no es valido")
+        @Pattern(regexp = "^(?:(?:00)?549?)?0?(?:11|[2368]\\d)(?:(?=\\d{0,2}15)\\d{2})?\\d{8}$", message = "El formato del numero de telefono no es valido") // sujeto a cambios :)
         String phoneNumber,
 
         @Email(message = "El email no es valido!!")
