@@ -10,7 +10,10 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import jdk.jfr.Category;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -26,16 +29,14 @@ public class SupplierMapperTest {
     private Validator validator;
 
     @BeforeEach
-    void setUp()
-    {
+    void setUp() {
         mapper = new SupplierMapper();
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
     }
 
     @Test
-    void supplierToViewSupplierDTO_AllfieldsOK()
-    {
+    void supplierToViewSupplierDTO_AllfieldsOK() {
         address = new Address(
                 "Test city",
                 "123",
@@ -67,8 +68,7 @@ public class SupplierMapperTest {
     }
 
     @Test
-    void supplierDTOToSupplierObject_AllfieldsOK()
-    {
+    void supplierDTOToSupplierObject_AllfieldsOK() {
         AddAddressDTO addAddressDTO = AddAddressDTO.builder()
                 .street("Calle")
                 .number("123")
@@ -99,8 +99,7 @@ public class SupplierMapperTest {
 
 
     @Test
-    void toObjectFromAddSupplierDTO_CompNameEmpty()
-    {
+    void toObjectFromAddSupplierDTO_CompNameEmpty() {
         AddAddressDTO addAddressDTO = AddAddressDTO.builder()
                 .street("Calle")
                 .number("123")
@@ -118,5 +117,451 @@ public class SupplierMapperTest {
         Set<ConstraintViolation<Supplier>> violations = validator.validate(supplier);
         assertThat(violations).hasSize(2);
     }
+
+    @Test
+    void toObjectFromAddSupplierDTO_CuitEmpty() {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("Calle")
+                .number("123")
+                .city("Ciudad").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("")
+                .cuit("23-12345678-9")
+                .phoneNumber("1144358129")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Supplier>> violations = validator.validate(supplier);
+        assertThat(violations).hasSize(2);
+    }
+
+    @Test
+    void toObjectFromAddSupplierDTO_PhoneNumberEmpty() {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("Calle")
+                .number("123")
+                .city("Ciudad").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Supplier>> violations = validator.validate(supplier);
+        assertThat(violations).hasSize(2);
+    }
+
+    @Test
+    void toObjectFromSupplierDTO_PhoneNumberTooShort() {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("Calle")
+                .number("123")
+                .city("Ciudad").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("114435812")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Supplier>> violations = validator.validate(supplier);
+        assertThat(violations).hasSize(1);
+    }
+
+    @Test
+    void toObjectFromSupplierDTO_PhoneNumberTooLong() {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("Calle")
+                .number("123")
+                .city("Ciudad").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("11443582212")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Supplier>> violations = validator.validate(supplier);
+        assertThat(violations).hasSize(1);
+    }
+
+    @Test
+    void toObjectFromSupplierDTO_PhoneNumberHasLetter() {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("Calle")
+                .number("123")
+                .city("Ciudad").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("114435a82212")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Supplier>> violations = validator.validate(supplier);
+        assertThat(violations).hasSize(1);
+    }
+
+    @Test
+    void toObjectFromAddSupplierDTO_EmailEmpty() {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("Calle")
+                .number("123")
+                .city("Ciudad").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("1144358129")
+                .email("")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Supplier>> violations = validator.validate(supplier);
+        assertThat(violations).hasSize(1);
+    }
+
+    @Test
+    void toObjectFromSupplierDTO_EmailWrongFormat() {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("Calle")
+                .number("123")
+                .city("Ciudad").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("1144358129")
+                .email("asd")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Supplier>> violations = validator.validate(supplier);
+        assertThat(violations).hasSize(1);
+    }
+
+    @Test
+    void toObjectFromAddSupplierDTO_AddressEmpty() {
+        assertThrows(NullPointerException.class, () -> {
+            /*AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                    .street("Calle")
+                    .number("123")
+                    .city("Ciudad").build();*/
+
+            AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                    .companyName("Test")
+                    .cuit("23-12345678-9")
+                    .phoneNumber("1144358129")
+                    .email("")
+                    .build();
+
+            Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+        });
+    }
+
+    @Test
+    void toObjectFromAddSupplierDTO_StreetEmpty() {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("")
+                .number("123")
+                .city("Ciudad").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("1144358129")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Address>> violations = validator.validate(supplier.getAddress());
+        assertThat(violations).hasSize(3);
+    }
+
+    @Test
+    void toObjectFromAddSupplierDTO_StreetTooShort() {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("a")
+                .number("123")
+                .city("Ciudad").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("1144358129")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Address>> violations = validator.validate(supplier.getAddress());
+        assertThat(violations).hasSize(1);
+    }
+
+    @Test
+    void toObjectFromAddSupplierDTO_StreetTooLong() {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("aasdasdasdasdaswdeawrascasczxcasdasdasdasdasdasdasdasdasdaswdeawrascasczxcasdasdasdasdasdasdasdasdasd")
+                .number("123")
+                .city("Ciudad").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("1144358129")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Address>> violations = validator.validate(supplier.getAddress());
+        assertThat(violations).hasSize(1);
+    }
+
+    @Test
+    void toObjectFromAddSupplierDTO_StreetIncorrectFormat() {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("!!!")
+                .number("123")
+                .city("Ciudad").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("1144358129")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Address>> violations = validator.validate(supplier.getAddress());
+        assertThat(violations).hasSize(1);
+    }
+
+
+    @Test
+    void toObjectFromAddSupplierDTO_NumberIsEmpty() {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("asdasd")
+                .number("")
+                .city("Ciudad").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("1144358129")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Address>> violations = validator.validate(supplier.getAddress());
+        assertThat(violations).hasSize(3);
+    }
+
+    @Test
+    void toObjectFromAddSupplierDTO_NumberIsTooShort() {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("asdasd")
+                .number("5")
+                .city("Ciudad").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("1144358129")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Address>> violations = validator.validate(supplier.getAddress());
+        assertThat(violations).hasSize(1);
+    }
+
+    @Test
+    void toObjectFromAddSupplierDTO_NumberIsTooLong() {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("asdasd")
+                .number("5456445")
+                .city("Ciudad").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("1144358129")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Address>> violations = validator.validate(supplier.getAddress());
+        assertThat(violations).hasSize(1);
+    }
+
+    @Test
+    void toObjectFromAddSupplierDTO_NumberContainsNonDigit() {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("asdasd")
+                .number("12a3")
+                .city("Ciudad").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("1144358129")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Address>> violations = validator.validate(supplier.getAddress());
+        assertThat(violations).hasSize(1);
+    }
+
+
+    @Test
+    void toObjectFromSupplierDTO_CityIsEmpty() {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("asdasd")
+                .number("123")
+                .city("").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("1144358129")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Address>> violations = validator.validate(supplier.getAddress());
+        assertThat(violations).hasSize(3);
+    }
+
+    @Test
+    void toObjectFromSupplierDTO_CityIsTooShort() {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("asdasd")
+                .number("123")
+                .city("a").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("1144358129")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Address>> violations = validator.validate(supplier.getAddress());
+        assertThat(violations).hasSize(1);
+    }
+
+    @Test
+    void toObjectFromSupplierDTO_CityIsTooLong() {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("asdasd")
+                .number("123")
+                .city("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("1144358129")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Address>> violations = validator.validate(supplier.getAddress());
+        assertThat(violations).hasSize(1);
+    }
+
+    @Test
+    void toObjectFromSupplierDTO_CityIsIncorrectlyFormatted()
+    {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("asdasd")
+                .number("123")
+                .city("!!!!!").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("1144358129")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Address>> violations = validator.validate(supplier.getAddress());
+        assertThat(violations).hasSize(1);
+    }
+
+    @Test
+    void toObjectFromSupplierDTO_CityIsIncorrectlyAndTooShort()
+    {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("asdasd")
+                .number("123")
+                .city("!").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("1144358129")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Address>> violations = validator.validate(supplier.getAddress());
+        assertThat(violations).hasSize(2);
+    }
+
+    @Test
+    void toObjectFromSupplierDTO_CityIsIncorrectlyAndTooLong()
+    {
+        AddAddressDTO addAddressDTO = AddAddressDTO.builder()
+                .street("asdasd")
+                .number("123")
+                .city("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!").build();
+
+        AddSupplierDTO addSupplierDTO = AddSupplierDTO.builder()
+                .companyName("Test")
+                .cuit("23-12345678-9")
+                .phoneNumber("1144358129")
+                .email("email@gmail.com")
+                .address(addAddressDTO).build();
+
+        Supplier supplier = mapper.toObjectFromAddSupplierDTO(addSupplierDTO);
+
+        Set<ConstraintViolation<Address>> violations = validator.validate(supplier.getAddress());
+        assertThat(violations).hasSize(2);
+    }
+
+
 
 }

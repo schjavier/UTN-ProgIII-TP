@@ -3,10 +3,13 @@ package com.utn.ProgIII.repository;
 import com.utn.ProgIII.model.Address.Address;
 import com.utn.ProgIII.model.Supplier.Supplier;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 
 
 import java.util.List;
@@ -14,10 +17,14 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-@DataJpaTest
+@DataJpaTest(includeFilters = @ComponentScan.Filter(
+        type = FilterType.ASSIGNABLE_TYPE,
+        classes = UserRepository.class),
+        excludeFilters = @ComponentScan.Filter(
+                type = FilterType.ASSIGNABLE_TYPE,
+                classes = SupplierRepository.class))
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class SupplierRepositoryTest {
-
     @Autowired
     private SupplierRepository supplierRepository;
 
@@ -46,15 +53,14 @@ public class SupplierRepositoryTest {
     }
 
     @Test
-    public void getSupplierByIdTest()
+    public void getSupplierByIdTest() // en caso de que la db este vacia falla.
     {
         Supplier supplier = supplierRepository.findById(1L).get();
-
         Assertions.assertThat(supplier.getIdSupplier()).isEqualTo(1L);
     }
 
     @Test
-    public void getListOfSuppliers()
+    public void getListOfSuppliers() // en caso de que la db este vacia falla.
     {
         List<Supplier> suppliers = supplierRepository.findAll();
 
@@ -84,7 +90,6 @@ public class SupplierRepositoryTest {
         }
 
         Assertions.assertThat(supplier).isNull();
-
     }
 
     @Test
