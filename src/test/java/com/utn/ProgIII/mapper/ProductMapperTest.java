@@ -132,13 +132,12 @@ class ProductMapperTest {
     }
 
     @Test
-    public void cuandoNombreTiene51Caracteres_debeLanzarExcepcion() {
+    public void nameMoreThan50Characters() {
         ProductDTO productDTO = ProductDTO.builder()
 
                 // Mas de 50 caracteres
                 .name("a".repeat(51))
                 .build();
-
 
         Exception exception = assertThrows(ProductNotFoundException.class, () -> {
             productMapper.toEntity(productDTO);
