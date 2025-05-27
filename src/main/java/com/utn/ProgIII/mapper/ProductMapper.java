@@ -6,6 +6,8 @@ import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.Product.ProductStatus;
 import org.springframework.stereotype.Component;
 
+import static java.util.prefs.Preferences.MAX_NAME_LENGTH;
+
 @Component
 public class ProductMapper {
 
@@ -20,7 +22,7 @@ public class ProductMapper {
 
 
     public Product toEntity (ProductDTO productDTO){
-        validarProducto(productDTO);
+        validateProduct(productDTO);
 
         Product result = new Product();
 
@@ -30,24 +32,19 @@ public class ProductMapper {
         return result;
     }
 
-    private void validarProducto(ProductDTO productDTO) {
-        if (productDTO.name() == null || productDTO.name().trim().length() < 3) {
-            throw new ProductNotFoundException("El nombre del producto debe tener al menos 3 caracteres");
-        }
-    }
 
-    private void validarProducto(ProductDTO productDto) {
-        if (productDto.getName() == null) {
-            throw new IllegalArgumentException("El nombre del producto no puede ser nulo");
+    private void validateProduct(ProductDTO productDto) {
+        if (productDto.name() == null) {
+            throw new ProductNotFoundException("El nombre del producto no puede ser nulo");
         }
 
-        String nombre = productDto.getName().trim();
+        String nombre = productDto.name().trim();
         if (nombre.length() < 3) {
-            throw new IllegalArgumentException("El nombre del producto debe tener al menos 3 caracteres");
+            throw new ProductNotFoundException("El nombre del producto debe tener al menos 3 caracteres");
         }
 
         if (nombre.length() > MAX_NAME_LENGTH) {
-            throw new IllegalArgumentException("El nombre del producto no puede exceder los " + MAX_NAME_LENGTH + " caracteres");
+            throw new ProductNotFoundException("El nombre del producto no puede exceder los " + MAX_NAME_LENGTH + " caracteres");
         }
     }
 
