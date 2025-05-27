@@ -3,6 +3,10 @@ package com.utn.ProgIII.controller;
 import com.utn.ProgIII.dto.AddSupplierDTO;
 import com.utn.ProgIII.dto.ViewSupplierDTO;
 import com.utn.ProgIII.service.implementations.SupplierServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +18,7 @@ import static org.springframework.http.ResponseEntity.status;
 
 @RestController
 @RequestMapping("/supplier")
-/**
- * <h1>Necesita documentacion de swagger</h1>
- */
+@Tag(name = "Proveedores", description = "Operaciones relacionades con los proveedores")
 public class SupplierController {
 
     @Autowired
@@ -27,8 +29,13 @@ public class SupplierController {
      * @param supplier_DTO Un DTO que representa el usuario cargado desde el frontend
      * @return Un usuario cargado desde el backend
      */
+    @Operation(summary = "Agregar un proveedor", description = "Agrega un proveedor")
     @PostMapping
-    public ResponseEntity<ViewSupplierDTO> addSupplier(@RequestBody AddSupplierDTO supplier_DTO)
+    @ApiResponse(responseCode = "201", description = "Proveedor creado")
+    @ApiResponse(responseCode = "400", description = "Error en datos introducidos")
+    public ResponseEntity<ViewSupplierDTO> addSupplier(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Objeto a crear")
+            @RequestBody AddSupplierDTO supplier_DTO)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(supplierService.createSupplier(supplier_DTO));
     }
@@ -40,6 +47,9 @@ public class SupplierController {
      * @return Una pagina con todos los proveedores que pueda conseguir.
      */
     @GetMapping("/page{page}/{size}")
+    @ApiResponse(responseCode = "200", description = "Encontrado")
+    @ApiResponse(responseCode = "404", description = "No encontrado")
+    @Operation(summary = "Busca una pagina de proveedores", description = "Lista una pagina de provedores")
     public ResponseEntity<List<ViewSupplierDTO>> getSuppliers(@PathVariable int page, @PathVariable int size)
     {
         return ResponseEntity.ok(supplierService.listSuppliers(page,size));
@@ -50,7 +60,10 @@ public class SupplierController {
      * @param id El id del proveedor
      * @return Un DTO de proveedor
      */
+    @ApiResponse(responseCode = "200", description = "Encontrado")
+    @ApiResponse(responseCode = "404", description = "No encontrado")
     @GetMapping("/{id}")
+    @Operation(summary = "Busca un proveedor", description = "Busca un provedor segun id")
     public ResponseEntity<ViewSupplierDTO> getSupplier(@PathVariable Long id) {
         return ResponseEntity.ok(supplierService.viewOneSupplier(id));
     }
@@ -61,8 +74,14 @@ public class SupplierController {
      * @param id El id del proveedor para modificar
      * @return Un DTO que muestra todo el proveedor con sus cambios.
      */
+    @ApiResponse(responseCode = "400", description = "Error en datos introducidos")
+    @ApiResponse(responseCode = "200", description = "Proveedor Actualizado")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateSupplier(@RequestBody AddSupplierDTO supplier_DTO, @PathVariable Long id)
+    @Operation(summary = "Modifica los datos del provedor")
+    public ResponseEntity<?> updateSupplier(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Los datos actualizados")
+            @RequestBody AddSupplierDTO supplier_DTO,
+            @PathVariable Long id)
     {
         return ResponseEntity.ok(supplierService.updateSupplier(supplier_DTO,id));
     }
@@ -72,7 +91,10 @@ public class SupplierController {
      * @param id El id del proveedor para eliminar
      * @return Un booleano verdadero, en caso de exito.
      */
+    @ApiResponse(responseCode = "200", description = "Eliminado correctamente")
+    @ApiResponse(responseCode = "404", description = "Proveedor No encontrado")
     @DeleteMapping("/{id}")
+    @Operation(summary = "Elimina un provedor segun su id")
     public ResponseEntity<Boolean> deleteSupplier(@PathVariable int id)
     {
         return ResponseEntity.ok(supplierService.deleteSupplier(id));
