@@ -43,8 +43,8 @@ public class ProductMapper {
             throw new ProductNotFoundException("El nombre del producto debe tener al menos 3 caracteres");
         }
 
-        if (nombre.length() > MAX_NAME_LENGTH) {
-            throw new ProductNotFoundException("El nombre del producto no puede exceder los " + MAX_NAME_LENGTH + " caracteres");
+        if (nombre.length() > 50) {
+            throw new ProductNotFoundException("El nombre del producto no puede exceder los 50 caracteres");
         }
     }
 
