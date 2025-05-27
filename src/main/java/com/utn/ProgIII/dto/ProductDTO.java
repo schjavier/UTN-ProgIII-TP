@@ -1,8 +1,9 @@
 package com.utn.ProgIII.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 
-import java.math.BigDecimal;
+@Builder
 
 public record ProductDTO (Long idProduct,
 
