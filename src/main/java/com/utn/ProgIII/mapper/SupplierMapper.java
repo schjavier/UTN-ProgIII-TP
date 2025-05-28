@@ -21,7 +21,6 @@ public class SupplierMapper {
      */
     public ViewSupplierDTO toViewSupplierDTO(Supplier supplier)
     {
-        System.out.println(supplier.toString());
         return new ViewSupplierDTO(
                 supplier.getIdSupplier(),
                 supplier.getCompanyName(),
