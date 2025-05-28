@@ -1,5 +1,6 @@
 package com.utn.ProgIII.dto;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -24,4 +25,7 @@ public record AddSupplierDTO(
         String email,
         @NotEmpty(message = "El objeto de email esta vacio!")
         AddAddressDTO address) {
+
+
+
 }

@@ -4,6 +4,7 @@ import com.utn.ProgIII.dto.ProductDTO;
 import com.utn.ProgIII.model.Product.ProductStatus;
 import com.utn.ProgIII.service.interfaces.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,9 @@ public class ProductController {
     //crea un producto nuevo
     @PostMapping
     @Operation(summary = "Se agrega un producto", description = "Se agrega un producto con los datos del usuario")
+    @ApiResponse(responseCode = "201", description = "Producto creado")
+    @ApiResponse(responseCode = "404",description = "Provedor no encontrado")
+    @ApiResponse(responseCode = "400",description = "Error en datos introducidos")
     public ResponseEntity<ProductDTO> addProduct (
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "El producto para crear")
             @RequestBody ProductDTO productDTO
@@ -44,6 +48,7 @@ public class ProductController {
     //muestra 1 solo producto
 
     @GetMapping ("/{id}")
+    @ApiResponse(responseCode = "200", description = "Producto encontrado")
     @Operation(summary = "Se muestra un producto por id", description = "Se muestra el producto con todos sus datos")
     public ResponseEntity<ProductDTO> getProductById (@PathVariable Long id) {
         ProductDTO response = productService.getProductById(id);
@@ -53,6 +58,8 @@ public class ProductController {
 
     //muestra la lista de todos los productos
     @GetMapping()
+    @Operation(summary = "Devuelve todos los productos", description = "Devuelve todos los productos")
+    @ApiResponse(responseCode = "200", description = "Lista devuelta correctamente")
     public ResponseEntity<List<ProductDTO>> getAllProduct (){
         List <ProductDTO> response = productService.getAllProduct();
 
@@ -61,6 +68,7 @@ public class ProductController {
 
     //muestra la lista de todos los productos por estado
     @GetMapping("/search/status/{status}")
+    @ApiResponse(responseCode = "200", description = "Lista de productos segun estado devuelto correctamente")
     @Operation(summary = "Se muestra una lista de productos por su status", description = "Se muestra una lista segun su status")
     public ResponseEntity<List<ProductDTO>> getAllProductByStatus(@PathVariable ProductStatus status){
 
@@ -72,6 +80,7 @@ public class ProductController {
     //muestra lista de productos (busca por nombre)
     @GetMapping("/search/name/{name}")
     @Operation(summary = "Se muestra una lista de productos por nombres", description = "Se muestra una lista de productos por nombres")
+    @ApiResponse(responseCode = "200", description = "Lista de productos segun nombre")
     public ResponseEntity<List<ProductDTO>> getProductByName(@PathVariable String name){
 
         List<ProductDTO> response = productService.getProductByName(name);
@@ -82,6 +91,8 @@ public class ProductController {
     //modificar un producto
     @PutMapping("/{id}")
     @Operation(summary = "Se actualiza los datos de un producto")
+    @ApiResponse(responseCode = "200",description = "Actualizacion completa")
+    @ApiResponse(responseCode = "400",description = "Datos malcolocados")
     public ProductDTO update (@PathVariable Long id, @RequestBody ProductDTO modifyProductDTO){
 
        return productService.updateProduct(id,modifyProductDTO);
@@ -89,6 +100,8 @@ public class ProductController {
 
     //Baja logica de un producto (modifica solo el estado)
     @DeleteMapping("/{id}")
+    @ApiResponse(responseCode = "204", description = "Eliminado correctamente")
+    @ApiResponse(responseCode = "404", description = "Producto no existe")
     @Operation(summary = "Se hace una baja logica de un producto", description = "Se hace una baja logica segun su id")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         productService.deleteProduct(id);
