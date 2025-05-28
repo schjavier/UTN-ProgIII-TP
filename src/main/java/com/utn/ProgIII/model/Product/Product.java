@@ -18,6 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@Builder
 public class Product {
 
     @Id
@@ -25,7 +26,7 @@ public class Product {
     private Long idProduct;
 
     @NotBlank(message = "El nombre es obligatorio")
-    @Size(min = 3,max = 50, message = "El nombre del producto debe contener entre 3 y 50 caracteres")
+    @Size(min = 3, max = 50, message = "El nombre del producto debe contener entre 3 y 50 caracteres")
     private String name;
 
     @OneToMany (mappedBy = "idProductSupplier")
