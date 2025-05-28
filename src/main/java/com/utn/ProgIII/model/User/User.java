@@ -16,6 +16,7 @@ import lombok.*;
 @Getter
 @Setter
 @Entity
+@Builder
 public class User {
 
     @Id
