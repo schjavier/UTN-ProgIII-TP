@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Entity
 @Table(name = "product_supplier")
@@ -45,7 +46,7 @@ public class ProductSupplier {
         this.product = product;
         this.cost = cost;
         this.profitMargin = profitMargin;
-        this.price = cost.multiply(profitMargin);
+        this.price = cost.add(cost.multiply(profitMargin).divide(BigDecimal.valueOf(100), RoundingMode.CEILING));
     }
 
 }

@@ -15,6 +15,8 @@ import com.utn.ProgIII.service.interfaces.ProductSupplierService;
 import com.utn.ProgIII.validations.ProductSupplierValidations;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Service
@@ -69,9 +71,12 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         ProductSupplier productSupplier = productSupplierRepository.findById(id)
                 .orElseThrow(() -> new ProductSupplierNotExistException("La relación que quiere editar no se encuentra"));
 
-        productSupplier.setCost(updateProductSupplierDTO.cost());
-        productSupplier.setProfitMargin(updateProductSupplierDTO.profitMargin());
+        BigDecimal newCost = updateProductSupplierDTO.cost();
+        BigDecimal newProfitMargin = updateProductSupplierDTO.profitMargin();
 
+        productSupplier.setCost(newCost);
+        productSupplier.setProfitMargin(newProfitMargin);
+        productSupplier.setPrice(newCost.add(newCost.multiply(newProfitMargin).divide(BigDecimal.valueOf(100), RoundingMode.CEILING)));
 
         productSupplierRepository.save(productSupplier);
 
