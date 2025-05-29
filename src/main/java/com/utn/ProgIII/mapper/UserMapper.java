@@ -2,10 +2,12 @@ package com.utn.ProgIII.mapper;
 
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
+import com.utn.ProgIII.exceptions.InvalidRequestException;
 import com.utn.ProgIII.model.Credential.Credential;
 import com.utn.ProgIII.model.Credential.Role;
 import com.utn.ProgIII.model.User.User;
 import com.utn.ProgIII.model.User.UserStatus;
+import com.utn.ProgIII.exceptions.InvalidRequestException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -41,6 +43,10 @@ public class UserMapper {
         result.setLastname(dto.lastname());
         result.setDni(dto.dni());
         result.setStatus(UserStatus.valueOf(dto.status().toUpperCase()));
+
+        if (dto.credential() == null) {
+            throw new InvalidRequestException("El usuario debe tener credenciales");
+        }
 
         Credential credential = new Credential();
         credential.setUsername(dto.credential().username());

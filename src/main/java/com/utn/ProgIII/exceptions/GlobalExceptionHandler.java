@@ -61,8 +61,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({InvalidRequestException.class})
     public ResponseEntity<Object> invalidRequestException(InvalidRequestException ex)
     {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
     private String getViolatedConstraints(ConstraintViolationException ex) {
         List<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations().stream().toList();
         StringBuilder constraintViolationMessages = new StringBuilder("Restricciones violadas: \n");

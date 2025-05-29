@@ -8,17 +8,12 @@ import jakarta.validation.constraints.NotBlank;
  */
 public record UserWithCredentialDTO(Long idUser,
 
-                                    @NotBlank
                                      String firstname,
 
-                                    @NotBlank
                                      String lastname,
 
-                                    @NotBlank
                                      String dni,
 
-                                    @NotBlank
                                      String status,
 
-                                    @NotBlank
                                      Credential credential) {}
