@@ -6,9 +6,13 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.Supplier.Supplier;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NegativeOrZero;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Entity
 @Table(name = "product_supplier")
@@ -36,21 +40,18 @@ public class ProductSupplier {
 
     private BigDecimal cost;
 
+    @PositiveOrZero(message = "El margen de ganancias tiene que ser mayor a cero")
     private BigDecimal profitMargin;
 
+    @Positive(message = "El precio no puede ser menor a cero.")
     private BigDecimal price;
-
-    public BigDecimal calculatePrice(){
-        return this.cost.multiply(this.profitMargin);
-    }
-
 
     public ProductSupplier(Supplier supplier, Product product, BigDecimal cost, BigDecimal profitMargin){
         this.supplier = supplier;
         this.product = product;
         this.cost = cost;
         this.profitMargin = profitMargin;
-        this.price = calculatePrice();
+        this.price = cost.add(cost.multiply(profitMargin).divide(BigDecimal.valueOf(100), RoundingMode.CEILING));
     }
 
 }
