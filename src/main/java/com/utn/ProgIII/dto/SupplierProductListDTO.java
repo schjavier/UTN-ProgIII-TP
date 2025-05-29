@@ -1,4 +1,4 @@
-package com.utn.ProgIII.model.ProductSupplier.dto;
+package com.utn.ProgIII.dto;
 
 import java.util.List;
 

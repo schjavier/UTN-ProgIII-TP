@@ -3,6 +3,7 @@ package com.utn.ProgIII.mapper;
 import com.utn.ProgIII.dto.AddSupplierDTO;
 import com.utn.ProgIII.dto.ViewAddressDTO;
 import com.utn.ProgIII.dto.ViewSupplierDTO;
+import com.utn.ProgIII.exceptions.InvalidRequestException;
 import com.utn.ProgIII.model.Address.Address;
 import com.utn.ProgIII.model.Supplier.Supplier;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,12 @@ public class SupplierMapper {
                 supplier.getCuit(),
                 supplier.getPhoneNumber(),
                 supplier.getEmail(),
-                new ViewAddressDTO(supplier.getIdSupplier(), supplier.getAddress().getStreet(),supplier.getAddress().getNumber(),supplier.getAddress().getCity())
+                new ViewAddressDTO(
+                        supplier.getIdSupplier(),
+                        supplier.getAddress().getStreet(),
+                        supplier.getAddress().getNumber(),
+                        supplier.getAddress().getCity()
+                )
         );
     }
 
@@ -39,6 +45,11 @@ public class SupplierMapper {
     public Supplier toObjectFromAddSupplierDTO(AddSupplierDTO supplierDTO) {
         Supplier sup = new Supplier();
         Address address = new Address();
+
+        if(supplierDTO.address() == null)
+        {
+            throw new InvalidRequestException("La direccion esta faltante.");
+        }
 
         sup.setCompanyName(supplierDTO.companyName());
         sup.setCuit(supplierDTO.cuit());
@@ -63,11 +74,18 @@ public class SupplierMapper {
         Supplier sup = new Supplier();
         Address address = new Address();
 
+
+
         sup.setIdSupplier(supplierDTO.id());
         sup.setCompanyName(supplierDTO.companyName());
         sup.setCuit(supplierDTO.cuit());
         sup.setPhoneNumber(supplierDTO.phoneNumber());
         sup.setEmail(supplierDTO.email());
+
+        if(supplierDTO.address() == null)
+        {
+            throw new InvalidRequestException("La direccion esta faltante.");
+        }
 
         address.setIdAddress(supplierDTO.address().idaddress());
         address.setStreet(supplierDTO.address().street());

@@ -5,7 +5,7 @@ import com.utn.ProgIII.model.Address.Address;
 import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.Product.ProductStatus;
 import com.utn.ProgIII.model.ProductSupplier.ProductSupplier;
-import com.utn.ProgIII.model.ProductSupplier.dto.ResponseProductSupplierDTO;
+import com.utn.ProgIII.dto.ResponseProductSupplierDTO;
 import com.utn.ProgIII.model.Supplier.Supplier;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

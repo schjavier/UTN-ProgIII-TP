@@ -6,9 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.utn.ProgIII.model.Address.Address;
 import com.utn.ProgIII.model.ProductSupplier.ProductSupplier;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
@@ -46,6 +44,7 @@ public class Supplier {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_address")
+    @NotNull(message = "El objeto de direccion esta vacio!")
     private Address address;
 
     @OneToMany(mappedBy = "idProductSupplier")

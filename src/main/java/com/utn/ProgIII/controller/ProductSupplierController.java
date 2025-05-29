@@ -1,9 +1,9 @@
 package com.utn.ProgIII.controller;
 
-import com.utn.ProgIII.model.ProductSupplier.dto.CreateProductSupplierDTO;
-import com.utn.ProgIII.model.ProductSupplier.dto.ResponseProductSupplierDTO;
-import com.utn.ProgIII.model.ProductSupplier.dto.SupplierProductListDTO;
-import com.utn.ProgIII.model.ProductSupplier.dto.UpdateProductSupplierDTO;
+import com.utn.ProgIII.dto.CreateProductSupplierDTO;
+import com.utn.ProgIII.dto.ResponseProductSupplierDTO;
+import com.utn.ProgIII.dto.SupplierProductListDTO;
+import com.utn.ProgIII.dto.UpdateProductSupplierDTO;
 import com.utn.ProgIII.service.interfaces.ProductSupplierService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

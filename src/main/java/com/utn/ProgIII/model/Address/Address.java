@@ -24,7 +24,7 @@ public class Address {
     private String street;
 
     @NotBlank(message = "La altura de la calle no puede estar vacia")
-    @Length(min = 2, max = 5, message = "La altura de la calle debe contener entre 1 y 5 numeros ")
+    @Length(min = 2, max = 5, message = "La altura de la calle debe contener entre 2 y 5 numeros ")
     @Pattern(regexp = "\\d+", message = "La altura de la calle tiene caracteres no numericos")
     private String number;
 

@@ -4,6 +4,7 @@ package com.utn.ProgIII.mapper;
 import com.utn.ProgIII.dto.AddAddressDTO;
 import com.utn.ProgIII.dto.AddSupplierDTO;
 import com.utn.ProgIII.dto.ViewSupplierDTO;
+import com.utn.ProgIII.exceptions.InvalidRequestException;
 import com.utn.ProgIII.model.Address.Address;
 import com.utn.ProgIII.model.Supplier.Supplier;
 import jakarta.validation.ConstraintViolation;
@@ -256,7 +257,7 @@ public class SupplierMapperTest {
 
     @Test
     void toObjectFromAddSupplierDTO_AddressEmpty() {
-        assertThrows(NullPointerException.class, () -> {
+        assertThrows(InvalidRequestException.class, () -> {
             /*AddAddressDTO addAddressDTO = AddAddressDTO.builder()
                     .street("Calle")
                     .number("123")

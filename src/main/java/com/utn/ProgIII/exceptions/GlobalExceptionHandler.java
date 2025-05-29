@@ -4,6 +4,8 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -66,7 +68,7 @@ public class GlobalExceptionHandler {
 
     private String getViolatedConstraints(ConstraintViolationException ex) {
         List<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations().stream().toList();
-        StringBuilder constraintViolationMessages = new StringBuilder("Restricciones violadas: \n");
+        StringBuilder constraintViolationMessages = new StringBuilder("Restricciones vulneradas: \n");
         for (ConstraintViolation<?> constraintViolation: constraintViolations) {
             String message = constraintViolation.getMessageTemplate();
             constraintViolationMessages.append(message);

@@ -1,7 +1,4 @@
-package com.utn.ProgIII.model.ProductSupplier.dto;
-
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+package com.utn.ProgIII.dto;
 
 import java.math.BigDecimal;
 
