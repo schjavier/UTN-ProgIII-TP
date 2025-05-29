@@ -9,7 +9,7 @@ public interface ProductService {
 
     ProductDTO getProductById(Long id);
     List <ProductDTO>  getAllProduct ();
-    List <ProductDTO> getAllProductByStatus (ProductStatus status);
+    List <ProductDTO> getAllProductByStatus (String status);
     List <ProductDTO> getProductByName(String name);
     ProductDTO createProductDto (ProductDTO prductoDto);
     ProductDTO updateProduct (Long id, ProductDTO productDto);

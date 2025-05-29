@@ -84,4 +84,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleProductSupplierNotExistException(ProductSupplierNotExistException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<String> productNotFoundException(ProductNotFoundException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidProductStatusException.class)
+    public ResponseEntity<String> invalidProductStatusException (InvalidProductStatusException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                         .body(ex.getMessage());
+    }
 }

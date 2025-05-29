@@ -1,7 +1,6 @@
-package com.utn.ProgIII.productSupplierTest;
+package com.utn.ProgIII.mapper;
 
 
-import com.utn.ProgIII.mapper.ProductSupplierMapper;
 import com.utn.ProgIII.model.Address.Address;
 import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.Product.ProductStatus;

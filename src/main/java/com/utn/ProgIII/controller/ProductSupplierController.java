@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/productSupplier")
 @Tag(name = "Productos y Proveedores", description = "Operaciones relacionadas con productos y proveedores")
+
 public class ProductSupplierController {
 
     private final ProductSupplierService productSupplierService;
@@ -28,6 +29,7 @@ public class ProductSupplierController {
     @Operation(summary = "Crea un ProductSupplier", description = "Crea una relacion entre un proveedor y producto")
     @ApiResponse(responseCode = "200", description = "Creado")
     @ApiResponse(responseCode = "400", description = "Datos malformados")
+
     public ResponseEntity<ResponseProductSupplierDTO> createProductSupplier(@Valid @RequestBody
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Relacion entre provedor y producto para crear")
                                                                                 CreateProductSupplierDTO request
@@ -56,6 +58,7 @@ public class ProductSupplierController {
     @Operation(summary = "Busca todos los productos de un provedor segun su nombre", description = "Busca todos los productos de un provedor segun su nombre")
     @ApiResponse(responseCode = "200",description = "Lista devuelta")
     @ApiResponse(responseCode = "400",description = "Provedor inexistente")
+
     @GetMapping("/filter/{companyName}")
     public ResponseEntity<SupplierProductListDTO> listAllProductsBySupplier(@PathVariable String companyName){
 

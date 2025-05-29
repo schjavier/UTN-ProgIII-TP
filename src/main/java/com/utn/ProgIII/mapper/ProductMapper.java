@@ -6,8 +6,6 @@ import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.Product.ProductStatus;
 import org.springframework.stereotype.Component;
 
-import static java.util.prefs.Preferences.MAX_NAME_LENGTH;
-
 @Component
 public class ProductMapper {
 
