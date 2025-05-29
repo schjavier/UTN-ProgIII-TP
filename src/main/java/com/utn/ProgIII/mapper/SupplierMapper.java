@@ -4,6 +4,7 @@ import com.utn.ProgIII.dto.AddSupplierDTO;
 import com.utn.ProgIII.dto.ViewAddressDTO;
 import com.utn.ProgIII.dto.ViewSupplierDTO;
 import com.utn.ProgIII.exceptions.InvalidRequestException;
+import com.utn.ProgIII.exceptions.NullAddressException;
 import com.utn.ProgIII.model.Address.Address;
 import com.utn.ProgIII.model.Supplier.Supplier;
 import org.springframework.stereotype.Component;
@@ -48,7 +49,7 @@ public class SupplierMapper {
 
         if(supplierDTO.address() == null)
         {
-            throw new InvalidRequestException("La direccion esta faltante.");
+            throw new NullAddressException("La direccion esta faltante.");
         }
 
         sup.setCompanyName(supplierDTO.companyName());
@@ -84,7 +85,7 @@ public class SupplierMapper {
 
         if(supplierDTO.address() == null)
         {
-            throw new InvalidRequestException("La direccion esta faltante.");
+            throw new NullAddressException("La direccion esta faltante.");
         }
 
         address.setIdAddress(supplierDTO.address().idaddress());

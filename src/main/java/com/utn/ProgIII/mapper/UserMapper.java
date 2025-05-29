@@ -3,6 +3,7 @@ package com.utn.ProgIII.mapper;
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
 import com.utn.ProgIII.exceptions.InvalidRequestException;
+import com.utn.ProgIII.exceptions.NullCredentialsException;
 import com.utn.ProgIII.model.Credential.Credential;
 import com.utn.ProgIII.model.Credential.Role;
 import com.utn.ProgIII.model.User.User;
@@ -45,7 +46,7 @@ public class UserMapper {
         result.setStatus(UserStatus.valueOf(dto.status().toUpperCase()));
 
         if (dto.credential() == null) {
-            throw new InvalidRequestException("El usuario debe tener credenciales");
+            throw new NullCredentialsException("El usuario debe tener credenciales");
         }
 
         Credential credential = new Credential();

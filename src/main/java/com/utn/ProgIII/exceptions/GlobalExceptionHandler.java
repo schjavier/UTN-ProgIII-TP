@@ -66,6 +66,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    @ExceptionHandler({NullAddressException.class})
+    public ResponseEntity<Object> nullAddressException(NullAddressException ex)
+    {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler({NullCredentialsException.class})
+    public ResponseEntity<Object> nullCredentialsException(NullCredentialsException ex)
+    {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
     private String getViolatedConstraints(ConstraintViolationException ex) {
         List<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations().stream().toList();
         StringBuilder constraintViolationMessages = new StringBuilder("Restricciones vulneradas: \n");
