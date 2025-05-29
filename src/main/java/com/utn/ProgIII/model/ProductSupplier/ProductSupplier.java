@@ -40,17 +40,12 @@ public class ProductSupplier {
 
     private BigDecimal price;
 
-    public BigDecimal calculatePrice(){
-        return this.cost.multiply(this.profitMargin);
-    }
-
-
     public ProductSupplier(Supplier supplier, Product product, BigDecimal cost, BigDecimal profitMargin){
         this.supplier = supplier;
         this.product = product;
         this.cost = cost;
         this.profitMargin = profitMargin;
-        this.price = calculatePrice();
+        this.price = cost.multiply(profitMargin);
     }
 
 }

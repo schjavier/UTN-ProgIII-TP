@@ -1,6 +1,5 @@
 package com.utn.ProgIII.service.implementations;
 
-import com.utn.ProgIII.exceptions.DuplicateRelationshipException;
 import com.utn.ProgIII.exceptions.ProductNotFoundException;
 import com.utn.ProgIII.exceptions.ProductSupplierNotExistException;
 import com.utn.ProgIII.exceptions.SupplierNotFoundException;
@@ -13,6 +12,7 @@ import com.utn.ProgIII.repository.ProductRepository;
 import com.utn.ProgIII.repository.ProductSupplierRepository;
 import com.utn.ProgIII.repository.SupplierRepository;
 import com.utn.ProgIII.service.interfaces.ProductSupplierService;
+import com.utn.ProgIII.validations.ProductSupplierValidations;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,15 +24,19 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     private final ProductRepository productRepository;
     private final SupplierRepository supplierRepository;
     private final ProductSupplierMapper mapper;
+    private final ProductSupplierValidations productSupplierValidations;
 
     public ProductSupplierServiceImpl(ProductSupplierRepository productSupplierRepository,
                                       ProductRepository productRepository,
                                       SupplierRepository supplierRepository,
-                                      ProductSupplierMapper mapper){
+                                      ProductSupplierMapper mapper,
+                                      ProductSupplierValidations productSupplierValidations){
+
         this.productSupplierRepository = productSupplierRepository;
         this.productRepository = productRepository;
         this.supplierRepository = supplierRepository;
         this.mapper = mapper;
+        this.productSupplierValidations = productSupplierValidations;
     }
 
 
@@ -52,7 +56,7 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
                 createProductSupplierDTO.profitMargin()
         );
 
-        validateRelationship(productSupplier);
+        productSupplierValidations.validateRelationship(productSupplier);
 
         productSupplierRepository.save(productSupplier);
 
@@ -67,7 +71,7 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
 
         productSupplier.setCost(updateProductSupplierDTO.cost());
         productSupplier.setProfitMargin(updateProductSupplierDTO.profitMargin());
-        productSupplier.calculatePrice();
+
 
         productSupplierRepository.save(productSupplier);
 
@@ -88,14 +92,6 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
                 extendedProductDTOList
         );
 
-    }
-
-
-//    Esto iría en la carpeta de validation que todavía no está en la rama develop, pero cuando este, refactorizamos!
-    public void validateRelationship(ProductSupplier productSupplier){
-        if (productSupplierRepository.existsByProductAndSupplier(productSupplier.getProduct(),productSupplier.getSupplier())){
-            throw new DuplicateRelationshipException("La relación del proveedor con el producto ya se encuentra registrada");
-        }
     }
 
 }
