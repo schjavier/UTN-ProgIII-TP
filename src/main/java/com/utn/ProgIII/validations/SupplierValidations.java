@@ -12,6 +12,18 @@ public class SupplierValidations {
         this.supplierRepository = supplierRepository;
     }
 
+    public void validateCompanyNameNotExists(String companyName) {
+        if(supplierRepository.existsByCompanyName(companyName)) {
+            throw new DuplicateEntityException("El proveedor con ese nombre ya existe en la base de datos");
+        }
+    }
+
+    public void validateModifiedCompanyNameNotExists(String currentCompanyName, String newCompanyName) {
+        if(supplierRepository.existsByCompanyName(newCompanyName) && !newCompanyName.equals(currentCompanyName)) {
+            throw new DuplicateEntityException("El proveedor con ese nombre ya existe en la base de datos");
+        }
+    }
+
     public void validateSupplierByCuit(String cuit) {
         if(supplierRepository.existsByCuit(cuit)) {
             throw new DuplicateEntityException("El CUIT ingresado ya se encuentra registrado");
