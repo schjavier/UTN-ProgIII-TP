@@ -1,9 +1,9 @@
 package com.utn.ProgIII.service.interfaces;
 
-import com.utn.ProgIII.model.ProductSupplier.dto.CreateProductSupplierDTO;
-import com.utn.ProgIII.model.ProductSupplier.dto.ResponseProductSupplierDTO;
-import com.utn.ProgIII.model.ProductSupplier.dto.SupplierProductListDTO;
-import com.utn.ProgIII.model.ProductSupplier.dto.UpdateProductSupplierDTO;
+import com.utn.ProgIII.dto.CreateProductSupplierDTO;
+import com.utn.ProgIII.dto.ResponseProductSupplierDTO;
+import com.utn.ProgIII.dto.SupplierProductListDTO;
+import com.utn.ProgIII.dto.UpdateProductSupplierDTO;
 
 public interface ProductSupplierService {
 

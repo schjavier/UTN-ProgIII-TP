@@ -4,6 +4,8 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -61,11 +63,24 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({InvalidRequestException.class})
     public ResponseEntity<Object> invalidRequestException(InvalidRequestException ex)
     {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
+    @ExceptionHandler({NullAddressException.class})
+    public ResponseEntity<Object> nullAddressException(NullAddressException ex)
+    {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler({NullCredentialsException.class})
+    public ResponseEntity<Object> nullCredentialsException(NullCredentialsException ex)
+    {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
     private String getViolatedConstraints(ConstraintViolationException ex) {
         List<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations().stream().toList();
-        StringBuilder constraintViolationMessages = new StringBuilder("Restricciones violadas: \n");
+        StringBuilder constraintViolationMessages = new StringBuilder("Restricciones vulneradas: \n");
         for (ConstraintViolation<?> constraintViolation: constraintViolations) {
             String message = constraintViolation.getMessageTemplate();
             constraintViolationMessages.append(message);
@@ -83,5 +98,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProductSupplierNotExistException.class)
     public ResponseEntity<String> handleProductSupplierNotExistException(ProductSupplierNotExistException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<String> productNotFoundException(ProductNotFoundException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidProductStatusException.class)
+    public ResponseEntity<String> invalidProductStatusException (InvalidProductStatusException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                         .body(ex.getMessage());
     }
 }

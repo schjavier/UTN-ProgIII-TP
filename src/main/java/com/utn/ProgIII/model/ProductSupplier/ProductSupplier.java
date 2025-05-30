@@ -7,6 +7,7 @@ import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.Supplier.Supplier;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NegativeOrZero;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
@@ -38,8 +39,11 @@ public class ProductSupplier {
     @ToString.Exclude
     private Product product;
 
+    @NotNull(message = "El costo no puede estas vacío")
+    @Positive(message = "El costo no puede ser negativo")
     private BigDecimal cost;
 
+    @NotNull(message = "El margen de ganancia no puede estar vacio")
     @PositiveOrZero(message = "El margen de ganancias tiene que ser mayor a cero")
     private BigDecimal profitMargin;
 

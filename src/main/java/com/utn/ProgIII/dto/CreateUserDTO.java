@@ -8,15 +8,15 @@ import lombok.Builder;
  * Formato que adquieren los datos recibidos desde una request previo a ser enviados al mapper
  */
 @Builder
-public record CreateUserDTO(@NotBlank String firstname,
+public record CreateUserDTO(String firstname,
 
-                            @NotBlank String lastname,
+                            String lastname,
 
-                            @NotBlank String dni,
+                            String dni,
 
                             String status,
 
-                            @NotBlank CreateCredentialDTO credential) {
+                            CreateCredentialDTO credential) {
         public CreateUserDTO {
                 if (status == null) {
                         status = "ENABLED";

@@ -5,11 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 
 @Builder
-public record CreateCredentialDTO(@NotBlank String username,
+public record CreateCredentialDTO(String username,
 
-                                  @NotBlank String password,
+                                  String password,
 
-                                  @NotBlank String role) {
+                                  String role) {
         public CreateCredentialDTO {
                 if (role == null) {
                         role = "EMPLOYEE";

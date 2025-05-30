@@ -34,6 +34,7 @@ public class ProductController {
     @ApiResponse(responseCode = "201", description = "Producto creado")
     @ApiResponse(responseCode = "404",description = "Provedor no encontrado")
     @ApiResponse(responseCode = "400",description = "Error en datos introducidos")
+
     public ResponseEntity<ProductDTO> addProduct (
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "El producto para crear")
             @RequestBody ProductDTO productDTO
@@ -60,6 +61,7 @@ public class ProductController {
     @GetMapping()
     @Operation(summary = "Devuelve todos los productos", description = "Devuelve todos los productos")
     @ApiResponse(responseCode = "200", description = "Lista devuelta correctamente")
+
     public ResponseEntity<List<ProductDTO>> getAllProduct (){
         List <ProductDTO> response = productService.getAllProduct();
 
@@ -70,7 +72,8 @@ public class ProductController {
     @GetMapping("/search/status/{status}")
     @ApiResponse(responseCode = "200", description = "Lista de productos segun estado devuelto correctamente")
     @Operation(summary = "Se muestra una lista de productos por su status", description = "Se muestra una lista segun su status")
-    public ResponseEntity<List<ProductDTO>> getAllProductByStatus(@PathVariable ProductStatus status){
+
+    public ResponseEntity<List<ProductDTO>> getAllProductByStatus(@PathVariable String status){
 
         List <ProductDTO> response = productService.getAllProductByStatus(status);
 
@@ -93,6 +96,7 @@ public class ProductController {
     @Operation(summary = "Se actualiza los datos de un producto")
     @ApiResponse(responseCode = "200",description = "Actualizacion completa")
     @ApiResponse(responseCode = "400",description = "Datos malcolocados")
+
     public ProductDTO update (@PathVariable Long id, @RequestBody ProductDTO modifyProductDTO){
 
        return productService.updateProduct(id,modifyProductDTO);

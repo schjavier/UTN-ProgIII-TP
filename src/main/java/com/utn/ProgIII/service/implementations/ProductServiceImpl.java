@@ -2,6 +2,7 @@ package com.utn.ProgIII.service.implementations;
 
 import com.utn.ProgIII.dto.ProductDTO;
 
+import com.utn.ProgIII.exceptions.InvalidProductStatusException;
 import com.utn.ProgIII.exceptions.ProductNotFoundException;
 import com.utn.ProgIII.mapper.ProductMapper;
 import com.utn.ProgIII.model.Product.Product;
@@ -49,15 +50,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> getAllProductByStatus(ProductStatus status) {
+    public List<ProductDTO> getAllProductByStatus(String status) {
 
-        List<Product> products = productRepository.findByStatus(status);
-        List<ProductDTO> productDTOList = new ArrayList<>();
+        try {
+            ProductStatus value = ProductStatus.valueOf(status.toUpperCase());
 
-        for (Product product : products){
-            productDTOList.add(productMapper.toProductDTO(product));
+            List<Product> products = productRepository.findByStatus(value);
+            List<ProductDTO> productDTOList = new ArrayList<>();
+
+            for (Product product : products){
+                productDTOList.add(productMapper.toProductDTO(product));
+            }
+            return productDTOList;
+
+        } catch (IllegalArgumentException e){
+            throw new InvalidProductStatusException("El estado ingresado es invalido");
         }
-        return productDTOList;
     }
 
     @Override

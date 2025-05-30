@@ -3,6 +3,7 @@ package com.utn.ProgIII.model.User;
 import com.utn.ProgIII.model.Credential.Credential;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -43,6 +44,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
+    @NotNull(message = "El usuario debe tener credenciales")
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_credential")
     private Credential credential;
