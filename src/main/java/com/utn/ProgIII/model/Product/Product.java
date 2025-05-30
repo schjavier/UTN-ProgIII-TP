@@ -1,14 +1,10 @@
 package com.utn.ProgIII.model.Product;
 
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.utn.ProgIII.model.ProductSupplier.ProductSupplier;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -25,7 +21,7 @@ public class Product {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long idProduct;
 
-    @NotBlank(message = "El nombre es obligatorio")
+    @NotBlank(message = "El nombre del producto no puede estar vacio")
     @Size(min = 3, max = 50, message = "El nombre del producto debe contener entre 3 y 50 caracteres")
     private String name;
 

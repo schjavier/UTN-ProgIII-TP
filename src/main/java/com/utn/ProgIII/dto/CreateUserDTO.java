@@ -1,7 +1,5 @@
 package com.utn.ProgIII.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 
 /**
@@ -9,13 +7,9 @@ import lombok.Builder;
  */
 @Builder
 public record CreateUserDTO(String firstname,
-
                             String lastname,
-
                             String dni,
-
                             String status,
-
                             CreateCredentialDTO credential) {
         public CreateUserDTO {
                 if (status == null) {
