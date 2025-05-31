@@ -9,10 +9,6 @@ public interface ProductSupplierService {
 
     ResponseProductSupplierDTO createProductSupplier(CreateProductSupplierDTO createProductSupplierDTO);
     ResponseProductSupplierDTO updateProductSupplier(UpdateProductSupplierDTO updateProductSupplierDTO, Long id);
-
     SupplierProductListDTO listProductsBySupplier(String companyName);
     String uploadCsv(String filepath, Long idSupplier);
-
-
-
 }

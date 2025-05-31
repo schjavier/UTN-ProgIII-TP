@@ -55,8 +55,7 @@ public class CsvReader {
         List<ProductInfoFromCsvDTO> failedUploads = new ArrayList<>();
 
         try {
-            // ultra provisorio, mas adelante supongo que debera tomar un InputStream?
-            uploads = readFile("src/main/resources/productos.csv").stream().toList();
+            uploads = readFile(csvFilePath).stream().toList();
 
             Supplier supplierData = supplierRepository.getReferenceById(supplierId);
 
@@ -75,7 +74,7 @@ public class CsvReader {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error provisorio: " + e.getMessage());
+            System.out.println("Error procesando el archivo: " + e.getMessage());
         }
 
         for(ProductInfoFromCsvDTO failedProductsInfo: failedUploads) {
