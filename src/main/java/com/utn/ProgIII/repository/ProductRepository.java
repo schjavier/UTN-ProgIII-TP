@@ -13,4 +13,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     //Busca por contener todo o parte del string
     List<Product> findByNameContaining (String name);
+
+    boolean existsByName(String name);
+
+    Product getByName(String name);
 }

@@ -67,5 +67,16 @@ public class ProductSupplierController {
 
     }
 
+    @Operation(summary = "Actualiza los precios de los productos de un proveedor masivamente",
+            description = "Actualiza los precios de los productos de un proveedor por medio de una lista en formato .csv, " +
+                    "pero solamente si la relacion entre el producto y el proveedor ya existen. Finalmente devuelve una lista con aquellos " +
+                    "productos que no pudieron ser cargados")
+    @ApiResponse(responseCode = "200",description = "Actualizacion realizada, devuelve listado con aquellos productos que no pudieron ser cargados")
+    @PostMapping("/update") // se les ocurre algo mejor para el nombre del endpoint?
+    public ResponseEntity<String> updateWithFile(@RequestParam Long idSupplier) {
+            String response = productSupplierService.uploadCsv("bla", idSupplier); // obviamente esto va a leer un archivo
+            return ResponseEntity.ok(response);
+    }
+
 
 }

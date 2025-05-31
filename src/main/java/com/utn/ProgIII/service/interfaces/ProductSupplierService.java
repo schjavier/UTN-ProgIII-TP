@@ -11,6 +11,7 @@ public interface ProductSupplierService {
     ResponseProductSupplierDTO updateProductSupplier(UpdateProductSupplierDTO updateProductSupplierDTO, Long id);
 
     SupplierProductListDTO listProductsBySupplier(String companyName);
+    String uploadCsv(String filepath, Long idSupplier);
 
 
 

@@ -1,5 +1,6 @@
 package com.utn.ProgIII.service.implementations;
 
+import com.utn.ProgIII.csv.CsvReader;
 import com.utn.ProgIII.dto.*;
 import com.utn.ProgIII.exceptions.ProductNotFoundException;
 import com.utn.ProgIII.exceptions.ProductSupplierNotExistException;
@@ -27,18 +28,21 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     private final SupplierRepository supplierRepository;
     private final ProductSupplierMapper mapper;
     private final ProductSupplierValidations productSupplierValidations;
+    private final CsvReader csvReader;
 
     public ProductSupplierServiceImpl(ProductSupplierRepository productSupplierRepository,
                                       ProductRepository productRepository,
                                       SupplierRepository supplierRepository,
                                       ProductSupplierMapper mapper,
-                                      ProductSupplierValidations productSupplierValidations){
+                                      ProductSupplierValidations productSupplierValidations,
+                                      CsvReader csvReader){
 
         this.productSupplierRepository = productSupplierRepository;
         this.productRepository = productRepository;
         this.supplierRepository = supplierRepository;
         this.mapper = mapper;
         this.productSupplierValidations = productSupplierValidations;
+        this.csvReader = csvReader;
     }
 
 
@@ -97,6 +101,11 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
                 extendedProductDTOList
         );
 
+    }
+
+    @Override
+    public String uploadCsv(String filepath, Long idSupplier) {
+        return csvReader.uploadToDatabase(filepath,idSupplier);
     }
 
 }
