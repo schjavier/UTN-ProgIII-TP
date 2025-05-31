@@ -19,4 +19,6 @@ public interface ProductSupplierRepository extends JpaRepository<ProductSupplier
     List<ExtendedProductDTO> productsBySupplier(@Param("idSupplier") Long idSupplier);
 
     boolean existsByProductAndSupplier(Product product, Supplier supplier);
+
+    ProductSupplier getByProductAndSupplier(Product product, Supplier supplier);
 }

@@ -18,6 +18,7 @@ import java.math.RoundingMode;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 
 public class ProductSupplier {
 
