@@ -6,6 +6,9 @@ import com.utn.ProgIII.dto.SupplierProductListDTO;
 import com.utn.ProgIII.dto.UpdateProductSupplierDTO;
 import com.utn.ProgIII.service.interfaces.ProductSupplierService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -28,7 +31,10 @@ public class ProductSupplierController {
     @PostMapping
     @Operation(summary = "Crea un ProductSupplier", description = "Crea una relacion entre un proveedor y producto")
     @ApiResponse(responseCode = "200", description = "Creado")
-    @ApiResponse(responseCode = "400", description = "Datos malformados")
+    @ApiResponse(responseCode = "404", description = "Datos malformados", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(description = "Un mensaje que tiene un error de usuario")
+    ))
 
     public ResponseEntity<ResponseProductSupplierDTO> createProductSupplier(@Valid @RequestBody
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Relacion entre provedor y producto para crear")
@@ -43,7 +49,11 @@ public class ProductSupplierController {
 
     @PatchMapping("/{id}")
     @ApiResponse(responseCode = "200",description = "Datos modificados")
-    @ApiResponse(responseCode = "400",description = "Datos malformados")
+    //@ApiResponse(responseCode = "400",description = "Datos malformados") esto no se lanza?
+    @ApiResponse(responseCode = "404",description = "Relacion no encontrada", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "La relación que quiere editar no se encuentra")
+    ))
     @Operation(summary = "Modifica los datos de una relacion", description = "Modifica el precio y el profit margin de una relacion")
     public ResponseEntity<ResponseProductSupplierDTO> modifyProductSupplier(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Relacion para modificar los precios y el profit margin")
@@ -56,9 +66,14 @@ public class ProductSupplierController {
     }
 
     @Operation(summary = "Busca todos los productos de un provedor segun su nombre", description = "Busca todos los productos de un provedor segun su nombre")
-    @ApiResponse(responseCode = "200",description = "Lista devuelta")
-    @ApiResponse(responseCode = "400",description = "Provedor inexistente")
-
+    @ApiResponse(responseCode = "200",description = "Lista devuelta", content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = SupplierProductListDTO.class))
+    ))
+    @ApiResponse(responseCode = "404",description = "Provedor inexistente", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "El proveedor no existe")
+    ))
     @GetMapping("/filter/{companyName}")
     public ResponseEntity<SupplierProductListDTO> listAllProductsBySupplier(@PathVariable String companyName){
 
