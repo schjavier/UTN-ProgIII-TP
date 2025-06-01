@@ -32,7 +32,7 @@ public class ProductController {
     @PostMapping
     @Operation(summary = "Se agrega un producto", description = "Se agrega un producto con los datos del usuario")
     @ApiResponse(responseCode = "201", description = "Producto creado")
-    @ApiResponse(responseCode = "404",description = "Provedor no encontrado")
+    @ApiResponse(responseCode = "404",description = "Proveedor no encontrado")
     @ApiResponse(responseCode = "400",description = "Error en datos introducidos")
 
     public ResponseEntity<ProductDTO> addProduct (

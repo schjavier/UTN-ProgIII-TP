@@ -37,7 +37,7 @@ public class ProductSupplierController {
     ))
 
     public ResponseEntity<ResponseProductSupplierDTO> createProductSupplier(@Valid @RequestBody
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Relacion entre provedor y producto para crear")
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Relacion entre proveedor y producto para crear")
                                                                                 CreateProductSupplierDTO request
     ){
 
@@ -65,12 +65,12 @@ public class ProductSupplierController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @Operation(summary = "Busca todos los productos de un provedor segun su nombre", description = "Busca todos los productos de un provedor segun su nombre")
+    @Operation(summary = "Busca todos los productos de un proveedor segun su nombre", description = "Busca todos los productos de un proveedor segun su nombre")
     @ApiResponse(responseCode = "200",description = "Lista devuelta", content = @Content(
             mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = SupplierProductListDTO.class))
     ))
-    @ApiResponse(responseCode = "404",description = "Provedor inexistente", content = @Content(
+    @ApiResponse(responseCode = "404",description = "Proveedor inexistente", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "El proveedor no existe")
     ))
