@@ -33,4 +33,6 @@ public class Credential {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+
 }
