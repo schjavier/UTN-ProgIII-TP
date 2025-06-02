@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/productSupplier")
-@Tag(name = "Productos y Proveedores", description = "Operaciones relacionadas con productos y proveedores")
+@Tag(name = "Productos y Proveedores", description = "Operaciones relacionadas con la relación de productos y proveedores")
 
 public class ProductSupplierController {
 

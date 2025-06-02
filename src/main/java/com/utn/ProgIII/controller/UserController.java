@@ -58,7 +58,7 @@ public class UserController {
      */
     @Operation(summary = "Obtener una lista de usuarios segun su status", description = "Retorna una lista de usuarios por estado")
     @ApiResponse(responseCode = "200",description = "Usuarios encontrados",content = @Content(
-            mediaType = "text/plain;charset=UTF-8",
+            mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = UserWithCredentialDTO.class))
     ))
     @ApiResponse(responseCode = "400",description = "Pedido malformado", content = @Content())
