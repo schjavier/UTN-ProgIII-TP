@@ -108,4 +108,9 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         return csvReader.uploadToDatabase(filepath,idSupplier);
     }
 
+    @Override
+    public String uploadCsv(String filepath, Long idSupplier, BigDecimal bulkProfitMargin) {
+        return csvReader.uploadToDatabase(filepath,idSupplier,bulkProfitMargin);
+    }
+
 }

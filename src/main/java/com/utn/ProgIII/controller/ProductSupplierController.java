@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
@@ -91,6 +92,32 @@ public class ProductSupplierController {
             String tmpdir = Files.createTempDirectory("tmpDirPrefix").toFile().getAbsolutePath();
             file.transferTo(new File(tmpdir + "\\" + filename));
             response = productSupplierService.uploadCsv(tmpdir + "\\" + filename, idSupplier);
+        } catch (IOException e) {
+            System.out.println("Error subiendo el archivo: " + e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Actualiza los precios de los productos de un proveedor masivamente y vincula productos sin relacion existente",
+            description = "Actualiza los precios de los productos de un proveedor por medio de una lista en formato .csv, " +
+                    "y carga nuevas entradas con un porcentaje de ganancia definido si aún no están relacionados. Finalmente devuelve una lista con aquellos " +
+                    "productos que no pudieron ser cargados")
+    @ApiResponse(responseCode = "200",description = "Actualizacion realizada, devuelve listado con aquellos productos que no pudieron ser cargados")
+    @ApiResponse(responseCode = "500",description = "El servidor no pudo procesar el archivo")
+    @PostMapping(path = "/uploadNonRelatedProducts", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<String> updateWithFileAndProfitMargin(@RequestParam("file") MultipartFile file,
+                                                                @RequestParam Long idSupplier,
+                                                                @RequestParam BigDecimal bulkProfitMargin) {
+        String filename = file.getOriginalFilename();
+        String response;
+        if (bulkProfitMargin == null) bulkProfitMargin = BigDecimal.valueOf(0);
+
+        try {
+            String tmpdir = Files.createTempDirectory("tmpDirPrefix").toFile().getAbsolutePath();
+            file.transferTo(new File(tmpdir + "\\" + filename));
+            response = productSupplierService.uploadCsv(tmpdir + "\\" + filename, idSupplier, bulkProfitMargin);
         } catch (IOException e) {
             System.out.println("Error subiendo el archivo: " + e.getMessage());
             return ResponseEntity.internalServerError().build();

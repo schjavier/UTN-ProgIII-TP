@@ -83,4 +83,54 @@ public class CsvReader {
 
         return message.toString();
     }
+
+    public String uploadToDatabase(String csvFilePath, Long supplierId, BigDecimal bulkProfitMargin) {
+        StringBuilder message = new StringBuilder("Productos no subidos: \n");
+        List<ProductInfoFromCsvDTO> uploads;
+        List<ProductInfoFromCsvDTO> failedUploads = new ArrayList<>();
+
+        try {
+            uploads = readFile(csvFilePath).stream().toList();
+
+            Supplier supplierData = supplierRepository.getReferenceById(supplierId);
+
+            for (ProductInfoFromCsvDTO productUpdateInfo: uploads) {
+                if (productRepository.existsByName(productUpdateInfo.name())) {
+                    Product productData = productRepository.getByName(productUpdateInfo.name());
+                    ProductSupplier relationship;
+
+                    if (productSupplierRepository.existsByProductAndSupplier(productData,supplierData)) {
+                        relationship = productSupplierRepository.getByProductAndSupplier(productData,supplierData);
+                    } else {
+                        relationship = new ProductSupplier();
+                        relationship.setProduct(productData);
+                        relationship.setSupplier(supplierData);
+                        relationship.setProfitMargin(bulkProfitMargin);
+                    }
+
+                    relationship = updateRelationshipPricing(productUpdateInfo,relationship);
+
+                    productSupplierRepository.save(relationship);
+                } else {
+                    failedUploads.add(productUpdateInfo);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error procesando el archivo: " + e.getMessage());
+        }
+
+        failedUploads.forEach(failedUpload -> message.append(failedUpload.name()).append("\n"));
+
+        return message.toString();
+    }
+
+    public ProductSupplier updateRelationshipPricing(ProductInfoFromCsvDTO productUpdateInfo, ProductSupplier relationship) {
+        relationship.setCost(productUpdateInfo.cost());
+        relationship.setPrice(relationship.getCost()
+                .add(relationship.getCost()
+                        .multiply(relationship.getProfitMargin())
+                        .divide(BigDecimal.valueOf(100), RoundingMode.CEILING)));
+
+        return relationship;
+    }
 }
