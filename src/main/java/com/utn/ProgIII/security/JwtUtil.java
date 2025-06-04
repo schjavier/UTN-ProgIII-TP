@@ -1,11 +1,10 @@
 package com.utn.ProgIII.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,6 +15,8 @@ import org.springframework.web.util.WebUtils;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 
@@ -25,19 +26,20 @@ public class JwtUtil {
     @Value("${jwt.token.secret}")
     private String secret;
     @Value("${jwt.token.expires}")
-    private long EXPIRATION_TIME;
-
+    private long expirationTime;
 
     public String generateToken(UserDetails userDetails) {
+
+        long currentMillis = System.currentTimeMillis();
+        long expirationMillis = currentMillis + expirationTime;
 
         return Jwts.builder()
                 .subject(userDetails.getUsername())
                 .claim("roles", userDetails.getAuthorities())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .expiration(new Date(expirationMillis))
                 .signWith(getSignInKey())
                 .compact();
-
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
@@ -45,7 +47,6 @@ public class JwtUtil {
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
 
     }
-
 
     private SecretKey getSignInKey() {
         byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
@@ -57,16 +58,20 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(getSignInKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
 
+            return Jwts.parser()
+                    .clockSkewSeconds(30)
+                    .verifyWith(getSignInKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
     }
 
     private boolean isTokenExpired(String token){
-        return extractAllClaims(token).getExpiration().before(new Date());
+       Date expiration = extractAllClaims(token).getExpiration();
+       Date now = new Date();
+
+       return expiration.before(now);
     }
 
 }

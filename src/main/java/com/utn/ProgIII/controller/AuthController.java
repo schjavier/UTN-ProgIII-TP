@@ -6,30 +6,34 @@ import com.utn.ProgIII.dto.LoginResponseDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
 import com.utn.ProgIII.service.interfaces.AuthService;
 import com.utn.ProgIII.service.interfaces.UserService;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.event.EventPublicationInterceptor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
+
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/auth")
-public class LoginController {
+public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
 
+    public AuthController(AuthService authService, UserService userService) {
+        this.authService = authService;
+        this.userService = userService;
+    }
+
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> userLogin(@RequestBody LoginRequestDTO loginRequest) {
+
         String token = authService.login(loginRequest);
 
-        return ResponseEntity.status(HttpStatus.OK).body(new LoginResponseDTO(token)) ;
+        return ResponseEntity.ok(new LoginResponseDTO(token));
 
     }
 

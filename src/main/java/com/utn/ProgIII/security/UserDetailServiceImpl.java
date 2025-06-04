@@ -1,5 +1,6 @@
 package com.utn.ProgIII.security;
 
+import com.utn.ProgIII.exceptions.CredentialNotFoundException;
 import com.utn.ProgIII.model.Credential.Credential;
 import com.utn.ProgIII.repository.CredentialRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,15 +15,19 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class UserDetailServiceImpl implements UserDetailsService {
 
-    private CredentialRepository credentialRepository;
+    private final CredentialRepository credentialRepository;
+
+    public UserDetailServiceImpl(CredentialRepository credentialRepository){
+        this.credentialRepository = credentialRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
         Credential credential = credentialRepository.findByUsername(username).orElseThrow(
-                () -> new UsernameNotFoundException("El usuario no existe")
+                () -> new CredentialNotFoundException("El usuario no se encuentra en el Sistema")
         );
 
         GrantedAuthority authorities = new SimpleGrantedAuthority(credential.getRole().name());

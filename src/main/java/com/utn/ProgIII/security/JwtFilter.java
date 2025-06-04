@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Component
-
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
@@ -66,7 +65,6 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
 
     }
-
 
 }
 
