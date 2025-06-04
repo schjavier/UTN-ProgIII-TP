@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.utn.ProgIII.dto.ProductInfoFromCsvDTO;
 import com.utn.ProgIII.model.Product.Product;
+import com.utn.ProgIII.model.Product.ProductStatus;
 import com.utn.ProgIII.model.ProductSupplier.ProductSupplier;
 import com.utn.ProgIII.model.Supplier.Supplier;
 import com.utn.ProgIII.repository.ProductRepository;
@@ -56,60 +57,13 @@ public class CsvReader {
 
         try {
             uploads = readFile(csvFilePath).stream().toList();
-
             Supplier supplierData = supplierRepository.getReferenceById(supplierId);
 
             for (ProductInfoFromCsvDTO productUpdateInfo: uploads) {
-                if (productRepository.existsByName(productUpdateInfo.name())) {
-                    Product productData = productRepository.getByName(productUpdateInfo.name());
+                Product productData = productRepository.getByName(productUpdateInfo.name());
+                if (productData != null && productData.getStatus().equals(ProductStatus.ENABLED)) {
                     ProductSupplier relationship = productSupplierRepository.getByProductAndSupplier(productData,supplierData);
-
-                    relationship.setCost(productUpdateInfo.cost());
-                    relationship.setPrice(relationship.getCost().add(relationship.getCost().multiply(relationship.getProfitMargin()).divide(BigDecimal.valueOf(100), RoundingMode.CEILING)));
-
-                    // habria que hacer que solo actualice productos que esten activos, no?
-                    productSupplierRepository.save(relationship);
-                } else {
-                    failedUploads.add(productUpdateInfo);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error procesando el archivo: " + e.getMessage());
-        }
-
-        for(ProductInfoFromCsvDTO failedProductsInfo: failedUploads) {
-            message.append(failedProductsInfo.name()).append("\n");
-        }
-
-        return message.toString();
-    }
-
-    public String uploadToDatabase(String csvFilePath, Long supplierId, BigDecimal bulkProfitMargin) {
-        StringBuilder message = new StringBuilder("Productos no subidos: \n");
-        List<ProductInfoFromCsvDTO> uploads;
-        List<ProductInfoFromCsvDTO> failedUploads = new ArrayList<>();
-
-        try {
-            uploads = readFile(csvFilePath).stream().toList();
-
-            Supplier supplierData = supplierRepository.getReferenceById(supplierId);
-
-            for (ProductInfoFromCsvDTO productUpdateInfo: uploads) {
-                if (productRepository.existsByName(productUpdateInfo.name())) {
-                    Product productData = productRepository.getByName(productUpdateInfo.name());
-                    ProductSupplier relationship;
-
-                    if (productSupplierRepository.existsByProductAndSupplier(productData,supplierData)) {
-                        relationship = productSupplierRepository.getByProductAndSupplier(productData,supplierData);
-                    } else {
-                        relationship = new ProductSupplier();
-                        relationship.setProduct(productData);
-                        relationship.setSupplier(supplierData);
-                        relationship.setProfitMargin(bulkProfitMargin);
-                    }
-
                     relationship = updateRelationshipPricing(productUpdateInfo,relationship);
-
                     productSupplierRepository.save(relationship);
                 } else {
                     failedUploads.add(productUpdateInfo);
@@ -120,7 +74,38 @@ public class CsvReader {
         }
 
         failedUploads.forEach(failedUpload -> message.append(failedUpload.name()).append("\n"));
+        return message.toString();
+    }
 
+    public String uploadToDatabase(String csvFilePath, Long supplierId, BigDecimal bulkProfitMargin) {
+        StringBuilder message = new StringBuilder("Productos no subidos: \n");
+        List<ProductInfoFromCsvDTO> uploads;
+        List<ProductInfoFromCsvDTO> failedUploads = new ArrayList<>();
+
+        try {
+            uploads = readFile(csvFilePath).stream().toList();
+            Supplier supplierData = supplierRepository.getReferenceById(supplierId);
+
+            for (ProductInfoFromCsvDTO productUpdateInfo: uploads) {
+                Product productData = productRepository.getByName(productUpdateInfo.name());
+                ProductSupplier relationship = productSupplierRepository.getByProductAndSupplier(productData,supplierData);
+
+                if (productData != null && productData.getStatus().equals(ProductStatus.ENABLED)) {
+                    if (relationship == null) {
+                        relationship = new ProductSupplier(supplierData,productData,productUpdateInfo.cost(),bulkProfitMargin);
+                    } else {
+                        relationship = updateRelationshipPricing(productUpdateInfo, relationship);
+                    }
+                    productSupplierRepository.save(relationship);
+                } else {
+                    failedUploads.add(productUpdateInfo);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error procesando el archivo: " + e.getMessage());
+        }
+
+        failedUploads.forEach(failedUpload -> message.append(failedUpload.name()).append("\n"));
         return message.toString();
     }
 
