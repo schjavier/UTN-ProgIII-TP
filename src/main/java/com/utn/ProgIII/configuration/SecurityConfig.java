@@ -32,7 +32,25 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests( auth -> auth
+
                         .requestMatchers("/auth/**").permitAll()
+
+                        .requestMatchers("/user/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/product/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/product/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/product/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/product/**").hasAnyRole("ADMIN", "EMPLOYEE")
+
+                        .requestMatchers(HttpMethod.POST, "/productSupplier/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH,  "/productSupplier/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/productSupplier/**").hasAnyRole("ADMIN", "EMPLOYEE")
+
+                        .requestMatchers(HttpMethod.POST, "/supplier/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/supplier/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/supplier/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/supplier/**").hasAnyRole("ADMIN", "EMPLOYEE")
+
                         .anyRequest().authenticated()
                 )
                 .authenticationManager(authenticationManager(userDetailsService, passwordEncoder()))

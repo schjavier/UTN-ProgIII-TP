@@ -9,7 +9,7 @@ import java.util.TimeZone;
 public class ProgIiiApplication {
 
 	public static void main(String[] args) {
-		TimeZone.setDefault(TimeZone.getTimeZone("UTC-0"));
+
 		SpringApplication.run(ProgIiiApplication.class, args);
 
 	}
