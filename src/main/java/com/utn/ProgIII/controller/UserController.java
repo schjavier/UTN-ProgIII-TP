@@ -2,8 +2,12 @@ package com.utn.ProgIII.controller;
 
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
+import com.utn.ProgIII.dto.ViewSupplierDTO;
 import com.utn.ProgIII.service.interfaces.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +38,14 @@ public class UserController {
      * @return Una respuesta en formato json para mostrar los datos del usuario deseado
      */
     @Operation(summary = "Obtener un usuario por id", description = "Obtiene un usuario mediante id")
-    @ApiResponse(responseCode = "200",description = "Usuario encontrado")
-    @ApiResponse(responseCode = "404",description = "Usuario no encontrado")
+    @ApiResponse(responseCode = "200",description = "Usuario encontrado", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(implementation = UserWithCredentialDTO.class)
+    ))
+    @ApiResponse(responseCode = "404",description = "Usuario no encontrado", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "Usuario no encontrado")
+    ))
     @GetMapping()
     public ResponseEntity<UserWithCredentialDTO> getUserById(@RequestParam Long id) {
         UserWithCredentialDTO response = userService.getUserById(id);
@@ -48,8 +58,11 @@ public class UserController {
      * @return Una respuesta en formato json con los datos de los usuarios filtrados por estado
      */
     @Operation(summary = "Obtener una lista de usuarios segun su status", description = "Retorna una lista de usuarios por estado")
-    @ApiResponse(responseCode = "200",description = "Usuarios encontrados")
-    @ApiResponse(responseCode = "400",description = "Pedido malformado")
+    @ApiResponse(responseCode = "200",description = "Usuarios encontrados",content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = UserWithCredentialDTO.class))
+    ))
+    @ApiResponse(responseCode = "400",description = "Pedido malformado", content = @Content())
     @GetMapping("/filter")
     public ResponseEntity<List<UserWithCredentialDTO>> getUsersByStatus(
             @RequestParam(defaultValue = "ENABLED") String status) {
@@ -74,7 +87,14 @@ public class UserController {
      */
     @Operation(summary = "Crea un usuario", description = "Crea un usuario con sus credenciales")
     @ApiResponse(responseCode = "201", description = "Usuario creado")
-    @ApiResponse(responseCode = "400", description = "Error en datos insertados")
+    @ApiResponse(responseCode = "400", description = "Error en datos insertados", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "(Un mensaje de los errores del usuario)")
+    ))
+    @ApiResponse(responseCode = "409", description = "Usuario existente por dni", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(examples = {"El nombre de usuario ya existe en la base de datos", "El dni ingresado ya se encuentra registrado"})
+    ))
     @PostMapping()
 
     public ResponseEntity<UserWithCredentialDTO> createUser(
@@ -94,7 +114,10 @@ public class UserController {
      */
     @Operation(summary = "Actualiza un usuario", description = "Actualiza un usuario con los datos introducidos")
     @ApiResponse(responseCode = "200", description = "Usuario encontrado")
-    @ApiResponse(responseCode = "400",description = "Error en datos insertados")
+    @ApiResponse(responseCode = "400",description = "Error en datos insertados", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(examples = {"El nombre de usuario ya existe en la base de datos", "El dni ingresado ya se encuentra registrado"})
+    ))
     @PutMapping()
     public ResponseEntity<UserWithCredentialDTO> updateUser(@RequestParam Long id,
                                                             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Los datos cambiados del usuario")
@@ -111,8 +134,11 @@ public class UserController {
      * @return Una respuesta sin contenido (HTTP 204) para indicar que no hubo errores
      */
     @Operation(summary = "Elimina (hard) o hace una Baja logica (soft)", description = "Hace una baja logica o una eliminacion del usuario.")
-    @ApiResponse(responseCode = "204", description = "Eliminacion correcta")
-    @ApiResponse(responseCode = "400", description = "Error en datos insertados")
+    @ApiResponse(responseCode = "204", description = "Eliminacion correcta", content = @Content())
+    @ApiResponse(responseCode = "400", description = "Error en datos insertados", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "Usuario no encontrado")
+    ))
     @DeleteMapping()
     public ResponseEntity<?> delete(
             @RequestParam Long id,

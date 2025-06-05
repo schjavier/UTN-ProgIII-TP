@@ -7,6 +7,7 @@ import com.utn.ProgIII.exceptions.SupplierNotFoundException;
 import com.utn.ProgIII.service.implementations.SupplierServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -37,8 +38,24 @@ public class SupplierController {
      */
     @Operation(summary = "Agregar un proveedor", description = "Agrega un proveedor")
     @PostMapping
-    @ApiResponse(responseCode = "201", description = "Proveedor creado")
-    @ApiResponse(responseCode = "400", description = "Error en datos introducidos")
+    @ApiResponse(responseCode = "201", description = "Proveedor creado", content = {
+            @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ViewSupplierDTO.class)
+            )
+    })
+    @ApiResponse(responseCode = "400", description = "Error en datos introducidos", content = {
+            @Content(
+                    mediaType = "text/plain;charset=UTF-8",
+                    schema = @Schema(example = "(Un mensaje de error mostrando los errores del usuario)")
+            )
+    })
+    @ApiResponse(responseCode = "409", description = "Proveedor existente con ese nombre", content = {
+            @Content(
+                    mediaType = "text/plain;charset=UTF-8",
+                    schema = @Schema(example = "El proveedor con ese nombre ya existe en la base de datos")
+            )
+    })
     public ResponseEntity<ViewSupplierDTO> addSupplier(
             @RequestBody AddSupplierDTO supplier_DTO)
     {
@@ -52,13 +69,25 @@ public class SupplierController {
      * @return Una pagina con todos los proveedores que pueda conseguir.
      */
     @GetMapping("/page{page}/{size}")
-    @ApiResponse(responseCode = "200", description = "Encontrado")
-    @ApiResponse(responseCode = "404", description = "No encontrado")
-    @Operation(summary = "Busca una pagina de proveedores", description = "Lista una pagina de provedores")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Encontrado",
+            content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ViewSupplierDTO.class)))
+            })
+    @ApiResponse(responseCode = "404", description = "No encontrado", content = {
+            @Content(
+                    mediaType = "text/plain;charset=UTF-8",
+                    schema = @Schema(example = "No hay proveedores")
+            )
+    })
+    @Operation(summary = "Busca una pagina de proveedores", description = "Lista una pagina de proveedores")
     public ResponseEntity<List<ViewSupplierDTO>> getSuppliers(
             @Parameter(description = "N° Pagina (comienza en 1)", example = "1")
             @PathVariable int page,
-            @Parameter(description = "Tamaño de la pagina", example = "5")
+            @Parameter(description = "Tamaño de la pagina", example = "3")
             @PathVariable int size)
     {
         return ResponseEntity.ok(supplierService.listSuppliers(page,size));
@@ -69,10 +98,20 @@ public class SupplierController {
      * @param id El id del proveedor
      * @return Un DTO de proveedor
      */
-    @ApiResponse(responseCode = "200", description = "Encontrado")
-    @ApiResponse(responseCode = "404", description = "No encontrado")
+    @ApiResponse(responseCode = "200", description = "Encontrado", content = {
+            @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ViewSupplierDTO.class)
+            )
+    })
+    @ApiResponse(responseCode = "404", description = "No encontrado", content = {
+            @Content(
+                    mediaType = "text/plain;charset=UTF-8",
+                    schema = @Schema(example = "Proveedor no encontrado")
+            )
+    })
     @GetMapping("/{id}")
-    @Operation(summary = "Busca un proveedor", description = "Busca un provedor segun id")
+    @Operation(summary = "Busca un proveedor", description = "Busca un proveedor segun id")
     public ResponseEntity<ViewSupplierDTO> getSupplier(
             @Parameter(description = "Id de proveedor", example = "1")
             @PathVariable Long id) {
@@ -85,11 +124,22 @@ public class SupplierController {
      * @param id El id del proveedor para modificar
      * @return Un DTO que muestra todo el proveedor con sus cambios.
      */
-    @ApiResponse(responseCode = "400", description = "Error en datos introducidos", content = @Content(
-            schema = @Schema(implementation = SupplierNotFoundException.class)
-    ))
     @ApiResponse(responseCode = "200", description = "Proveedor Actualizado", content = @Content(
+            mediaType = "application/json",
             schema = @Schema(implementation = ViewSupplierDTO.class)
+    ))
+    @ApiResponse(responseCode = "400", description = "Error en datos introducidos", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(defaultValue = "(Un mensaje de error mostrando los errores del usuario)")
+    ))
+    @ApiResponse(responseCode = "404", description = "Proveedor no encontrado", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "El proveedor no existe!!")
+    ))
+
+    @ApiResponse(responseCode = "409", description = "Datos de proveedor ya existentes", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(description = "Un mensaje de error para el usuario", examples = {"El proveedor con ese nombre ya existe en la base de datos", "El CUIT ingresado ya se encuentra registrado"})
     ))
     @PutMapping("/{id}")
     @Operation(summary = "Modifica los datos del proveedor")
@@ -107,12 +157,15 @@ public class SupplierController {
      * @param id El id del proveedor para eliminar
      * @return Un booleano verdadero, en caso de exito.
      */
-    @ApiResponse(responseCode = "200", description = "Eliminado correctamente")
-    @ApiResponse(responseCode = "404", description = "Proveedor No encontrado")
+    @ApiResponse(responseCode = "204", description = "Eliminado correctamente", content = @Content())
+    @ApiResponse(responseCode = "404", description = "Proveedor No encontrado", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "Proveedor no encontrado!!")
+    ))
     @DeleteMapping("/{id}")
-    @Operation(summary = "Elimina un provedor segun su id")
+    @Operation(summary = "Elimina un proveedor segun su id")
     public ResponseEntity<Boolean> deleteSupplier(
-            @Parameter(description = "El id del provedor para eliminar <b>permanentemente</b>", example = "1")
+            @Parameter(description = "El id del proveedor para eliminar <b>permanentemente</b>", example = "1")
             @PathVariable int id)
     {
         return ResponseEntity.ok(supplierService.deleteSupplier(id));
