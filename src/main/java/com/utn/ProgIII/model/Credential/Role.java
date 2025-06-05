@@ -6,11 +6,9 @@ import lombok.AllArgsConstructor;
 /**
  * Los tipos de usuario existentes en el sistema
  */
-@AllArgsConstructor
 @Schema(defaultValue = "EMPLOYEE")
 public enum Role {
-    ADMIN("admin"),
-    EMPLOYEE("employee");
+    ADMIN,
+    EMPLOYEE;
 
-    final String description;
 }

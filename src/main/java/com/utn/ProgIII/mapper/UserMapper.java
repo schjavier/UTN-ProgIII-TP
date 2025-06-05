@@ -7,14 +7,19 @@ import com.utn.ProgIII.model.Credential.Credential;
 import com.utn.ProgIII.model.Credential.Role;
 import com.utn.ProgIII.model.User.User;
 import com.utn.ProgIII.model.User.UserStatus;
+import com.utn.ProgIII.exceptions.InvalidRequestException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /**
  * Clase que se encarga de transformar un usuario en un DTO (objeto de transferencia de datos) o viceversa
  */
 @Component
+@RequiredArgsConstructor
 public class UserMapper {
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     /**
      * Convierte una instancia de User en un DTO para ser mostrado en una respuesta json
      * @param user La instancia de usuario recibida desde el servicio
@@ -49,7 +54,7 @@ public class UserMapper {
 
         Credential credential = new Credential();
         credential.setUsername(dto.credential().username());
-        credential.setPassword(dto.credential().password());
+        credential.setPassword(bCryptPasswordEncoder.encode(dto.credential().password()));
         credential.setRole(Role.valueOf(dto.credential().role().toUpperCase()));
 
         result.setCredential(credential);
