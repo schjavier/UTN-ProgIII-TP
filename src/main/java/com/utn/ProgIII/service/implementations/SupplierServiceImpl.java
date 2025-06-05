@@ -41,6 +41,7 @@ public class SupplierServiceImpl implements SupplierService {
     public ViewSupplierDTO createSupplier(AddSupplierDTO supplierDTO) {
         Supplier supplier = suppliermapper.toObjectFromAddSupplierDTO(supplierDTO);
 
+        supplierValidations.validateCompanyNameNotExists(supplierDTO.companyName());
         supplierValidations.validateSupplierByCuit(supplier.getCuit());
 
         supplier = supplierRepository.save(supplier);
@@ -134,6 +135,8 @@ public class SupplierServiceImpl implements SupplierService {
     public ViewSupplierDTO updateSupplier(AddSupplierDTO supplierDTO, Long id) {
         Supplier supplier_to_update = supplierRepository.findById(id).orElseThrow(() -> new SupplierNotFoundException("El proveedor no existe!!"));
 
+        supplierValidations.validateModifiedCompanyNameNotExists(supplier_to_update.getCompanyName(),
+                supplierDTO.companyName());
         supplierValidations.validateModifiedSupplierByCuit(supplier_to_update.getCuit(),supplierDTO.cuit());
 
         supplier_to_update.setCompanyName(supplierDTO.companyName());

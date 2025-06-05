@@ -1,20 +1,19 @@
 package com.utn.ProgIII.mapper;
 
 import com.utn.ProgIII.dto.ProductDTO;
-import com.utn.ProgIII.exceptions.ProductNotFoundException;
 import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.Product.ProductStatus;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ProductMapperTest {
     private ProductMapper productMapper;
@@ -30,7 +29,7 @@ class ProductMapperTest {
     }
 
     @Test
-    void productToDTO() {
+    void productToDto_AllFieldsMappedFine() {
         product = Product.builder()
                 .idProduct(1L)
                 .name("product")
@@ -49,7 +48,7 @@ class ProductMapperTest {
     }
 
     @Test
-    void dtoToProduct() {
+    void dtoToProduct_AllFieldsMappedFine() {
         ProductDTO productDTO = ProductDTO.builder()
                 .name ("product")
                 .status("ENABLED")
@@ -68,42 +67,42 @@ class ProductMapperTest {
     }
 
     @Test
-    public void nameNull() {
+    void dtoToProduct_NameIsNull() {
 
         ProductDTO productDTO = ProductDTO.builder()
                 .name(null)
+                .status("ENABLED")
                 .build();
 
-        assertThrows(ProductNotFoundException.class, () -> {
-            productMapper.toEntity(productDTO);
-        });
+        Product result = productMapper.toEntity(productDTO);
 
+        Set<ConstraintViolation<Product>> violations = validator.validate(result);
+        Assertions.assertThat(violations).hasSize(1);
     }
 
     @Test
-    void name2Characters (){
+    void dtoToProduct_NameIsTooShort() {
         ProductDTO productDTO = ProductDTO.builder()
-
-                // Exactamente 2 caracteres
                 .name("ab")
+                .status("ENABLED")
                 .build();
 
-        assertThrows(ProductNotFoundException.class,  () -> {
-            Product product = productMapper.toEntity(productDTO);
-        });
+        Product result = productMapper.toEntity(productDTO);
+
+        Set<ConstraintViolation<Product>> violations = validator.validate(result);
+        Assertions.assertThat(violations).hasSize(1);
     }
 
     @Test
-    public void name51characters() {
+    void dtoToProduct_NameIsTooLong() {
         ProductDTO productDTO = ProductDTO.builder()
-
-                // Exactamente 51 caracteres
                 .name("a".repeat(51))
+                .status("ENABLED")
                 .build();
 
-        assertThrows(ProductNotFoundException.class, () -> {
-            productMapper.toEntity(productDTO);
-        });
-    }
+        Product result = productMapper.toEntity(productDTO);
 
+        Set<ConstraintViolation<Product>> violations = validator.validate(result);
+        Assertions.assertThat(violations).hasSize(1);
+    }
 }

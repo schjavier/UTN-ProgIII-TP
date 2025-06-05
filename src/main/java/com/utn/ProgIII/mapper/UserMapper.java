@@ -2,7 +2,6 @@ package com.utn.ProgIII.mapper;
 
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
-import com.utn.ProgIII.exceptions.InvalidRequestException;
 import com.utn.ProgIII.exceptions.NullCredentialsException;
 import com.utn.ProgIII.model.Credential.Credential;
 import com.utn.ProgIII.model.Credential.Role;

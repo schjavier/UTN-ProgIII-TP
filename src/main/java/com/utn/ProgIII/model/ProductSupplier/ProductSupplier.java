@@ -1,12 +1,8 @@
 package com.utn.ProgIII.model.ProductSupplier;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.Supplier.Supplier;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NegativeOrZero;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -22,6 +18,7 @@ import java.math.RoundingMode;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 
 public class ProductSupplier {
 
