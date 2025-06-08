@@ -6,6 +6,7 @@ import com.utn.ProgIII.dto.LoginResponseDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
 import com.utn.ProgIII.service.interfaces.AuthService;
 import com.utn.ProgIII.service.interfaces.UserService;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,7 @@ public class AuthController {
 
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/signup")
     public ResponseEntity<UserWithCredentialDTO> userSignup(@RequestBody CreateUserDTO createUserDTO){
         UserWithCredentialDTO response = userService.createUserWithCredential(createUserDTO);
