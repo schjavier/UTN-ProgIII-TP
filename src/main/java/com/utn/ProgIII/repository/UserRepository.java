@@ -1,5 +1,6 @@
 package com.utn.ProgIII.repository;
 
+import com.utn.ProgIII.model.Credential.Role;
 import com.utn.ProgIII.model.User.User;
 import com.utn.ProgIII.model.User.UserStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,4 +15,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
     boolean existsByDni(String dni);
 
     List<User> findAllByStatus(UserStatus status);
+
+    boolean existsByCredentialRole(Role credentialRole);
 }
