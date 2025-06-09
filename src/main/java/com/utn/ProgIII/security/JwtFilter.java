@@ -1,32 +1,32 @@
 package com.utn.ProgIII.security;
 
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
-import java.util.Optional;
+import java.util.Collection;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailService;
+    private final RoleHierarchy roleHierarchy;
 
-    public JwtFilter(JwtUtil jwtUtil, UserDetailServiceImpl userDetailService) {
+    public JwtFilter(JwtUtil jwtUtil, UserDetailServiceImpl userDetailService, RoleHierarchy roleHierarchy) {
         this.jwtUtil = jwtUtil;
         this.userDetailService = userDetailService;
+        this.roleHierarchy = roleHierarchy;
     }
 
     @Override
@@ -50,16 +50,22 @@ public class JwtFilter extends OncePerRequestFilter {
 
             if (jwtUtil.isTokenValid(token, userDetails)){
 
+                Collection<? extends GrantedAuthority> hierarchicalAuthorities =
+                        roleHierarchy.getReachableGrantedAuthorities(userDetails.getAuthorities());
+
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,
                                 null,
-                                userDetails.getAuthorities());
+                                hierarchicalAuthorities);
 
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+
             }
+
+
         }
 
         filterChain.doFilter(request, response);
