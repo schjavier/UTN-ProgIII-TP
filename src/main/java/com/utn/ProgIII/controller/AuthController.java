@@ -38,6 +38,7 @@ public class AuthController {
 
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/signup")
     public ResponseEntity<UserWithCredentialDTO> userSignup(@RequestBody CreateUserDTO createUserDTO){
         UserWithCredentialDTO response = userService.createUserWithCredential(createUserDTO);
