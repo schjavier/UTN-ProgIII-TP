@@ -228,3 +228,12 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-05-30 23:35:46
+SELECT * FROM supplier;
+SELECT * FROM product_supplier;
+
+DELETE FROM product_supplier;
+
+SELECT * FROM user;
+SELECT * FROM credential;
+
+

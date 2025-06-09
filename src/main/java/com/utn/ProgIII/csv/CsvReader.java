@@ -61,8 +61,8 @@ public class CsvReader {
 
             for (ProductInfoFromCsvDTO productUpdateInfo: uploads) {
                 Product productData = productRepository.getByName(productUpdateInfo.name());
-                if (productData != null && productData.getStatus().equals(ProductStatus.ENABLED)) {
-                    ProductSupplier relationship = productSupplierRepository.getByProductAndSupplier(productData,supplierData);
+                ProductSupplier relationship = productSupplierRepository.getByProductAndSupplier(productData,supplierData);
+                if (productData != null && productData.getStatus().equals(ProductStatus.ENABLED) && relationship != null) {
                     relationship = updateRelationshipPricing(productUpdateInfo,relationship);
                     productSupplierRepository.save(relationship);
                 } else {
