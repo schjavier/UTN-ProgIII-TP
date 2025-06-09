@@ -1,5 +1,6 @@
 package com.utn.ProgIII.service.implementations;
 
+import com.utn.ProgIII.dto.CreateCredentialDTO;
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
 import com.utn.ProgIII.exceptions.UserNotFoundException;
@@ -12,6 +13,7 @@ import com.utn.ProgIII.repository.UserRepository;
 import com.utn.ProgIII.validations.CredentialValidations;
 import com.utn.ProgIII.validations.UserValidations;
 import com.utn.ProgIII.service.interfaces.UserService;
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,28 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserValidations userValidations;
     private final CredentialValidations credentialValidations;
+
+    @PostConstruct
+    public void init() {
+        if(!userRepository.existsByCredentialRole(Role.ADMIN)) {
+            CreateCredentialDTO testCreds = CreateCredentialDTO.builder()
+                    .username("admin")
+                    .password("admin")
+                    .role("ADMIN")
+                    .build();
+
+            UserWithCredentialDTO testUser = createUserWithCredential(CreateUserDTO.builder()
+                    .firstname("The")
+                    .lastname("Administrator")
+                    .dni("0000000")
+                    .status("ENABLED")
+                    .credential(testCreds)
+                    .build());
+
+            System.out.println("No se han encontrado administradores, se ha creado uno por defecto");
+            System.out.println("El usuario es 'admin' y la contrasenia es 'admin'");
+        }
+    }
 
 
     public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, UserValidations userValidations, CredentialValidations credentialValidations) {

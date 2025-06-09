@@ -5,6 +5,8 @@ import com.utn.ProgIII.security.UserDetailServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -37,19 +39,19 @@ public class SecurityConfig {
 
                         .requestMatchers("/user/**").hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.POST, "/product/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/product/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/product/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/product/**").hasAnyRole("ADMIN", "EMPLOYEE")
+                        .requestMatchers(HttpMethod.POST, "/product/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/product/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/product/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.GET, "/product/**").hasRole("MANAGER")
 
-                        .requestMatchers(HttpMethod.POST, "/productSupplier/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH,  "/productSupplier/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/productSupplier/**").hasAnyRole("ADMIN", "EMPLOYEE")
+                        .requestMatchers(HttpMethod.POST, "/productSupplier/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.PATCH,  "/productSupplier/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.GET, "/productSupplier/**").hasRole("EMPLOYEE")
 
-                        .requestMatchers(HttpMethod.POST, "/supplier/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/supplier/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/supplier/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/supplier/**").hasAnyRole("ADMIN", "EMPLOYEE")
+                        .requestMatchers(HttpMethod.POST, "/supplier/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/supplier/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/supplier/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.GET, "/supplier/**").hasRole("EMPLOYEE")
 
                         .anyRequest().authenticated()
                 )
@@ -73,6 +75,14 @@ public class SecurityConfig {
 
         return new ProviderManager(authenticationProvider);
 
+    }
+
+    @Bean
+    static RoleHierarchy roleHierarchy(){
+        return RoleHierarchyImpl.withDefaultRolePrefix()
+                .role("ADMIN").implies("MANAGER")
+                .role("MANAGER").implies("EMPLOYEE")
+                .build();
     }
 
 }
