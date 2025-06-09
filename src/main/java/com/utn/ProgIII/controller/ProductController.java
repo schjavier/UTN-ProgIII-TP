@@ -112,7 +112,7 @@ public class ProductController {
     @PutMapping("/{id}")
     @Operation(summary = "Se actualiza los datos de un producto")
     @ApiResponse(responseCode = "200",description = "Actualizacion completa")
-    @ApiResponse(responseCode = "400",description = "Datos malcolocados", content = @Content(
+    @ApiResponse(responseCode = "400",description = "Datos mal colocados", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "(un mensaje con todos los errores del usuario)")
     ))
