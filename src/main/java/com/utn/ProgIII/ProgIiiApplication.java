@@ -4,7 +4,6 @@ import com.utn.ProgIII.csv.CsvReader;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.math.BigDecimal;
 import java.util.TimeZone;
 
 @SpringBootApplication
