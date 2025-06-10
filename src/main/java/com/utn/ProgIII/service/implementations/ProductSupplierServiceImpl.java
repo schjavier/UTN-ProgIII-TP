@@ -2,6 +2,7 @@ package com.utn.ProgIII.service.implementations;
 
 import com.utn.ProgIII.csv.CsvReader;
 import com.utn.ProgIII.dto.*;
+import com.utn.ProgIII.exceptions.InvalidRequestException;
 import com.utn.ProgIII.exceptions.ProductNotFoundException;
 import com.utn.ProgIII.exceptions.ProductSupplierNotExistException;
 import com.utn.ProgIII.exceptions.SupplierNotFoundException;
@@ -110,6 +111,12 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
 
     @Override
     public String uploadCsv(String filepath, Long idSupplier, BigDecimal bulkProfitMargin) {
+
+        if(0 > bulkProfitMargin.compareTo(BigDecimal.valueOf(0)))
+        {
+            throw new InvalidRequestException("El porcentaje de ganancia no es valido");
+        }
+
         return csvReader.uploadToDatabase(filepath,idSupplier,bulkProfitMargin);
     }
 
