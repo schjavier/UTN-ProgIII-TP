@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.utn.ProgIII.dto.ProductInfoFromCsvDTO;
+import com.utn.ProgIII.exceptions.SupplierNotFoundException;
 import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.Product.ProductStatus;
 import com.utn.ProgIII.model.ProductSupplier.ProductSupplier;
@@ -11,6 +12,7 @@ import com.utn.ProgIII.model.Supplier.Supplier;
 import com.utn.ProgIII.repository.ProductRepository;
 import com.utn.ProgIII.repository.ProductSupplierRepository;
 import com.utn.ProgIII.repository.SupplierRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -61,8 +63,8 @@ public class CsvReader {
 
             for (ProductInfoFromCsvDTO productUpdateInfo: uploads) {
                 Product productData = productRepository.getByName(productUpdateInfo.name());
-                if (productData != null && productData.getStatus().equals(ProductStatus.ENABLED)) {
-                    ProductSupplier relationship = productSupplierRepository.getByProductAndSupplier(productData,supplierData);
+                ProductSupplier relationship = productSupplierRepository.getByProductAndSupplier(productData,supplierData);
+                if (productData != null && productData.getStatus().equals(ProductStatus.ENABLED) && relationship != null) {
                     relationship = updateRelationshipPricing(productUpdateInfo,relationship);
                     productSupplierRepository.save(relationship);
                 } else {
@@ -103,6 +105,8 @@ public class CsvReader {
             }
         } catch (IOException e) {
             System.out.println("Error procesando el archivo: " + e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new SupplierNotFoundException("El proveedor asignado no existe");
         }
 
         failedUploads.forEach(failedUpload -> message.append(failedUpload.name()).append("\n"));
