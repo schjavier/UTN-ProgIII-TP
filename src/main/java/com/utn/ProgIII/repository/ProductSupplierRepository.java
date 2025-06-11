@@ -21,4 +21,6 @@ public interface ProductSupplierRepository extends JpaRepository<ProductSupplier
     boolean existsByProductAndSupplier(Product product, Supplier supplier);
 
     ProductSupplier getByProductAndSupplier(Product product, Supplier supplier);
+
+    void removeAllByProduct_IdProduct(Long productIdProduct);
 }
