@@ -36,7 +36,7 @@ public class ProductSupplier {
     @ToString.Exclude
     private Product product;
 
-    @NotNull(message = "El costo no puede estas vacío")
+    @NotNull(message = "El costo no puede estar vacío")
     @Positive(message = "El costo no puede ser negativo")
     private BigDecimal cost;
 
