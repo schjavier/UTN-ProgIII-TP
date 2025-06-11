@@ -44,7 +44,7 @@ public class Supplier {
     @NotNull(message = "El objeto de direccion esta vacio!")
     private Address address;
 
-    @OneToMany(mappedBy = "idProductSupplier")
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @ToString.Exclude
     private List<ProductSupplier> productSupplier;
 

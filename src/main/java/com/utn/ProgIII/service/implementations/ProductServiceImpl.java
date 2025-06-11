@@ -8,7 +8,9 @@ import com.utn.ProgIII.mapper.ProductMapper;
 import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.Product.ProductStatus;
 import com.utn.ProgIII.repository.ProductRepository;
+import com.utn.ProgIII.repository.ProductSupplierRepository;
 import com.utn.ProgIII.service.interfaces.ProductService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,11 +22,13 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final ProductSupplierRepository productSupplierRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, ProductSupplierRepository productSupplierRepository) {
 
         this.productRepository = productRepository;
         this.productMapper = productMapper;
+        this.productSupplierRepository = productSupplierRepository;
     }
 
 
@@ -103,12 +107,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void deleteProduct(Long id) {
 
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado"));
 
         product.setStatus(ProductStatus.DISABLED);
+        productSupplierRepository.removeAllByProduct_IdProduct(id);
 
         productRepository.save(product);
 
