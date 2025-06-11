@@ -1,5 +1,6 @@
 package com.utn.ProgIII.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -114,6 +115,22 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<String> handleAuthException(){
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("El usuario y la contraseña no coinciden");
+    }
+
+    @ExceptionHandler(UnexpectedServerErrorException.class)
+    public ResponseEntity<String> UnexpectedErrorException(UnexpectedServerErrorException e) {
+        if(e.getHttpcode() != -1)
+        {
+            return ResponseEntity.status(e.getHttpcode()).body(e.getMessage()); // esto es muy improvable que pase... pero puede salvarnos...
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<String> ExpiredTokenException(ExpiredJwtException e)
+    {
+        return ResponseEntity.status(419).body("La sesión ha expirado. Por favor, iniciar sesion de nuevo");
     }
 
 }

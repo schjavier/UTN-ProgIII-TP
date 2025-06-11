@@ -9,6 +9,7 @@ import com.utn.ProgIII.model.User.User;
 import com.utn.ProgIII.model.User.UserStatus;
 import com.utn.ProgIII.exceptions.InvalidRequestException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -46,19 +47,33 @@ public class UserMapper {
         result.setFirstname(dto.firstname());
         result.setLastname(dto.lastname());
         result.setDni(dto.dni());
-        result.setStatus(UserStatus.valueOf(dto.status().toUpperCase()));
+
 
         if (dto.credential() == null) {
             throw new NullCredentialsException("El usuario debe tener credenciales");
         }
 
-        Credential credential = new Credential();
-        credential.setUsername(dto.credential().username());
-        credential.setPassword(bCryptPasswordEncoder.encode(dto.credential().password()));
-        credential.setRole(Role.valueOf(dto.credential().role().toUpperCase()));
+        if(!EnumUtils.isValidEnum(UserStatus.class, dto.status()))
+        {
+            throw new InvalidRequestException("El estado no es valido");
+        }
+
+        result.setStatus(UserStatus.valueOf(dto.status().toUpperCase()));
+
+        if(!EnumUtils.isValidEnum(Role.class, dto.credential().role()))
+        {
+            throw new InvalidRequestException("El rol no es valido");
+        }
+
+
+        Credential credential = Credential.builder()
+                .password(dto.credential().password())
+                .username(dto.credential().username())
+                .role(Role.valueOf(dto.credential().role().toUpperCase()))
+                .build();
 
         result.setCredential(credential);
-
+        credential.setPassword(bCryptPasswordEncoder.encode(dto.credential().password()));
         return result;
     }
 }
