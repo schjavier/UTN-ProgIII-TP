@@ -34,6 +34,10 @@ public class ProductController {
     @PostMapping
     @Operation(summary = "Se agrega un producto", description = "Se agrega un producto con los datos del usuario")
     @ApiResponse(responseCode = "201", description = "Producto creado")
+    @ApiResponse(responseCode = "409", description = "Producto ya existente", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "Ese producto ya existe")
+    ))
     @ApiResponse(responseCode = "400",description = "Error en datos introducidos", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "(un mensaje con todos los errores del usuario)")
@@ -46,7 +50,7 @@ public class ProductController {
 
         ProductDTO response = productService.createProductDto(productDTO);
 
-        return  ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 

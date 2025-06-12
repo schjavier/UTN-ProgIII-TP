@@ -8,7 +8,7 @@ import java.util.List;
 // para la capa de servicio
 public interface SupplierService {
     ViewSupplierDTO viewOneSupplier(long id);
-    boolean deleteSupplier(long id);
+    void deleteSupplier(long id);
     ViewSupplierDTO updateSupplier(AddSupplierDTO supplierDTO, Long id);
     ViewSupplierDTO createSupplier(AddSupplierDTO supplierDTO);
     List<ViewSupplierDTO> listSuppliers(int page, int size);

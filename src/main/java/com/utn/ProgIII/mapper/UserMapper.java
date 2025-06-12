@@ -8,10 +8,14 @@ import com.utn.ProgIII.model.Credential.Role;
 import com.utn.ProgIII.model.User.User;
 import com.utn.ProgIII.model.User.UserStatus;
 import com.utn.ProgIII.exceptions.InvalidRequestException;
+import jakarta.validation.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.EnumUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
 
 /**
  * Clase que se encarga de transformar un usuario en un DTO (objeto de transferencia de datos) o viceversa
@@ -19,6 +23,10 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class UserMapper {
+
+    @Autowired
+    ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    Validator validator = factory.getValidator();
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     /**
@@ -53,7 +61,7 @@ public class UserMapper {
             throw new NullCredentialsException("El usuario debe tener credenciales");
         }
 
-        if(!EnumUtils.isValidEnum(UserStatus.class, dto.status()))
+        if(!EnumUtils.isValidEnum(UserStatus.class, dto.status().toUpperCase()))
         {
             throw new InvalidRequestException("El estado no es valido");
         }
@@ -71,8 +79,14 @@ public class UserMapper {
                 .username(dto.credential().username())
                 .role(Role.valueOf(dto.credential().role().toUpperCase()))
                 .build();
-
         result.setCredential(credential);
+
+        Set<ConstraintViolation<Credential>> violations = validator.validate(result.getCredential());
+        if(!violations.isEmpty())
+        {
+            throw new ConstraintViolationException(violations);
+        }
+
         credential.setPassword(bCryptPasswordEncoder.encode(dto.credential().password()));
         return result;
     }

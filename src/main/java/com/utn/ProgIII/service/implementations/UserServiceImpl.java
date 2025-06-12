@@ -3,6 +3,8 @@ package com.utn.ProgIII.service.implementations;
 import com.utn.ProgIII.dto.CreateCredentialDTO;
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
+import com.utn.ProgIII.exceptions.InvalidRequestException;
+import com.utn.ProgIII.exceptions.SelfDeleteUserException;
 import com.utn.ProgIII.exceptions.UserNotFoundException;
 import com.utn.ProgIII.mapper.UserMapper;
 import com.utn.ProgIII.model.Credential.Credential;
@@ -15,6 +17,7 @@ import com.utn.ProgIII.validations.UserValidations;
 import com.utn.ProgIII.service.interfaces.UserService;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -176,33 +179,46 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserWithCredentialDTO(userToUpdate);
     }
 
+    @Override
+    public void deleteOrRemoveUser(Long id, String method) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
+
+        if(userValidations.checkifRequestedUserIsTheSame(user))
+        {
+            throw new SelfDeleteUserException("No podes eliminar tu usuario");
+        }
+
+        switch (method.toUpperCase())
+        {
+            case "HARD":
+                deleteUserHard(user);
+                break;
+            case "SOFT":
+                deleteUserSoft(user);
+                break;
+            default:
+                throw new InvalidRequestException("La opcion de eliminacion no es correcta");
+        }
+
+    }
+
     /**
      * Hace baja logica del sistema al usuario con el id solicitado por parametro
-     * @param id El id correspondiente al usuario que se solicito dar de baja
+     * @param user El usuario que se dara de baja temporal
      */
-    @Override
     @Transactional
-    public void deleteUserSoft(Long id) {
-        User userToDelete = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
-
-        userToDelete.setStatus(UserStatus.DISABLED);
-
-        userRepository.save(userToDelete);
+    private void deleteUserSoft(User user) {
+        user.setStatus(UserStatus.DISABLED);
+        userRepository.save(user);
     }
 
     /**
      * Elimina fisicamente del sistema al usuario con el id solicitado por parametro
-     * @param id El id correspondiente al usuario que se solicito eliminar
+     * @param user El usuario que se eliminara
      */
-    @Override
     @Transactional
-    public void deleteUserHard(Long id) {
-        if (userRepository.findById(id).isEmpty()) {
-            throw new UserNotFoundException("Usuario no encontrado");
-        } else {
-            userRepository.deleteById(id);
-        }
+    private void deleteUserHard(User user) {
+            userRepository.delete(user);
     }
 
 }

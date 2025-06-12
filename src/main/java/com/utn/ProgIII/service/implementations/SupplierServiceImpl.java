@@ -111,18 +111,13 @@ public class SupplierServiceImpl implements SupplierService {
      * @return un booleano representando el exito.
      */
     @Override
-    public boolean deleteSupplier(long id) {
-        boolean response = false;
-
+    public void deleteSupplier(long id) {
         if(supplierRepository.existsById(id))
         {
             supplierRepository.deleteById(id);
-            response = true;
         } else {
             throw new SupplierNotFoundException("Ese proveedor no existe");
         }
-
-        return response;
     }
 
     /**

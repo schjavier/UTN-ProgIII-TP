@@ -234,7 +234,6 @@ SELECT * FROM product_supplier;
 
 DELETE FROM product_supplier;
 
-SELECT * FROM user;
-SELECT * FROM credential;*/
+SELECT * FROM user;*/
 
 

@@ -164,10 +164,11 @@ public class SupplierController {
     ))
     @DeleteMapping("/{id}")
     @Operation(summary = "Elimina un proveedor segun su id")
-    public ResponseEntity<Boolean> deleteSupplier(
+    public ResponseEntity<?> deleteSupplier(
             @Parameter(description = "El id del proveedor para eliminar <b>permanentemente</b>", example = "1")
             @PathVariable int id)
     {
-        return ResponseEntity.ok(supplierService.deleteSupplier(id));
+        supplierService.deleteSupplier(id);
+        return ResponseEntity.noContent().build();
     }
 }

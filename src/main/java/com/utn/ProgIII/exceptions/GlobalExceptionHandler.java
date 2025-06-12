@@ -133,4 +133,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(419).body("La sesión ha expirado. Por favor, iniciar sesion de nuevo");
     }
 
+    @ExceptionHandler(SelfDeleteUserException.class)
+    public ResponseEntity<String> SelfDeleteUserProtection(SelfDeleteUserException e)
+    {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
 }

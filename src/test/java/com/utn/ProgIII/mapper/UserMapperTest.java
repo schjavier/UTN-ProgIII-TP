@@ -3,6 +3,7 @@ package com.utn.ProgIII.mapper;
 import com.utn.ProgIII.dto.CreateCredentialDTO;
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
+import com.utn.ProgIII.exceptions.InvalidRequestException;
 import com.utn.ProgIII.model.Credential.Credential;
 import com.utn.ProgIII.model.Credential.Role;
 import com.utn.ProgIII.model.User.User;
@@ -13,6 +14,7 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Set;
 
@@ -27,7 +29,7 @@ class UserMapperTest {
 
     @BeforeEach
     void setUp() {
-        mapper = new UserMapper();
+        mapper = new UserMapper(new BCryptPasswordEncoder());
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
     }
@@ -69,7 +71,7 @@ class UserMapperTest {
         CreateCredentialDTO credDto = CreateCredentialDTO.builder()
                 .username("prueba")
                 .password("12345678")
-                .role("employee")
+                .role("EMPLOYEE")
                 .build();
 
         CreateUserDTO userDto = CreateUserDTO.builder()
@@ -102,7 +104,7 @@ class UserMapperTest {
         CreateCredentialDTO credDto = CreateCredentialDTO.builder()
                 .username("prueba")
                 .password("12345678")
-                .role("employee")
+                .role("EMPLOYEE")
                 .build();
 
         CreateUserDTO userDto = CreateUserDTO.builder()
@@ -623,6 +625,6 @@ class UserMapperTest {
                 .credential(credDto)
                 .build();
 
-        assertThrows(IllegalArgumentException.class,() -> mapper.toEntity(userDto));
+        assertThrows(InvalidRequestException.class,() -> mapper.toEntity(userDto));
     }
 }

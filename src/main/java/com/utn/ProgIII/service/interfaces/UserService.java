@@ -2,6 +2,7 @@ package com.utn.ProgIII.service.interfaces;
 
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
+import com.utn.ProgIII.model.User.User;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
@@ -20,8 +21,7 @@ public interface UserService {
     List<UserWithCredentialDTO> getDisabledUsers();
 
     UserWithCredentialDTO updateUser(Long id, CreateUserDTO dto);
-    void deleteUserSoft(Long id);
 
-    @Transactional
-    void deleteUserHard(Long id);
+
+    void deleteOrRemoveUser(Long id, String method);
 }

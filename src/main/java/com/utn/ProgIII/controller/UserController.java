@@ -96,7 +96,6 @@ public class UserController {
             schema = @Schema(examples = {"El nombre de usuario ya existe en la base de datos", "El dni ingresado ya se encuentra registrado"})
     ))
     @PostMapping()
-
     public ResponseEntity<UserWithCredentialDTO> createUser(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Los datos del usuario nuevo")
             @RequestBody CreateUserDTO dto
@@ -137,20 +136,22 @@ public class UserController {
     @ApiResponse(responseCode = "204", description = "Eliminacion correcta", content = @Content())
     @ApiResponse(responseCode = "400", description = "Error en datos insertados", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "La opcion de eliminacion no es correcta")
+    ))
+    @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "Usuario no encontrado")
+    ))
+    @ApiResponse(responseCode = "409", description = "Intento de eliminacion del usuario logeado", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "No podes eliminar tu usuario")
     ))
     @DeleteMapping()
     public ResponseEntity<?> delete(
             @RequestParam Long id,
             @RequestParam(defaultValue = "soft") String deletionType) {
-        if (deletionType.equalsIgnoreCase("soft")) {
-            userService.deleteUserSoft(id);
-        } else if (deletionType.equalsIgnoreCase("hard")) {
-            userService.deleteUserHard(id);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
 
+        userService.deleteOrRemoveUser(id, deletionType);
         return ResponseEntity.noContent().build();
     }
 }

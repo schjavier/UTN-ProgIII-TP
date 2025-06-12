@@ -9,6 +9,7 @@ import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.Product.ProductStatus;
 import com.utn.ProgIII.repository.ProductRepository;
 import com.utn.ProgIII.service.interfaces.ProductService;
+import com.utn.ProgIII.validations.ProductValidations;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,11 +21,13 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final ProductValidations productValidations;
 
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, ProductValidations productValidations) {
 
         this.productRepository = productRepository;
         this.productMapper = productMapper;
+        this.productValidations = productValidations;
     }
 
 
@@ -84,6 +87,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO createProductDto(ProductDTO productDto) {
 
         Product product = productMapper.toEntity(productDto);
+        productValidations.validateProductNameExists(product);
         product = productRepository.save(product);
 
         return productMapper.toProductDTO(product);
