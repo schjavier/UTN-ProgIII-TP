@@ -14,11 +14,9 @@ public interface UserService {
     UserWithCredentialDTO createUserWithCredential(CreateUserDTO dto);
     UserWithCredentialDTO getUserById(Long id);
 
-    List<UserWithCredentialDTO> getAllUsers();
+    // List<UserWithCredentialDTO> getAllUsers(); // deberiamos remover esto? no tiene usos
 
-    List<UserWithCredentialDTO> getEnabledUsers();
-
-    List<UserWithCredentialDTO> getDisabledUsers();
+    List<UserWithCredentialDTO> getUsersByStatus(String status);
 
     UserWithCredentialDTO updateUser(Long id, CreateUserDTO dto);
 

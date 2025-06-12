@@ -66,18 +66,7 @@ public class UserController {
     @GetMapping("/filter")
     public ResponseEntity<List<UserWithCredentialDTO>> getUsersByStatus(
             @RequestParam(defaultValue = "ENABLED") String status) {
-        List<UserWithCredentialDTO> response;
-        if (status.equalsIgnoreCase("ENABLED")) {
-            response = userService.getEnabledUsers();
-        } else if (status.equalsIgnoreCase("DISABLED")) {
-            response = userService.getDisabledUsers();
-        } else if (status.equalsIgnoreCase("ALL")) {
-            response = userService.getAllUsers();
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(userService.getUsersByStatus(status));
     }
 
     /**

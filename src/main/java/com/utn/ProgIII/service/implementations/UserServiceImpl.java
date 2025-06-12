@@ -17,11 +17,13 @@ import com.utn.ProgIII.validations.UserValidations;
 import com.utn.ProgIII.service.interfaces.UserService;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Clase que se encarga de la logica entre el repositorio y el mapper
@@ -99,6 +101,7 @@ public class UserServiceImpl implements UserService {
      * Muestra los datos de todos los usuarios presentes en el sistema
      * @return Una lista con los DTO de cada usuario existente en el sistema
      */
+    /* sin usos.
     @Override
     public List<UserWithCredentialDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
@@ -110,41 +113,23 @@ public class UserServiceImpl implements UserService {
         }
 
         return usersWithCredential;
-    }
+    }*/
 
 
-    /**
-     * Muestra los datos de todos los usuarios activos en el sistema
-     * @return Una lista con los DTO de cada usuario activo existente en el sistema
-     */
-    @Override
-    public List<UserWithCredentialDTO> getEnabledUsers() {
-        List<User> users = userRepository.findAllByStatus((UserStatus.ENABLED));
-        List<UserWithCredentialDTO> enabledUsersWithCredential = new ArrayList<>();
+    public List<UserWithCredentialDTO> getUsersByStatus(String status)
+    {
 
-        for (User user : users) {
-            enabledUsersWithCredential.add(userMapper.
-                    toUserWithCredentialDTO(user));
+        List<User> users;
+        if(EnumUtils.isValidEnum(UserStatus.class, status))
+        {
+            users = userRepository.findAllByStatus(UserStatus.valueOf(status));
+        } else if (status.equals("ALL")) {
+            users = userRepository.findAll();
+        } else {
+            throw new InvalidRequestException("Ese estado no esta presente");
         }
 
-        return enabledUsersWithCredential;
-    }
-
-    /**
-     * Muestra los datos de todos los usuarios dados de baja en el sistema
-     * @return Una lista con los DTO de cada usuario dado de baja existente en el sistema
-     */
-    @Override
-    public List<UserWithCredentialDTO> getDisabledUsers() {
-        List<User> users = userRepository.findAllByStatus((UserStatus.DISABLED));
-        List<UserWithCredentialDTO> disabledUsersWithCredential = new ArrayList<>();
-
-        for (User user : users) {
-            disabledUsersWithCredential.add(userMapper.
-                    toUserWithCredentialDTO(user));
-        }
-
-        return disabledUsersWithCredential;
+        return users.stream().map(userMapper::toUserWithCredentialDTO).toList();
     }
 
     /**

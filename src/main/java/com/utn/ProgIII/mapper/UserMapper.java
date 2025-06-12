@@ -2,6 +2,7 @@ package com.utn.ProgIII.mapper;
 
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
+import com.utn.ProgIII.dto.ViewCredentialsDTO;
 import com.utn.ProgIII.exceptions.NullCredentialsException;
 import com.utn.ProgIII.model.Credential.Credential;
 import com.utn.ProgIII.model.Credential.Role;
@@ -41,7 +42,12 @@ public class UserMapper {
         String dni = user.getDni();
         String status = user.getStatus().toString();
 
-        return new UserWithCredentialDTO(iduser,firstname,lastname,dni,status,user.getCredential());
+        return new UserWithCredentialDTO(iduser,firstname,lastname,dni,status,new ViewCredentialsDTO(
+                user.getCredential().getUsername(),
+                user.getCredential().getPassword(),
+                user.getCredential().getRole().toString()
+        )
+        );
     }
 
     /**
