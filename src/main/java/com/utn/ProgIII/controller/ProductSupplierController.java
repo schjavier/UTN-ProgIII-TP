@@ -99,7 +99,7 @@ public class ProductSupplierController {
     @ApiResponse(responseCode = "200",description = "Actualizacion realizada, devuelve listado con aquellos productos que no pudieron ser cargados")
     @ApiResponse(responseCode = "500",description = "El servidor no pudo procesar el archivo")
     @PostMapping(path = "/upload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<String> updateWithFile(@RequestParam("file") MultipartFile file, @RequestParam Long idSupplier) {
+    public ResponseEntity<String> updateWithFile(@RequestParam("file") MultipartFile file,@RequestParam Long idSupplier) {
         String filename = file.getOriginalFilename();
         String response;
 
@@ -124,7 +124,7 @@ public class ProductSupplierController {
     @PostMapping(path = "/uploadNonRelatedProducts", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<String> updateWithFileAndProfitMargin(@RequestParam("file") MultipartFile file,
                                                                 @RequestParam Long idSupplier,
-                                                                @RequestParam BigDecimal bulkProfitMargin) {
+                                                                @RequestParam(required = false) BigDecimal bulkProfitMargin) {
         String filename = file.getOriginalFilename();
         String response;
         if (bulkProfitMargin == null) bulkProfitMargin = BigDecimal.valueOf(0);
