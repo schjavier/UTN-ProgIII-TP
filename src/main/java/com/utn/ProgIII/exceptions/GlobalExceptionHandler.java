@@ -3,6 +3,7 @@ package com.utn.ProgIII.exceptions;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -137,6 +138,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> SelfDeleteUserProtection(SelfDeleteUserException e)
     {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<String> wrongFieldSortException(PropertyReferenceException e)
+    {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
 }

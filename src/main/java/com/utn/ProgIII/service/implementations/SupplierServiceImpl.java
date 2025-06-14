@@ -62,47 +62,23 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     /**
-     * Devuelve una "pagina" de los proveedores segun la posicion y tamaño de una pagina
-     *
-     * @param page El numero de la pagina (comienza en 1)
-     * @param size El tamaño de la pagina
-     * @return Una pagina de proveedores
+     * Una pagina que contiene los datos de provedores.
+     * <p>Se puede definir el tamaño con ?size=?</p>
+     * <p>Se puede definir el numero de pagina con ?page=?</p>
+     * <p>Se puede ordenar segun paramatro de objeto con ?sort=?</p>
+     * @param paginacion Una pagina con contenido y informacion de pagina
+     * @return Una pagina con contenido y informacion de pagina
      */
-    @Override
-    public List<ViewSupplierDTO> listSuppliers(int page, int size) {
-        page = page - 1;
+    public Page<ViewSupplierDTO> listSuppliers(Pageable paginacion)
+    {
+        Page<ViewSupplierDTO> page = supplierRepository.findAll(paginacion).map(suppliermapper::toViewSupplierDTO);
 
-        if(page < 0 || size < 1)
-        {
-            throw new InvalidRequestException("El tamaño o numero de la pagina es invalido");
-        }
-
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Supplier> query_page = supplierRepository.findAll(pageable);
-
-
-        if(query_page.isEmpty())
+        if(page.getNumberOfElements() == 0)
         {
             throw new SupplierNotFoundException("No hay proveedores");
         }
 
-        return query_page.stream().map(suppliermapper::toViewSupplierDTO).toList();
-    }
-
-    /**
-     * Retorna todos los proveedores
-     * @return Lista de DTOs de proveedores
-     */
-    @Override
-    public List<ViewSupplierDTO> listAllSuppliers() {
-        List<ViewSupplierDTO> supplier_list = supplierRepository.findAll().stream().map(suppliermapper::toViewSupplierDTO).toList();
-
-        if(supplier_list.isEmpty())
-        {
-            throw new SupplierNotFoundException("No hay proveedores");
-        }
-
-        return supplier_list;
+        return page;
     }
 
     /**

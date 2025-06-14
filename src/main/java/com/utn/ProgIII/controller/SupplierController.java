@@ -1,9 +1,7 @@
 package com.utn.ProgIII.controller;
 
 import com.utn.ProgIII.dto.AddSupplierDTO;
-import com.utn.ProgIII.dto.ViewAddressDTO;
 import com.utn.ProgIII.dto.ViewSupplierDTO;
-import com.utn.ProgIII.exceptions.SupplierNotFoundException;
 import com.utn.ProgIII.service.implementations.SupplierServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,14 +10,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static org.springframework.http.ResponseEntity.status;
 
@@ -63,12 +60,13 @@ public class SupplierController {
     }
 
     /**
-     * Responde a peticiones http con la url "/page{page}/{size}"
-     * @param page Page denota una "pagina" que contiene una cantidad de "size". Comienza en 1
-     * @param size Define el tamaño de la pagina
-     * @return Una pagina con todos los proveedores que pueda conseguir.
+     * Una pagina que contiene los datos de provedores.
+     * <p>Se puede definir el tamaño con ?size=?</p>
+     * <p>Se puede definir el numero de pagina con ?page=?</p>
+     * <p>Se puede ordenar segun paramatro de objeto con ?sort=?</p>
+     * @param paginacion Una pagina con contenido y informacion de pagina
+     * @return Una pagina con contenido y informacion de pagina
      */
-    @GetMapping("/page{page}/{size}")
     @ApiResponse(
             responseCode = "200",
             description = "Encontrado",
@@ -77,6 +75,10 @@ public class SupplierController {
                             mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = ViewSupplierDTO.class)))
             })
+    @ApiResponse(responseCode = "400", description = "Datos malformados", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "No property 'companyNam' found for type 'Supplier'; Did you mean 'companyName'")
+    ))
     @ApiResponse(responseCode = "404", description = "No encontrado", content = {
             @Content(
                     mediaType = "text/plain;charset=UTF-8",
@@ -84,13 +86,12 @@ public class SupplierController {
             )
     })
     @Operation(summary = "Busca una pagina de proveedores", description = "Lista una pagina de proveedores")
-    public ResponseEntity<List<ViewSupplierDTO>> getSuppliers(
-            @Parameter(description = "N° Pagina (comienza en 1)", example = "1")
-            @PathVariable int page,
-            @Parameter(description = "Tamaño de la pagina", example = "3")
-            @PathVariable int size)
+    @GetMapping("/page")
+    public ResponseEntity<Page<ViewSupplierDTO>> getSuppliers(
+            @PageableDefault(size = 10) Pageable paginacion
+            )
     {
-        return ResponseEntity.ok(supplierService.listSuppliers(page,size));
+        return ResponseEntity.ok(supplierService.listSuppliers(paginacion));
     }
 
     /**
