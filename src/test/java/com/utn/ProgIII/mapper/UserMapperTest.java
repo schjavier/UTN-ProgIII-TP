@@ -11,7 +11,6 @@ import com.utn.ProgIII.model.User.UserStatus;
 import jakarta.validation.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Set;
 
@@ -26,7 +25,7 @@ class UserMapperTest {
 
     @BeforeEach
     void setUp() {
-        mapper = new UserMapper(new BCryptPasswordEncoder());
+        mapper = new UserMapper();
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
     }
@@ -59,7 +58,9 @@ class UserMapperTest {
                     assertThat(result.lastname()).isEqualTo(user.getLastname());
                     assertThat(result.dni()).isEqualTo(user.getDni());
                     assertThat(result.status()).isEqualTo(user.getStatus().toString());
-                    assertThat(result.credential()).isEqualTo(user.getCredential());
+                    assertThat(result.credential().username()).isEqualTo(user.getCredential().getUsername());
+                    assertThat(result.credential().password()).isEqualTo(user.getCredential().getPassword());
+                    assertThat(result.credential().role()).isEqualTo(user.getCredential().getRole().toString());
                 });
     }
 

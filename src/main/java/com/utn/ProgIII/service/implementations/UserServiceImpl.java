@@ -7,7 +7,6 @@ import com.utn.ProgIII.exceptions.InvalidRequestException;
 import com.utn.ProgIII.exceptions.SelfDeleteUserException;
 import com.utn.ProgIII.exceptions.UserNotFoundException;
 import com.utn.ProgIII.mapper.UserMapper;
-import com.utn.ProgIII.model.Credential.Credential;
 import com.utn.ProgIII.model.Credential.Role;
 import com.utn.ProgIII.model.User.User;
 import com.utn.ProgIII.model.User.UserStatus;
@@ -18,13 +17,10 @@ import com.utn.ProgIII.service.interfaces.UserService;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.EnumUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Clase que se encarga de la logica entre el repositorio y el mapper
@@ -81,6 +77,8 @@ public class UserServiceImpl implements UserService {
 
         userValidations.validateUserByDni(dto.dni());
         credentialValidations.validateUsernameNotExists(dto.credential().username());
+
+        user.getCredential().setPassword(passwordEncoder.encode(user.getCredential().getPassword()));
 
         user = userRepository.save(user);
 
@@ -156,6 +154,7 @@ public class UserServiceImpl implements UserService {
 
         newUserData.setIdUser(currentUserData.getIdUser());
         newUserData.getCredential().setIdCredential(currentUserData.getCredential().getIdCredential());
+        newUserData.getCredential().setPassword(passwordEncoder.encode(newUserData.getCredential().getPassword()));
 
         currentUserData = userRepository.save(newUserData);
 
