@@ -13,6 +13,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,11 +32,10 @@ public class SecurityConfig {
                                                    UserDetailServiceImpl userDetailsService) throws Exception{
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests( auth -> auth
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
 
                         .requestMatchers("/user/**").hasRole("ADMIN")
-
                         .requestMatchers(HttpMethod.POST, "/product/**").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.PUT, "/product/**").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.DELETE, "/product/**").hasRole("MANAGER")
