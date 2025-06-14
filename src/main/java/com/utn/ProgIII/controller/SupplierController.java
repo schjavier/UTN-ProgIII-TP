@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -88,7 +89,7 @@ public class SupplierController {
     @Operation(summary = "Busca una pagina de proveedores", description = "Lista una pagina de proveedores")
     @GetMapping("/page")
     public ResponseEntity<Page<ViewSupplierDTO>> getSuppliers(
-            @PageableDefault(size = 10) Pageable paginacion
+            @ParameterObject @PageableDefault(size = 10) Pageable paginacion
             )
     {
         return ResponseEntity.ok(supplierService.listSuppliers(paginacion));
