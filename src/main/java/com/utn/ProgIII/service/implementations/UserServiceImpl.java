@@ -19,6 +19,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class UserServiceImpl implements UserService {
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final UserValidations userValidations;
@@ -58,11 +60,13 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, UserValidations userValidations, CredentialValidations credentialValidations) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, UserValidations userValidations,
+                           CredentialValidations credentialValidations, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.userValidations = userValidations;
         this.credentialValidations = credentialValidations;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -142,26 +146,20 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserWithCredentialDTO updateUser(Long id, CreateUserDTO dto) {
-        User userToUpdate = userRepository.findById(id)
+        User currentUserData = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
+        User newUserData = userMapper.toEntity(dto);
 
-        userValidations.validateModifiedUserByDni(userToUpdate.getDni(),dto.dni());
-        credentialValidations.validateModifiedUsernameNotExists(userToUpdate.getCredential().getUsername(),
-                dto.credential().username());
+        userValidations.validateModifiedUserByDni(currentUserData.getDni(), newUserData.getDni());
+        credentialValidations.validateModifiedUsernameNotExists(currentUserData.getCredential().getUsername(),
+                newUserData.getCredential().getUsername());
 
-        userToUpdate.setFirstname(dto.firstname());
-        userToUpdate.setLastname(dto.lastname());
-        userToUpdate.setDni(dto.dni());
-        userToUpdate.setStatus(UserStatus.valueOf(dto.status().toUpperCase()));
+        newUserData.setIdUser(currentUserData.getIdUser());
+        newUserData.getCredential().setIdCredential(currentUserData.getCredential().getIdCredential());
 
-        Credential credentialToUpdate = userToUpdate.getCredential();
-        credentialToUpdate.setUsername(dto.credential().username());
-        credentialToUpdate.setPassword(dto.credential().password());
-        credentialToUpdate.setRole(Role.valueOf(dto.credential().role().toUpperCase()));
+        currentUserData = userRepository.save(newUserData);
 
-        userToUpdate = userRepository.save(userToUpdate);
-
-        return userMapper.toUserWithCredentialDTO(userToUpdate);
+        return userMapper.toUserWithCredentialDTO(currentUserData);
     }
 
     @Override
