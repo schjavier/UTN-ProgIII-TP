@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
         if(!userRepository.existsByCredentialRole(Role.ADMIN)) {
             CreateCredentialDTO testCreds = CreateCredentialDTO.builder()
                     .username("admin")
-                    .password("admin")
+                    .password("admin1234")
                     .role("ADMIN")
                     .build();
 
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
                     .build());
 
             System.out.println("No se han encontrado administradores, se ha creado uno por defecto");
-            System.out.println("El usuario es 'admin' y la contrasenia es 'admin'");
+            System.out.println("El usuario es 'admin' y la contrasenia es 'admin1234'");
         }
     }
 
