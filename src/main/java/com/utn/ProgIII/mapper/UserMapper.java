@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -29,7 +30,7 @@ public class UserMapper {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     Validator validator = factory.getValidator();
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder passwordEncoder;
     /**
      * Convierte una instancia de User en un DTO para ser mostrado en una respuesta json
      * @param user La instancia de usuario recibida desde el servicio
@@ -93,7 +94,7 @@ public class UserMapper {
             throw new ConstraintViolationException(violations);
         }
 
-        credential.setPassword(bCryptPasswordEncoder.encode(dto.credential().password()));
+        credential.setPassword(passwordEncoder.encode(dto.credential().password()));
         return result;
     }
 }
