@@ -70,7 +70,7 @@ public class UserMapper {
 
         result.setStatus(UserStatus.valueOf(dto.status().toUpperCase()));
 
-        if(!EnumUtils.isValidEnum(Role.class, dto.credential().role()))
+        if(!EnumUtils.isValidEnum(Role.class, dto.credential().role().toUpperCase()))
         {
             throw new InvalidRequestException("El rol no es valido");
         }
