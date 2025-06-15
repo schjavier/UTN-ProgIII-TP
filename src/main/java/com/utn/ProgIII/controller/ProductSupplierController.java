@@ -1,19 +1,15 @@
 package com.utn.ProgIII.controller;
 
-import com.utn.ProgIII.dto.CreateProductSupplierDTO;
-import com.utn.ProgIII.dto.ResponseProductSupplierDTO;
-import com.utn.ProgIII.dto.SupplierProductListDTO;
-import com.utn.ProgIII.dto.UpdateProductSupplierDTO;
+import com.utn.ProgIII.dto.*;
 import com.utn.ProgIII.service.interfaces.ProductSupplierService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 @RestController
@@ -91,6 +86,18 @@ public class ProductSupplierController {
         return ResponseEntity.ok(response);
 
     }
+
+    @GetMapping("/filter-product/{productId}")
+    @Operation(summary = "Devuelve una lista de precios de un producto segun su id. Contenidos dependen del permiso del usuario.")
+    @ApiResponse(responseCode = "200", description = "Lista devuelta",content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ProductPricesDTO.class)
+    ))
+    public ResponseEntity<ProductPricesDTO> listAllProductsByProduct(@PathVariable Long productId){
+        return ResponseEntity.ok(productSupplierService.listPricesByProduct(productId));
+    }
+
+
 
     @Operation(summary = "Actualiza los precios de los productos de un proveedor masivamente",
             description = "Actualiza los precios de los productos de un proveedor por medio de una lista en formato .csv, " +
