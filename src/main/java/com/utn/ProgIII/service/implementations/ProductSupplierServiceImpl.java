@@ -16,11 +16,14 @@ import com.utn.ProgIII.repository.ProductSupplierRepository;
 import com.utn.ProgIII.repository.SupplierRepository;
 import com.utn.ProgIII.service.interfaces.ProductSupplierService;
 import com.utn.ProgIII.validations.ProductSupplierValidations;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -110,22 +113,19 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
 
     }
 
-    public ProductPricesDTO listPricesByProduct(Long idProduct)
-    {
+    public ProductPricesDTO listPricesByProduct(Long idProduct) {
         Product product = productRepository.findById(idProduct).orElseThrow(() -> new ProductNotFoundException("El producto no existe"));
 
         List<?> priceList = new ArrayList<>();
 
-        /*if("empleado") necesito la implementacion de las acciones segun roles
-        {
+        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        List<String> userRoles = authorities.stream().map(GrantedAuthority::getAuthority).toList();
+
+        if (userRoles.contains("ROLE_MANAGER")) {
+            priceList = productSupplierRepository.listPricesByProductManager(idProduct);
+        } else if (userRoles.contains("ROLE_EMPLOYEE")) {
             priceList = productSupplierRepository.listPricesByProductEmployee(idProduct);
         }
-
-        if("admin/manager")
-        {
-            priceList = productSupplierRepository.listPricesByProductManager(idProduct);
-        }*/
-
 
         return new ProductPricesDTO(product.getIdProduct(),product.getName(),priceList);
     }
