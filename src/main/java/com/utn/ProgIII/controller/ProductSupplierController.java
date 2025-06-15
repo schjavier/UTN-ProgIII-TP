@@ -89,11 +89,29 @@ public class ProductSupplierController {
 
     @GetMapping("/filter-product/{productId}")
     @Operation(summary = "Devuelve una lista de precios de un producto segun su id. Contenidos dependen del permiso del usuario.")
-    @ApiResponse(responseCode = "200", description = "Lista devuelta",content = @Content(
-            mediaType = "application/json",
-            schema = @Schema(implementation = ProductPricesDTO.class)
-    ))
-    public ResponseEntity<ProductPricesDTO> listAllProductsByProduct(@PathVariable Long productId){
+    @ApiResponse(
+            responseCode = "200",
+            description = "Lista de precios devuelta",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProductPricesDTO.class),
+                    examples = {
+                            @ExampleObject(
+                                    name = "manager-view",
+                                    summary = "Vista para rol MANAGER o superior",
+                                    description = "Incluye todos los precios (costo y venta) y margenes de ganancia",
+                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idSupplier\": 1, \"companyName\": \"Proveedor\", \"cost\": 100.00, \"profitMargin\": 20.00, \"price\": 120.00}]}"
+                            ),
+                            @ExampleObject(
+                                    name = "employee-view",
+                                    summary = "Vista para rol EMPLOYEE",
+                                    description = "Solo muestra precios finales sin incluir margenes de ganancia",
+                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idSupplier\": 1, \"companyName\": \"Proveedor\", \"price\": 120.00}]}"
+                            )
+                    }
+            )
+    )
+    public ResponseEntity<ProductPricesDTO> listAllPricesByProduct(@PathVariable Long productId){
         return ResponseEntity.ok(productSupplierService.listPricesByProduct(productId));
     }
 

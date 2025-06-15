@@ -7,10 +7,11 @@ import java.util.List;
 
 public record ProductPricesDTO(
         @Schema(example = "1")
-        Long productId,
+        Long idProduct,
         @Schema(example = "Papas")
         String name,
-        @ArraySchema(schema = @Schema(oneOf = {ProductPriceSupplierEmployeeDTO.class,ProductPriceSupplierManagerDTO.class}))
+        @ArraySchema(schema = @Schema(oneOf = {ProductPriceSupplierEmployeeDTO.class,
+                ProductPriceSupplierManagerDTO.class}))
         List<?> prices
 ) {
 }
