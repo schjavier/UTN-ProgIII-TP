@@ -2,12 +2,11 @@ package com.utn.ProgIII.dto;
 
 
 import com.utn.ProgIII.model.Product.ProductStatus;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 
-public record ExtendedProductDTO(
+public record ExtendedProductManagerDTO(
         @Schema(example = "1")
         Long idProduct,
         @Schema(example = "Pasas de uva")
@@ -17,6 +16,5 @@ public record ExtendedProductDTO(
         @Schema(example = "30")
         BigDecimal profitMargin,
         @Schema(example = "260")
-        BigDecimal price,
-        ProductStatus status) {
+        BigDecimal price) {
 }

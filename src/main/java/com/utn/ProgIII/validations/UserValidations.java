@@ -49,4 +49,5 @@ public class UserValidations {
         return username.equals(user.getCredential().getUsername());
     }
 
+
 }

@@ -1,6 +1,5 @@
 package com.utn.ProgIII.dto;
 
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
@@ -10,5 +9,5 @@ public record SupplierProductListDTO(
         Long idSupplier,
         @Schema(example = "Compania test")
         String companyName,
-        List<ExtendedProductDTO> productsList) {
+        List<?> productsList) {
 }

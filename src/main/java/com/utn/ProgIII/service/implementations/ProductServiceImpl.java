@@ -8,12 +8,14 @@ import com.utn.ProgIII.mapper.ProductMapper;
 import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.Product.ProductStatus;
 import com.utn.ProgIII.repository.ProductRepository;
+import com.utn.ProgIII.service.interfaces.AuthService;
 import com.utn.ProgIII.service.interfaces.ProductService;
 import com.utn.ProgIII.validations.ProductValidations;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -22,20 +24,27 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final ProductValidations productValidations;
+    private final AuthService authService;
 
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, ProductValidations productValidations) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, ProductValidations productValidations, AuthService authService) {
 
         this.productRepository = productRepository;
         this.productMapper = productMapper;
         this.productValidations = productValidations;
+        this.authService = authService;
     }
 
 
     @Override
     public ProductDTO getProductById(Long id) {
-
         Product product = productRepository.findById(id)
                 .orElseThrow(()-> new ProductNotFoundException("Producto no encontrado"));
+
+        if((authService.hasRole("ROLE_EMPLOYEE") && authService.getRoleCount() == 1) && product.getStatus() == ProductStatus.DISABLED)
+        {
+            throw new ProductNotFoundException("Producto no encontrado");
+        }
+
 
         return productMapper.toProductDTO(product);
     }
@@ -43,7 +52,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> getAllProduct() {
 
-        List<Product> products = productRepository.findAll();
+        List<Product> products = new ArrayList<>();
+
+
+
+        if(authService.hasRole("ROLE_MANAGER"))
+        {
+            products = productRepository.findAll();
+        } else if (authService.hasRole("ROLE_EMPLOYEE")) {
+            products = productRepository.findByStatus(ProductStatus.ENABLED);
+        }
+
+
         List<ProductDTO> productDTOList = new ArrayList<>();
 
         for (Product product : products){
@@ -76,7 +96,12 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findByNameContaining(name);
         List<ProductDTO> productDTOS = new ArrayList<>();
 
-        for(Product product:products){
+        if(authService.hasRole("ROLE_EMPLOYEE") && authService.getRoleCount() == 1)
+        {
+            products = products.stream().filter(x -> x.getStatus() == ProductStatus.ENABLED).toList();
+        }
+
+        for(Product product : products){
             productDTOS.add(productMapper.toProductDTO(product));
         }
 

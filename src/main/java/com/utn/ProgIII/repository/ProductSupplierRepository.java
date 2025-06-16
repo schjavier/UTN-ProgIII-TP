@@ -1,9 +1,10 @@
 package com.utn.ProgIII.repository;
 
+import com.utn.ProgIII.dto.ExtendedProductEmployeeDTO;
 import com.utn.ProgIII.dto.ProductPriceSupplierEmployeeDTO;
 import com.utn.ProgIII.dto.ProductPriceSupplierManagerDTO;
 import com.utn.ProgIII.model.Product.Product;
-import com.utn.ProgIII.dto.ExtendedProductDTO;
+import com.utn.ProgIII.dto.ExtendedProductManagerDTO;
 import com.utn.ProgIII.model.ProductSupplier.ProductSupplier;
 import com.utn.ProgIII.model.Supplier.Supplier;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,11 +15,18 @@ import java.util.List;
 
 public interface ProductSupplierRepository extends JpaRepository<ProductSupplier, Long> {
 
-    @Query("SELECT NEW com.utn.ProgIII.dto.ExtendedProductDTO(" +
-            "p.idProduct, p.name, ps.cost, ps.profitMargin, ps.price, p.status) " +
+    @Query("SELECT NEW com.utn.ProgIII.dto.ExtendedProductManagerDTO(" +
+            "p.idProduct, p.name, ps.cost, ps.profitMargin, ps.price) " +
             "FROM ProductSupplier ps JOIN ps.product p " +
             "WHERE ps.supplier.id = :idSupplier")
-    List<ExtendedProductDTO> productsBySupplier(@Param("idSupplier") Long idSupplier);
+    List<ExtendedProductManagerDTO> productsBySupplierManager(@Param("idSupplier") Long idSupplier);
+
+    @Query("SELECT NEW com.utn.ProgIII.dto.ExtendedProductEmployeeDTO(" +
+            "p.idProduct, p.name, ps.price) " +
+            "FROM ProductSupplier ps JOIN ps.product p " +
+            "WHERE ps.supplier.id = :idSupplier")
+    List<ExtendedProductEmployeeDTO> productsBySupplierEmployee(@Param("idSupplier") Long idSupplier);
+
 
 
     @Query("SELECT NEW com.utn.ProgIII.dto.ProductPriceSupplierManagerDTO(" +

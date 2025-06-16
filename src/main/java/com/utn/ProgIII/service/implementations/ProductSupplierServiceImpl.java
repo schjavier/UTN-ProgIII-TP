@@ -6,7 +6,6 @@ import com.utn.ProgIII.exceptions.InvalidRequestException;
 import com.utn.ProgIII.exceptions.ProductNotFoundException;
 import com.utn.ProgIII.exceptions.ProductSupplierNotExistException;
 import com.utn.ProgIII.exceptions.SupplierNotFoundException;
-import com.utn.ProgIII.mapper.ProductMapper;
 import com.utn.ProgIII.mapper.ProductSupplierMapper;
 import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.ProductSupplier.*;
@@ -14,16 +13,14 @@ import com.utn.ProgIII.model.Supplier.Supplier;
 import com.utn.ProgIII.repository.ProductRepository;
 import com.utn.ProgIII.repository.ProductSupplierRepository;
 import com.utn.ProgIII.repository.SupplierRepository;
+import com.utn.ProgIII.service.interfaces.AuthService;
 import com.utn.ProgIII.service.interfaces.ProductSupplierService;
 import com.utn.ProgIII.validations.ProductSupplierValidations;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -35,7 +32,7 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     private final ProductSupplierMapper mapper;
     private final ProductSupplierValidations productSupplierValidations;
     private final CsvReader csvReader;
-    private final ProductMapper productMapper;
+    private final AuthService authService;
 
     public ProductSupplierServiceImpl(ProductSupplierRepository productSupplierRepository,
                                       ProductRepository productRepository,
@@ -43,7 +40,7 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
                                       ProductSupplierMapper mapper,
                                       ProductSupplierValidations productSupplierValidations,
                                       CsvReader csvReader,
-                                      ProductMapper productMapper
+                                      AuthService authService
     ){
 
         this.productSupplierRepository = productSupplierRepository;
@@ -52,7 +49,7 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         this.mapper = mapper;
         this.productSupplierValidations = productSupplierValidations;
         this.csvReader = csvReader;
-        this.productMapper = productMapper;
+        this.authService = authService;
     }
 
 
@@ -103,12 +100,20 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         Supplier supplier = supplierRepository.findByCompanyName(companyName)
                 .orElseThrow(() -> new SupplierNotFoundException("El proveedor no existe"));
 
-        List<ExtendedProductDTO> extendedProductDTOList = productSupplierRepository.productsBySupplier(supplier.getIdSupplier());
+        List<?> priceList = new ArrayList<>();
+        //List<String> userRoles = authService.getAuthorities();
+
+        if(authService.hasRole("ROLE_MANAGER")){
+            priceList = productSupplierRepository.productsBySupplierManager(supplier.getIdSupplier());
+        } else if (authService.hasRole("ROLE_EMPLOYEE")) {
+            priceList = productSupplierRepository.productsBySupplierEmployee(supplier.getIdSupplier());
+        }
+
 
         return new SupplierProductListDTO(
                 supplier.getIdSupplier(),
                 supplier.getCompanyName(),
-                extendedProductDTOList
+                priceList
         );
 
     }
@@ -118,12 +123,9 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
 
         List<?> priceList = new ArrayList<>();
 
-        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        List<String> userRoles = authorities.stream().map(GrantedAuthority::getAuthority).toList();
-
-        if (userRoles.contains("ROLE_MANAGER")) {
+        if(authService.hasRole("ROLE_MANAGER")){
             priceList = productSupplierRepository.listPricesByProductManager(idProduct);
-        } else if (userRoles.contains("ROLE_EMPLOYEE")) {
+        } else if (authService.hasRole("ROLE_EMPLOYEE")) {
             priceList = productSupplierRepository.listPricesByProductEmployee(idProduct);
         }
 
