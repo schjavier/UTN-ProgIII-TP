@@ -115,8 +115,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<String> handleAuthException(){
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("El usuario y la contraseña no coinciden");
+    public ResponseEntity<String> handleAuthException(AuthenticationException e){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No se encontro el usuario");
     }
 
     @ExceptionHandler(UnexpectedServerErrorException.class)
@@ -151,6 +151,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleMissingParams(MissingServletRequestParameterException ex) {
         String name = ex.getParameterName();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El parametro \"" + name + "\" esta ausente");
+    }
+
+    @ExceptionHandler(ForbiddenModificationException.class)
+    public ResponseEntity<String> forbiddenModificationException(ForbiddenModificationException e)
+    {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
 }

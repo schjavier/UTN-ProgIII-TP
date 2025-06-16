@@ -234,10 +234,14 @@ SELECT * FROM product_supplier;
 
 DELETE FROM product_supplier;
 
-*/
 SELECT * FROM user u INNER JOIN credential c ON c.id_credential = u.id_credential;
+SELECT * FROM credential;
 SELECT s.id_supplier, s.company_name,ps.cost,ps.profit_margin,ps.price
 FROM product_supplier ps
-INNER JOIN supplier s 
+INNER JOIN supplier s
 ON ps.id_supplier = s.id_supplier
 WHERE id_product = 2;
+
+SELECT * FROM product;
+UPDATE credential SET password = "admin" WHERE id_credential = 1;
+*/

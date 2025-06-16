@@ -32,7 +32,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
         public String login(LoginRequestDTO loginRequestDTO) {
-
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginRequestDTO.username(),
                 loginRequestDTO.password()

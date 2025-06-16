@@ -1,5 +1,6 @@
 package com.utn.ProgIII.repository;
 
+import com.utn.ProgIII.model.Credential.Credential;
 import com.utn.ProgIII.model.Credential.Role;
 import com.utn.ProgIII.model.User.User;
 import com.utn.ProgIII.model.User.UserStatus;
@@ -21,5 +22,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     List<User> findByCredential_Role(Role credentialRole);
 
     List<User> findByCredential_RoleAndStatus(Role role, UserStatus userStatus);
+
+    User findByCredential(Credential credential);
 
 }

@@ -104,6 +104,10 @@ public class UserController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(examples = {"El nombre de usuario ya existe en la base de datos", "El dni ingresado ya se encuentra registrado"})
     ))
+    @ApiResponse(responseCode = "403", description = "Modificaciones no permitidas", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "(Un mensaje de error diciendo al administrador que no puede cambiar su nivel de acceso o estado de cuenta)")
+    ))
     @PutMapping("/{id}")
     public ResponseEntity<UserWithCredentialDTO> updateUser(@PathVariable Long id,
                                                             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Los datos cambiados del usuario")

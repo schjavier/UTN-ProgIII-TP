@@ -3,6 +3,7 @@ package com.utn.ProgIII.service.implementations;
 import com.utn.ProgIII.dto.CreateCredentialDTO;
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
+import com.utn.ProgIII.exceptions.ForbiddenModificationException;
 import com.utn.ProgIII.exceptions.InvalidRequestException;
 import com.utn.ProgIII.exceptions.SelfDeleteUserException;
 import com.utn.ProgIII.exceptions.UserNotFoundException;
@@ -150,6 +151,16 @@ public class UserServiceImpl implements UserService {
         userValidations.validateModifiedUserByDni(currentUserData.getDni(), newUserData.getDni());
         credentialValidations.validateModifiedUsernameNotExists(currentUserData.getCredential().getUsername(),
                 newUserData.getCredential().getUsername());
+
+        if(userValidations.checkifRequestedUserIsTheSame(newUserData) && newUserData.getStatus() == UserStatus.DISABLED)
+        {
+            throw new ForbiddenModificationException("No podes desactivar tu usuario");
+        }
+
+        if(userValidations.checkifRequestedUserIsTheSame(newUserData) && newUserData.getCredential().getRole() != Role.ADMIN)
+        {
+            throw new ForbiddenModificationException("No podes cambiarte a ese rol");
+        }
 
         newUserData.setIdUser(currentUserData.getIdUser());
         newUserData.getCredential().setIdCredential(currentUserData.getCredential().getIdCredential());
