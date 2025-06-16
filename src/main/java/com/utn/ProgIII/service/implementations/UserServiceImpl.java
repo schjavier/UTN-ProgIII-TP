@@ -101,37 +101,36 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Muestra los datos de todos los usuarios presentes en el sistema
-     *
+     * Muestra los datos de todos los usuarios presentes en el sistema, segun el rol o estado
+     * @param role El rol de los usuarios que se desea ver
+     * @param status El estado de los usuarios que se desea ver
      * @return Una lista con los DTO de cada usuario existente en el sistema
+     * @throws InvalidRequestException Si alguno de los parametros tiene valores erroneos
      * <p>
      */
     @Override
-    public List<UserWithCredentialDTO> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        List<UserWithCredentialDTO> usersDTO = new ArrayList<UserWithCredentialDTO>();
+    public List<UserWithCredentialDTO> filterUsers(String role, String status) {
+        List<User> users;
+        List<UserWithCredentialDTO> usersDTO = new ArrayList<>();
+
+        if(role!= null && !EnumUtils.isValidEnum(Role.class, role.toUpperCase())) throw new InvalidRequestException("Ese rol no esta presente");
+        if(status != null && !EnumUtils.isValidEnum(UserStatus.class, status.toUpperCase())) throw new InvalidRequestException("Ese estado no esta presente");
+
+        if (role == null && status == null) {
+            users = userRepository.findAll();
+        } else if (status == null) {
+            users = userRepository.findByCredential_Role(Role.valueOf(role.toUpperCase()));
+        } else if (role == null) {
+            users = userRepository.findAllByStatus(UserStatus.valueOf(status.toUpperCase()));
+        } else {
+            users = userRepository.findByCredential_RoleAndStatus(Role.valueOf(role.toUpperCase()),UserStatus.valueOf(status.toUpperCase()));
+        }
 
         for (User user: users) {
             usersDTO.add(userMapper.toUserWithCredentialDTO(user));
         }
 
         return usersDTO;
-    }
-
-    public List<UserWithCredentialDTO> getUsersByStatus(String status)
-    {
-
-        List<User> users;
-        if(EnumUtils.isValidEnum(UserStatus.class, status))
-        {
-            users = userRepository.findAllByStatus(UserStatus.valueOf(status));
-        } else if (status.equals("ALL")) {
-            users = userRepository.findAll();
-        } else {
-            throw new InvalidRequestException("Ese estado no esta presente");
-        }
-
-        return users.stream().map(userMapper::toUserWithCredentialDTO).toList();
     }
 
     /**

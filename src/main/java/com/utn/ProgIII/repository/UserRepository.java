@@ -17,4 +17,9 @@ public interface UserRepository extends JpaRepository<User,Long> {
     List<User> findAllByStatus(UserStatus status);
 
     boolean existsByCredentialRole(Role credentialRole);
+
+    List<User> findByCredential_Role(Role credentialRole);
+
+    List<User> findByCredential_RoleAndStatus(Role role, UserStatus userStatus);
+
 }

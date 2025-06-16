@@ -2,7 +2,6 @@ package com.utn.ProgIII.controller;
 
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
-import com.utn.ProgIII.dto.ViewSupplierDTO;
 import com.utn.ProgIII.service.interfaces.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -13,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +20,7 @@ import java.util.List;
  * Clase que se encarga del procesamiento de las solicitudes recibidas desde el front
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 @Tag(name = "Usuarios", description = "Operaciones relacionadas con los usuarios")
 public class UserController {
     private final UserService userService;
@@ -52,35 +50,22 @@ public class UserController {
     }
 
     /**
-     * Muestra todos los usuarios que hay en el sistema
-     * @return Una respuesta en formato json con los datos de los usuarios
+     * Muestra todos los usuarios que cumplan con los criterios solicitados o todos si no se especifica
+     * @return Una respuesta en formato json con los datos de los usuarios que cumplen los criterios solicitados
      */
-    @Operation(summary = "Obtener una lista de todos los usuarios", description = "Retorna una lista de todos los usuarios")
+    @Operation(summary = "Obtener una lista de todos los usuarios que tengan un rol o estado solicitado",
+            description = "Retorna una lista de todos los usuarios que cumplan los criterios solicitados," +
+                    "si no se solicita ninguno, se retornan todos los usuarios existentes")
     @ApiResponse(responseCode = "200",description = "Usuarios encontrados",content = @Content(
             mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = UserWithCredentialDTO.class))
     ))
     @GetMapping()
-    public ResponseEntity<List<UserWithCredentialDTO>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<List<UserWithCredentialDTO>> getOrFilterUsers(@RequestParam(required = false) String role,
+                                                                        @RequestParam(required = false) String status) {
+        return ResponseEntity.ok(userService.filterUsers(role,status));
     }
 
-    /**
-     * Muestra los datos de los usuarios según su estado (activo, dado de baja o ambos)
-     * @param status El estado de los usuarios que se desea ver (ENABLED, DISABLED o ALL (todos))
-     * @return Una respuesta en formato json con los datos de los usuarios filtrados por estado
-     */
-    @Operation(summary = "Obtener una lista de usuarios segun su status", description = "Retorna una lista de usuarios por estado")
-    @ApiResponse(responseCode = "200",description = "Usuarios encontrados",content = @Content(
-            mediaType = "application/json",
-            array = @ArraySchema(schema = @Schema(implementation = UserWithCredentialDTO.class))
-    ))
-    @ApiResponse(responseCode = "400",description = "Pedido malformado", content = @Content())
-    @GetMapping("/filter")
-    public ResponseEntity<List<UserWithCredentialDTO>> getUsersByStatus(
-            @RequestParam(defaultValue = "ENABLED") String status) {
-        return ResponseEntity.ok(userService.getUsersByStatus(status));
-    }
 
     /**
      * Se crea un nuevo usuario y credenciales en el sistema a partir de la informacion recibida en el cuerpo de la request

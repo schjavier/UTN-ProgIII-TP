@@ -36,7 +36,7 @@ public class ProductSupplierController {
     @PostMapping
     @Operation(summary = "Crea un ProductSupplier", description = "Crea una relacion entre un proveedor y producto")
     @ApiResponse(responseCode = "200", description = "Creado")
-    @ApiResponse(responseCode = "404", description = "Datos malformados", content = @Content(
+    @ApiResponse(responseCode = "404", description = "Datos erroneos", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(description = "Un mensaje que tiene un error de usuario")
     ))
@@ -54,7 +54,7 @@ public class ProductSupplierController {
 
     @PatchMapping("/{id}")
     @ApiResponse(responseCode = "200",description = "Datos modificados")
-    //@ApiResponse(responseCode = "400",description = "Datos malformados") esto no se lanza?
+    //@ApiResponse(responseCode = "400",description = "Datos erroneos") esto no se lanza?
     @ApiResponse(responseCode = "404",description = "Relacion no encontrada", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "La relación que quiere editar no se encuentra")

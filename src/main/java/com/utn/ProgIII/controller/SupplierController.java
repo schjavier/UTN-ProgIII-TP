@@ -76,7 +76,7 @@ public class SupplierController {
                             mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = ViewSupplierDTO.class)))
             })
-    @ApiResponse(responseCode = "400", description = "Datos malformados", content = @Content(
+    @ApiResponse(responseCode = "400", description = "Datos erroneos", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "No property 'companyNam' found for type 'Supplier'; Did you mean 'companyName'")
     ))
