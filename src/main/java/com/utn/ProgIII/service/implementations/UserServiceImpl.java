@@ -20,6 +20,7 @@ import org.apache.commons.lang3.EnumUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -101,22 +102,21 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Muestra los datos de todos los usuarios presentes en el sistema
+     *
      * @return Una lista con los DTO de cada usuario existente en el sistema
+     * <p>
      */
-    /* sin usos.
     @Override
     public List<UserWithCredentialDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
-        List<UserWithCredentialDTO> usersWithCredential = new ArrayList<>();
+        List<UserWithCredentialDTO> usersDTO = new ArrayList<UserWithCredentialDTO>();
 
-        for (User user : users) {
-            usersWithCredential.add(userMapper.
-                    toUserWithCredentialDTO(user));
+        for (User user: users) {
+            usersDTO.add(userMapper.toUserWithCredentialDTO(user));
         }
 
-        return usersWithCredential;
-    }*/
-
+        return usersDTO;
+    }
 
     public List<UserWithCredentialDTO> getUsersByStatus(String status)
     {

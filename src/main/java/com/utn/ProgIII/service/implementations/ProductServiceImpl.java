@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -29,7 +28,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductValidations productValidations;
     private final AuthService authService;
 
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, ProductSupplierRepository productSupplierRepository, , ProductValidations productValidations, AuthService authService) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, ProductSupplierRepository productSupplierRepository, ProductValidations productValidations, AuthService authService) {
 
         this.productRepository = productRepository;
         this.productMapper = productMapper;

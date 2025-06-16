@@ -39,17 +39,30 @@ public class UserController {
      */
     @Operation(summary = "Obtener un usuario por id", description = "Obtiene un usuario mediante id")
     @ApiResponse(responseCode = "200",description = "Usuario encontrado", content = @Content(
-            mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(implementation = UserWithCredentialDTO.class)
     ))
     @ApiResponse(responseCode = "404",description = "Usuario no encontrado", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "Usuario no encontrado")
     ))
-    @GetMapping()
-    public ResponseEntity<UserWithCredentialDTO> getUserById(@RequestParam Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<UserWithCredentialDTO> getUserById(@PathVariable Long id) {
         UserWithCredentialDTO response = userService.getUserById(id);
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Muestra todos los usuarios que hay en el sistema
+     * @return Una respuesta en formato json con los datos de los usuarios
+     */
+    @Operation(summary = "Obtener una lista de todos los usuarios", description = "Retorna una lista de todos los usuarios")
+    @ApiResponse(responseCode = "200",description = "Usuarios encontrados",content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = UserWithCredentialDTO.class))
+    ))
+    @GetMapping()
+    public ResponseEntity<List<UserWithCredentialDTO>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     /**
@@ -106,8 +119,8 @@ public class UserController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(examples = {"El nombre de usuario ya existe en la base de datos", "El dni ingresado ya se encuentra registrado"})
     ))
-    @PutMapping()
-    public ResponseEntity<UserWithCredentialDTO> updateUser(@RequestParam Long id,
+    @PutMapping("/{id}")
+    public ResponseEntity<UserWithCredentialDTO> updateUser(@PathVariable Long id,
                                                             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Los datos cambiados del usuario")
                                                             @RequestBody CreateUserDTO dto) {
         UserWithCredentialDTO response = userService.updateUser(id, dto);
@@ -135,9 +148,9 @@ public class UserController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "No podes eliminar tu usuario")
     ))
-    @DeleteMapping()
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(
-            @RequestParam Long id,
+            @PathVariable Long id,
             @RequestParam(defaultValue = "soft") String deletionType) {
 
         userService.deleteOrRemoveUser(id, deletionType);
