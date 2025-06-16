@@ -8,8 +8,10 @@ import com.utn.ProgIII.mapper.ProductMapper;
 import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.Product.ProductStatus;
 import com.utn.ProgIII.repository.ProductRepository;
+import com.utn.ProgIII.repository.ProductSupplierRepository;
 import com.utn.ProgIII.service.interfaces.AuthService;
 import com.utn.ProgIII.service.interfaces.ProductService;
+import jakarta.transaction.Transactional;
 import com.utn.ProgIII.validations.ProductValidations;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +25,15 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final ProductSupplierRepository productSupplierRepository;
     private final ProductValidations productValidations;
     private final AuthService authService;
 
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, ProductValidations productValidations, AuthService authService) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, ProductSupplierRepository productSupplierRepository, , ProductValidations productValidations, AuthService authService) {
 
         this.productRepository = productRepository;
         this.productMapper = productMapper;
+        this.productSupplierRepository = productSupplierRepository;
         this.productValidations = productValidations;
         this.authService = authService;
     }
@@ -37,6 +41,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO getProductById(Long id) {
+
         Product product = productRepository.findById(id)
                 .orElseThrow(()-> new ProductNotFoundException("Producto no encontrado"));
 
@@ -132,12 +137,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void deleteProduct(Long id) {
 
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado"));
 
         product.setStatus(ProductStatus.DISABLED);
+        productSupplierRepository.removeAllByProduct_IdProduct(id);
 
         productRepository.save(product);
 

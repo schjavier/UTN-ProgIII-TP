@@ -25,7 +25,7 @@ public class Product {
     @Size(min = 3, max = 50, message = "El nombre del producto debe contener entre 3 y 50 caracteres")
     private String name;
 
-    @OneToMany (mappedBy = "idProductSupplier")
+    @OneToMany (mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @ToString.Exclude
     private List<ProductSupplier> productSuppliers;
 
