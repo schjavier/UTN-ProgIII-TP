@@ -11,15 +11,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductSupplierRepository extends JpaRepository<ProductSupplier, Long> {
 
     @Query("SELECT NEW com.utn.ProgIII.dto.ExtendedProductManagerDTO(" +
-            "p.idProduct, p.name, ps.cost, ps.profitMargin, ps.price) " +
+            "p.idProduct, p.name, ps.cost, ps.profitMargin, ps.price, ps.price/:dolarPrice) " +
             "FROM ProductSupplier ps JOIN ps.product p " +
             "WHERE ps.supplier.id = :idSupplier")
-    List<ExtendedProductManagerDTO> productsBySupplierManager(@Param("idSupplier") Long idSupplier);
+    List<ExtendedProductManagerDTO> productsBySupplierManager(@Param("idSupplier") Long idSupplier, @Param("dolarPrice") BigDecimal dollarPrice);
 
     @Query("SELECT NEW com.utn.ProgIII.dto.ExtendedProductEmployeeDTO(" +
             "p.idProduct, p.name, ps.price) " +
@@ -30,10 +31,10 @@ public interface ProductSupplierRepository extends JpaRepository<ProductSupplier
 
 
     @Query("SELECT NEW com.utn.ProgIII.dto.ProductPriceSupplierManagerDTO(" +
-            "s.idSupplier, s.companyName, ps.cost, ps.profitMargin, ps.price) " +
+            "s.idSupplier, s.companyName, ps.cost, ps.profitMargin, ps.price, ps.price/:dolarPrice) " +
             "FROM ProductSupplier ps JOIN ps.supplier s " +
             "WHERE ps.product.idProduct = :idProduct")
-    List<ProductPriceSupplierManagerDTO> listPricesByProductManager(@Param("idProduct") Long idProduct);
+    List<ProductPriceSupplierManagerDTO> listPricesByProductManager(@Param("idProduct") Long idProduct, @Param("dolarPrice") BigDecimal dollarPrice);
 
     @Query("SELECT NEW com.utn.ProgIII.dto.ProductPriceSupplierEmployeeDTO(" +
             "s.idSupplier, s.companyName, ps.price) " +

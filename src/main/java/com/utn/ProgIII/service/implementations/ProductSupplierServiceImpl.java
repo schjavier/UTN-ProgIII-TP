@@ -14,6 +14,7 @@ import com.utn.ProgIII.repository.ProductRepository;
 import com.utn.ProgIII.repository.ProductSupplierRepository;
 import com.utn.ProgIII.repository.SupplierRepository;
 import com.utn.ProgIII.service.interfaces.AuthService;
+import com.utn.ProgIII.service.interfaces.MiscService;
 import com.utn.ProgIII.service.interfaces.ProductSupplierService;
 import com.utn.ProgIII.validations.ProductSupplierValidations;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     private final ProductSupplierValidations productSupplierValidations;
     private final CsvReader csvReader;
     private final AuthService authService;
+    private final MiscService miscService;
 
     public ProductSupplierServiceImpl(ProductSupplierRepository productSupplierRepository,
                                       ProductRepository productRepository,
@@ -40,7 +42,8 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
                                       ProductSupplierMapper mapper,
                                       ProductSupplierValidations productSupplierValidations,
                                       CsvReader csvReader,
-                                      AuthService authService
+                                      AuthService authService,
+                                      MiscService miscService
     ){
 
         this.productSupplierRepository = productSupplierRepository;
@@ -50,6 +53,7 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         this.productSupplierValidations = productSupplierValidations;
         this.csvReader = csvReader;
         this.authService = authService;
+        this.miscService = miscService;
     }
 
 
@@ -101,10 +105,11 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
                 .orElseThrow(() -> new SupplierNotFoundException("El proveedor no existe"));
 
         List<?> priceList = new ArrayList<>();
-        //List<String> userRoles = authService.getAuthorities();
 
         if(authService.hasRole("ROLE_MANAGER")){
-            priceList = productSupplierRepository.productsBySupplierManager(supplier.getIdSupplier());
+            BigDecimal dolar = miscService.searchDollarPrice().venta();
+
+            priceList = productSupplierRepository.productsBySupplierManager(supplier.getIdSupplier(),dolar);
         } else if (authService.hasRole("ROLE_EMPLOYEE")) {
             priceList = productSupplierRepository.productsBySupplierEmployee(supplier.getIdSupplier());
         }
@@ -124,7 +129,9 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         List<?> priceList = new ArrayList<>();
 
         if(authService.hasRole("ROLE_MANAGER")){
-            priceList = productSupplierRepository.listPricesByProductManager(idProduct);
+            BigDecimal dolar = miscService.searchDollarPrice().venta();
+
+            priceList = productSupplierRepository.listPricesByProductManager(idProduct,dolar);
         } else if (authService.hasRole("ROLE_EMPLOYEE")) {
             priceList = productSupplierRepository.listPricesByProductEmployee(idProduct);
         }

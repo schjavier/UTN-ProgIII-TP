@@ -16,5 +16,8 @@ public record ExtendedProductManagerDTO(
         @Schema(example = "30")
         BigDecimal profitMargin,
         @Schema(example = "260")
-        BigDecimal price) {
+        BigDecimal price,
+        @Schema(example = "0.01")
+        BigDecimal dollarPrice
+) {
 }

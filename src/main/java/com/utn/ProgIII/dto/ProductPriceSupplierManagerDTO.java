@@ -14,7 +14,9 @@ public record ProductPriceSupplierManagerDTO(
         @Schema(example = "100")
         BigDecimal profitMargin,
         @Schema(example = "200")
-        BigDecimal price
+        BigDecimal price,
+        @Schema(example = "0.01")
+        BigDecimal dollarPrice
 ) {
 
 }

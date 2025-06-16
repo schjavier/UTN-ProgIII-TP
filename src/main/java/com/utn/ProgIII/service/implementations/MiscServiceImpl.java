@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 @Service
 public class MiscServiceImpl implements MiscService {
@@ -22,7 +23,7 @@ public class MiscServiceImpl implements MiscService {
     private DollarMapper dollarmapper;
 
     @Override
-    public ViewDolarDTO searchDollarPrice() { // podriamos usar esto cuando se consulten los precios de los productos?????
+    public ViewDolarDTO searchDollarPrice() {
         JSONObject dolar;
         try {
             BackendRequest dollarrequest = new BackendRequest(dolar_api_url,"dolares/oficial");
