@@ -31,7 +31,7 @@ public class User {
     private String firstname;
 
     @Pattern(regexp = "^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+( [A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)*$",
-            message = "El nombre debe contener letras y las iniciales deben estar en mayusculas")
+            message = "El apellido debe contener letras y las iniciales deben estar en mayusculas")
     @NotBlank(message = "El apellido no debe estar vacio")
     @Size(min = 3, max = 50, message = "El apellido debe contener entre 3 y 50 letras")
     private String lastname;
