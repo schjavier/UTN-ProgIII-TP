@@ -1,9 +1,6 @@
 package com.utn.ProgIII.controller;
 
-import com.utn.ProgIII.dto.CreateProductSupplierDTO;
-import com.utn.ProgIII.dto.ResponseProductSupplierDTO;
-import com.utn.ProgIII.dto.SupplierProductListDTO;
-import com.utn.ProgIII.dto.UpdateProductSupplierDTO;
+import com.utn.ProgIII.dto.*;
 import com.utn.ProgIII.service.interfaces.ProductSupplierService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -17,8 +14,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,10 +83,19 @@ public class ProductSupplierController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "El proveedor no existe")
     ))
-    @GetMapping("/filter/{companyName}")
+    @GetMapping("/filterFull/{companyName}")
+    @PreAuthorize("hasAnyRole('Manager','Admin')")
     public ResponseEntity<SupplierProductListDTO> listAllProductsBySupplier(@PathVariable String companyName){
 
         SupplierProductListDTO response = productSupplierService.listProductsBySupplier(companyName);
+        return ResponseEntity.ok(response);
+
+    }
+
+    @GetMapping("/filter/{companyName}")
+    public ResponseEntity<SupplierProductListToEmployeeDTO> listAllProductsBySupplierToEmployee (@PathVariable String companyName){
+
+        SupplierProductListToEmployeeDTO response = productSupplierService.listProductSupplierToEmployee(companyName);
         return ResponseEntity.ok(response);
 
     }
@@ -140,5 +148,16 @@ public class ProductSupplierController {
 
         return ResponseEntity.ok(response);
     }
+
+    //nuevo
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getProductSupplierById(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        return ResponseEntity.ok(productSupplierService.getProductSupplierById(id, authentication));
+    }
+
+
 
 }

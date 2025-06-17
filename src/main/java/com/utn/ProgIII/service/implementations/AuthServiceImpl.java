@@ -4,10 +4,9 @@ import com.utn.ProgIII.dto.LoginRequestDTO;
 import com.utn.ProgIII.security.JwtUtil;
 import com.utn.ProgIII.security.UserDetailServiceImpl;
 import com.utn.ProgIII.service.interfaces.AuthService;
-import com.utn.ProgIII.validations.CredentialValidations;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -40,6 +39,19 @@ public class AuthServiceImpl implements AuthService {
         return jwtUtil.generateToken(userDetails);
 
     }
+
+
+    //nuevo
+    public boolean hasRole(Authentication authentication, String role) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return false;
+        }
+
+        return authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_" + role));
+    }
+
+
 
 
 }

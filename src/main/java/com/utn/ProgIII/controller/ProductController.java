@@ -1,8 +1,12 @@
 package com.utn.ProgIII.controller;
 
 import com.utn.ProgIII.dto.ProductDTO;
+import com.utn.ProgIII.dto.ProductToEmployeeDTO;
+import com.utn.ProgIII.dto.ViewSupplierDTO;
 import com.utn.ProgIII.model.Product.ProductStatus;
+import com.utn.ProgIII.repository.ProductRepository;
 import com.utn.ProgIII.service.interfaces.ProductService;
+import com.utn.ProgIII.service.interfaces.SupplierService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,10 +28,12 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final SupplierService supplierService;
 
 
-    public ProductController (ProductService productService) {
+    public ProductController (ProductService productService, SupplierService supplierService) {
         this.productService = productService;
+        this.supplierService = supplierService;
     }
 
 
@@ -50,13 +57,13 @@ public class ProductController {
     }
 
 
-    //muestra 1 solo producto
+    //muestra 1 solo producto para manager
 
-    @GetMapping ("/{id}")
+    @GetMapping ("/searchFull/{id}")
     @ApiResponse(responseCode = "200", description = "Producto encontrado")
-    @ApiResponse(responseCode = "404", description = "Proveedor no encontrado", content = @Content(
+    @ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
-            schema = @Schema(example = "Proveedor no encontrado")
+            schema = @Schema(example = "Producto no encontrado")
     ))
     @Operation(summary = "Se muestra un producto por id", description = "Se muestra el producto con todos sus datos")
     public ResponseEntity<ProductDTO> getProductById (@PathVariable Long id) {
@@ -64,6 +71,7 @@ public class ProductController {
 
         return ResponseEntity.ok(response);
     }
+
 
     //muestra la lista de todos los productos
     @GetMapping()

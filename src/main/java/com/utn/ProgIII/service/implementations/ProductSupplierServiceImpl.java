@@ -15,10 +15,14 @@ import com.utn.ProgIII.repository.ProductSupplierRepository;
 import com.utn.ProgIII.repository.SupplierRepository;
 import com.utn.ProgIII.service.interfaces.ProductSupplierService;
 import com.utn.ProgIII.validations.ProductSupplierValidations;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,12 +35,15 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     private final ProductSupplierValidations productSupplierValidations;
     private final CsvReader csvReader;
 
+    //nuevo
+    private final AuthServiceImpl authService;
+
     public ProductSupplierServiceImpl(ProductSupplierRepository productSupplierRepository,
                                       ProductRepository productRepository,
                                       SupplierRepository supplierRepository,
                                       ProductSupplierMapper mapper,
                                       ProductSupplierValidations productSupplierValidations,
-                                      CsvReader csvReader){
+                                      CsvReader csvReader, AuthServiceImpl authService){
 
         this.productSupplierRepository = productSupplierRepository;
         this.productRepository = productRepository;
@@ -44,8 +51,67 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         this.mapper = mapper;
         this.productSupplierValidations = productSupplierValidations;
         this.csvReader = csvReader;
+        this.authService = authService;
     }
 
+    @Override
+    public Object getProductSupplierById(Long id, Authentication authentication) {
+        ProductSupplier productSupplier = productSupplierRepository.findByIdWithRelations(id)
+                .orElseThrow(() -> new EntityNotFoundException("Producto con ID: " + id + " no encontrado"));
+
+        if (authService.hasRole(authentication, "MANAGER")) {
+
+            return mapToFullDTO(productSupplier);
+
+        } else {
+            return mapToEmployeeDTO(productSupplier);
+        }
+    }
+
+    private ProductToEmployeeDTO mapToEmployeeDTO(ProductSupplier ps) {
+        return new ProductToEmployeeDTO(
+                ps.getProduct().getIdProduct(),
+                ps.getProduct().getName(),
+                ps.getSupplier().getCompanyName(),
+                ps.getPrice()
+        );
+    }
+
+    private ResponseProductSupplierDTO mapToFullDTO(ProductSupplier ps) {
+        return new ResponseProductSupplierDTO(
+                ps.getIdProductSupplier(),
+                ps.getProduct().getIdProduct(),
+                ps.getProduct().getName(),
+                ps.getSupplier().getIdSupplier(),
+                ps.getSupplier().getCompanyName(),
+                ps.getCost(),
+                ps.getProfitMargin(),
+                ps.getPrice()
+        );
+    }
+//
+//    private ProductToEmployeeDTO mapperProductToEmployeeDTO (ExtendedProductDTO extendedProductDTO, String companyName){
+//        return new ProductToEmployeeDTO(
+//                extendedProductDTO.idProduct(),
+//                extendedProductDTO.name(),
+//                companyName,
+//                extendedProductDTO.price()
+//        );
+//    }
+//
+//    private List<ProductToEmployeeDTO> listProductToEmployeeDTO (List<ExtendedProductDTO> extendedProductDTOList, String companyName){
+//
+//       List<ProductToEmployeeDTO>listProductToEmployeeDTO = new ArrayList<>();
+//
+//       for(ExtendedProductDTO productToEmployee : extendedProductDTOList){
+//
+//           listProductToEmployeeDTO.add(mapperProductToEmployeeDTO(productToEmployee,companyName));
+//       }
+//
+//        return listProductToEmployeeDTO;
+//    }
+
+    // *****
 
     @Override
     public ResponseProductSupplierDTO createProductSupplier(CreateProductSupplierDTO createProductSupplierDTO) {
@@ -96,12 +162,26 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
 
         List<ExtendedProductDTO> extendedProductDTOList = productSupplierRepository.productsBySupplier(supplier.getIdSupplier());
 
+
         return new SupplierProductListDTO(
                 supplier.getIdSupplier(),
                 supplier.getCompanyName(),
-                extendedProductDTOList
-        );
+                extendedProductDTOList);
+    }
 
+    @Override
+    public SupplierProductListToEmployeeDTO listProductSupplierToEmployee (String companyName){
+
+        Supplier supplier = supplierRepository.findByCompanyName(companyName)
+                .orElseThrow(() -> new SupplierNotFoundException("El proveedor no existe"));
+
+        List<ExtendedProductToEmployeeDTO> supplierProductListToEmployeeDTOS = productSupplierRepository.productsBySupplierToEmployee(supplier.getIdSupplier());
+
+        return new SupplierProductListToEmployeeDTO(
+                supplier.getIdSupplier(),
+                supplier.getCompanyName(),
+                supplierProductListToEmployeeDTOS
+                );
     }
 
     @Override
@@ -119,5 +199,11 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
 
         return csvReader.uploadToDatabase(filepath,idSupplier,bulkProfitMargin);
     }
+
+
+
+
+
+
 
 }

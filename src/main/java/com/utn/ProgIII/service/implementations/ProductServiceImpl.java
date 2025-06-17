@@ -9,7 +9,11 @@ import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.Product.ProductStatus;
 import com.utn.ProgIII.repository.ProductRepository;
 import com.utn.ProgIII.service.interfaces.ProductService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +39,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(()-> new ProductNotFoundException("Producto no encontrado"));
 
         return productMapper.toProductDTO(product);
+
     }
 
     @Override

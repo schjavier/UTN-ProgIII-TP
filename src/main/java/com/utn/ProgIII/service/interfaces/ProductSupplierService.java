@@ -1,9 +1,8 @@
 package com.utn.ProgIII.service.interfaces;
 
-import com.utn.ProgIII.dto.CreateProductSupplierDTO;
-import com.utn.ProgIII.dto.ResponseProductSupplierDTO;
-import com.utn.ProgIII.dto.SupplierProductListDTO;
-import com.utn.ProgIII.dto.UpdateProductSupplierDTO;
+import com.utn.ProgIII.dto.*;
+import com.utn.ProgIII.model.ProductSupplier.ProductSupplier;
+import org.springframework.security.core.Authentication;
 
 import java.math.BigDecimal;
 
@@ -14,4 +13,8 @@ public interface ProductSupplierService {
     SupplierProductListDTO listProductsBySupplier(String companyName);
     String uploadCsv(String filepath, Long idSupplier);
     String uploadCsv(String filepath, Long idSupplier, BigDecimal bulkProfitMargin);
+
+    //nuevo
+    Object getProductSupplierById(Long id, Authentication authentication);
+    SupplierProductListToEmployeeDTO listProductSupplierToEmployee (String companyName);
 }
