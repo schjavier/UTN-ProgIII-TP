@@ -3,14 +3,12 @@ package com.utn.ProgIII.mapper;
 import com.utn.ProgIII.dto.CreateCredentialDTO;
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
+import com.utn.ProgIII.exceptions.InvalidRequestException;
 import com.utn.ProgIII.model.Credential.Credential;
 import com.utn.ProgIII.model.Credential.Role;
 import com.utn.ProgIII.model.User.User;
 import com.utn.ProgIII.model.User.UserStatus;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
+import jakarta.validation.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -60,7 +58,9 @@ class UserMapperTest {
                     assertThat(result.lastname()).isEqualTo(user.getLastname());
                     assertThat(result.dni()).isEqualTo(user.getDni());
                     assertThat(result.status()).isEqualTo(user.getStatus().toString());
-                    assertThat(result.credential()).isEqualTo(user.getCredential());
+                    assertThat(result.credential().username()).isEqualTo(user.getCredential().getUsername());
+                    assertThat(result.credential().password()).isEqualTo(user.getCredential().getPassword());
+                    assertThat(result.credential().role()).isEqualTo(user.getCredential().getRole().toString());
                 });
     }
 
@@ -69,7 +69,7 @@ class UserMapperTest {
         CreateCredentialDTO credDto = CreateCredentialDTO.builder()
                 .username("prueba")
                 .password("12345678")
-                .role("employee")
+                .role("EMPLOYEE")
                 .build();
 
         CreateUserDTO userDto = CreateUserDTO.builder()
@@ -102,7 +102,7 @@ class UserMapperTest {
         CreateCredentialDTO credDto = CreateCredentialDTO.builder()
                 .username("prueba")
                 .password("12345678")
-                .role("employee")
+                .role("EMPLOYEE")
                 .build();
 
         CreateUserDTO userDto = CreateUserDTO.builder()
@@ -494,7 +494,7 @@ class UserMapperTest {
                 .credential(credDto)
                 .build();
 
-        assertThrows(IllegalArgumentException.class,() -> mapper.toEntity(userDto));
+        assertThrows(InvalidRequestException.class,() -> mapper.toEntity(userDto));
     }
 
     @Test
@@ -513,10 +513,7 @@ class UserMapperTest {
                 .credential(credDto)
                 .build();
 
-        User result = mapper.toEntity(userDto);
-
-        Set<ConstraintViolation<Credential>> violations = validator.validate(result.getCredential());
-        assertThat(violations).hasSize(1);
+        assertThrows(ConstraintViolationException.class,() -> mapper.toEntity(userDto));
     }
 
     @Test
@@ -535,10 +532,7 @@ class UserMapperTest {
                 .credential(credDto)
                 .build();
 
-        User result = mapper.toEntity(userDto);
-
-        Set<ConstraintViolation<Credential>> violations = validator.validate(result.getCredential());
-        assertThat(violations).hasSize(1);
+        assertThrows(ConstraintViolationException.class,() -> mapper.toEntity(userDto));
     }
 
     @Test
@@ -557,10 +551,7 @@ class UserMapperTest {
                 .credential(credDto)
                 .build();
 
-        User result = mapper.toEntity(userDto);
-
-        Set<ConstraintViolation<Credential>> violations = validator.validate(result.getCredential());
-        assertThat(violations).hasSize(1);
+        assertThrows(ConstraintViolationException.class,() -> mapper.toEntity(userDto));
     }
 
     @Test
@@ -579,10 +570,7 @@ class UserMapperTest {
                 .credential(credDto)
                 .build();
 
-        User result = mapper.toEntity(userDto);
-
-        Set<ConstraintViolation<Credential>> violations = validator.validate(result.getCredential());
-        assertThat(violations).hasSize(1);
+        assertThrows(ConstraintViolationException.class,() -> mapper.toEntity(userDto));
     }
 
     @Test
@@ -601,10 +589,7 @@ class UserMapperTest {
                 .credential(credDto)
                 .build();
 
-        User result = mapper.toEntity(userDto);
-
-        Set<ConstraintViolation<Credential>> violations = validator.validate(result.getCredential());
-        assertThat(violations).hasSize(1);
+        assertThrows(ConstraintViolationException.class,() -> mapper.toEntity(userDto));
     }
 
     @Test
@@ -623,6 +608,6 @@ class UserMapperTest {
                 .credential(credDto)
                 .build();
 
-        assertThrows(IllegalArgumentException.class,() -> mapper.toEntity(userDto));
+        assertThrows(InvalidRequestException.class,() -> mapper.toEntity(userDto));
     }
 }

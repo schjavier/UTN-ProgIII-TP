@@ -18,6 +18,6 @@ public record UserWithCredentialDTO(
         String dni,
         @Schema(implementation = UserStatus.class)
         String status,
-        Credential credential /*Necesita ser un DTO, esto es la implementacion de la clase*/
+        ViewCredentialsDTO credential /*Necesita ser un DTO, esto es la implementacion de la clase*/
 ) {
 }

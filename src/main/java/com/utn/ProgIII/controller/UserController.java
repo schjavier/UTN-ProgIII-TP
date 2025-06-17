@@ -2,7 +2,6 @@ package com.utn.ProgIII.controller;
 
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
-import com.utn.ProgIII.dto.ViewSupplierDTO;
 import com.utn.ProgIII.service.interfaces.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -13,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +20,7 @@ import java.util.List;
  * Clase que se encarga del procesamiento de las solicitudes recibidas desde el front
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 @Tag(name = "Usuarios", description = "Operaciones relacionadas con los usuarios")
 public class UserController {
     private final UserService userService;
@@ -39,46 +37,35 @@ public class UserController {
      */
     @Operation(summary = "Obtener un usuario por id", description = "Obtiene un usuario mediante id")
     @ApiResponse(responseCode = "200",description = "Usuario encontrado", content = @Content(
-            mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(implementation = UserWithCredentialDTO.class)
     ))
     @ApiResponse(responseCode = "404",description = "Usuario no encontrado", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "Usuario no encontrado")
     ))
-    @GetMapping()
-    public ResponseEntity<UserWithCredentialDTO> getUserById(@RequestParam Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<UserWithCredentialDTO> getUserById(@PathVariable Long id) {
         UserWithCredentialDTO response = userService.getUserById(id);
         return ResponseEntity.ok(response);
     }
 
     /**
-     * Muestra los datos de los usuarios según su estado (activo, dado de baja o ambos)
-     * @param status El estado de los usuarios que se desea ver (ENABLED, DISABLED o ALL (todos))
-     * @return Una respuesta en formato json con los datos de los usuarios filtrados por estado
+     * Muestra todos los usuarios que cumplan con los criterios solicitados o todos si no se especifica
+     * @return Una respuesta en formato json con los datos de los usuarios que cumplen los criterios solicitados
      */
-    @Operation(summary = "Obtener una lista de usuarios segun su status", description = "Retorna una lista de usuarios por estado")
+    @Operation(summary = "Obtener una lista de todos los usuarios que tengan un rol o estado solicitado",
+            description = "Retorna una lista de todos los usuarios que cumplan los criterios solicitados," +
+                    "si no se solicita ninguno, se retornan todos los usuarios existentes")
     @ApiResponse(responseCode = "200",description = "Usuarios encontrados",content = @Content(
             mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = UserWithCredentialDTO.class))
     ))
-    @ApiResponse(responseCode = "400",description = "Pedido malformado", content = @Content())
-    @GetMapping("/filter")
-    public ResponseEntity<List<UserWithCredentialDTO>> getUsersByStatus(
-            @RequestParam(defaultValue = "ENABLED") String status) {
-        List<UserWithCredentialDTO> response;
-        if (status.equalsIgnoreCase("ENABLED")) {
-            response = userService.getEnabledUsers();
-        } else if (status.equalsIgnoreCase("DISABLED")) {
-            response = userService.getDisabledUsers();
-        } else if (status.equalsIgnoreCase("ALL")) {
-            response = userService.getAllUsers();
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
-
-        return ResponseEntity.ok(response);
+    @GetMapping()
+    public ResponseEntity<List<UserWithCredentialDTO>> getOrFilterUsers(@RequestParam(required = false) String role,
+                                                                        @RequestParam(required = false) String status) {
+        return ResponseEntity.ok(userService.filterUsers(role,status));
     }
+
 
     /**
      * Se crea un nuevo usuario y credenciales en el sistema a partir de la informacion recibida en el cuerpo de la request
@@ -96,7 +83,6 @@ public class UserController {
             schema = @Schema(examples = {"El nombre de usuario ya existe en la base de datos", "El dni ingresado ya se encuentra registrado"})
     ))
     @PostMapping()
-
     public ResponseEntity<UserWithCredentialDTO> createUser(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Los datos del usuario nuevo")
             @RequestBody CreateUserDTO dto
@@ -118,8 +104,12 @@ public class UserController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(examples = {"El nombre de usuario ya existe en la base de datos", "El dni ingresado ya se encuentra registrado"})
     ))
-    @PutMapping()
-    public ResponseEntity<UserWithCredentialDTO> updateUser(@RequestParam Long id,
+    @ApiResponse(responseCode = "403", description = "Modificaciones no permitidas", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "(Un mensaje de error diciendo al administrador que no puede cambiar su nivel de acceso o estado de cuenta)")
+    ))
+    @PutMapping("/{id}")
+    public ResponseEntity<UserWithCredentialDTO> updateUser(@PathVariable Long id,
                                                             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Los datos cambiados del usuario")
                                                             @RequestBody CreateUserDTO dto) {
         UserWithCredentialDTO response = userService.updateUser(id, dto);
@@ -137,20 +127,22 @@ public class UserController {
     @ApiResponse(responseCode = "204", description = "Eliminacion correcta", content = @Content())
     @ApiResponse(responseCode = "400", description = "Error en datos insertados", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "La opcion de eliminacion no es correcta")
+    ))
+    @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "Usuario no encontrado")
     ))
-    @DeleteMapping()
+    @ApiResponse(responseCode = "409", description = "Intento de eliminacion del usuario logeado", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "No podes eliminar tu usuario")
+    ))
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(
-            @RequestParam Long id,
+            @PathVariable Long id,
             @RequestParam(defaultValue = "soft") String deletionType) {
-        if (deletionType.equalsIgnoreCase("soft")) {
-            userService.deleteUserSoft(id);
-        } else if (deletionType.equalsIgnoreCase("hard")) {
-            userService.deleteUserHard(id);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
 
+        userService.deleteOrRemoveUser(id, deletionType);
         return ResponseEntity.noContent().build();
     }
 }

@@ -83,7 +83,6 @@ public class CsvReader {
         StringBuilder message = new StringBuilder("Productos no subidos: \n");
         List<ProductInfoFromCsvDTO> uploads;
         List<ProductInfoFromCsvDTO> failedUploads = new ArrayList<>();
-
         try {
             uploads = readFile(csvFilePath).stream().toList();
             Supplier supplierData = supplierRepository.getReferenceById(supplierId);
@@ -91,7 +90,6 @@ public class CsvReader {
             for (ProductInfoFromCsvDTO productUpdateInfo: uploads) {
                 Product productData = productRepository.getByName(productUpdateInfo.name());
                 ProductSupplier relationship = productSupplierRepository.getByProductAndSupplier(productData,supplierData);
-
                 if (productData != null && productData.getStatus().equals(ProductStatus.ENABLED)) {
                     if (relationship == null) {
                         relationship = new ProductSupplier(supplierData,productData,productUpdateInfo.cost(),bulkProfitMargin);
@@ -119,7 +117,6 @@ public class CsvReader {
                 .add(relationship.getCost()
                         .multiply(relationship.getProfitMargin())
                         .divide(BigDecimal.valueOf(100), RoundingMode.CEILING)));
-
         return relationship;
     }
 }

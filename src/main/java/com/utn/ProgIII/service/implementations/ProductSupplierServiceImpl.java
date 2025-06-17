@@ -13,12 +13,15 @@ import com.utn.ProgIII.model.Supplier.Supplier;
 import com.utn.ProgIII.repository.ProductRepository;
 import com.utn.ProgIII.repository.ProductSupplierRepository;
 import com.utn.ProgIII.repository.SupplierRepository;
+import com.utn.ProgIII.service.interfaces.AuthService;
+import com.utn.ProgIII.service.interfaces.MiscService;
 import com.utn.ProgIII.service.interfaces.ProductSupplierService;
 import com.utn.ProgIII.validations.ProductSupplierValidations;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,13 +33,18 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     private final ProductSupplierMapper mapper;
     private final ProductSupplierValidations productSupplierValidations;
     private final CsvReader csvReader;
+    private final AuthService authService;
+    private final MiscService miscService;
 
     public ProductSupplierServiceImpl(ProductSupplierRepository productSupplierRepository,
                                       ProductRepository productRepository,
                                       SupplierRepository supplierRepository,
                                       ProductSupplierMapper mapper,
                                       ProductSupplierValidations productSupplierValidations,
-                                      CsvReader csvReader){
+                                      CsvReader csvReader,
+                                      AuthService authService,
+                                      MiscService miscService
+    ){
 
         this.productSupplierRepository = productSupplierRepository;
         this.productRepository = productRepository;
@@ -44,6 +52,8 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         this.mapper = mapper;
         this.productSupplierValidations = productSupplierValidations;
         this.csvReader = csvReader;
+        this.authService = authService;
+        this.miscService = miscService;
     }
 
 
@@ -94,14 +104,39 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         Supplier supplier = supplierRepository.findByCompanyName(companyName)
                 .orElseThrow(() -> new SupplierNotFoundException("El proveedor no existe"));
 
-        List<ExtendedProductDTO> extendedProductDTOList = productSupplierRepository.productsBySupplier(supplier.getIdSupplier());
+        List<?> priceList = new ArrayList<>();
+
+        if(authService.hasRole("ROLE_MANAGER")){
+            BigDecimal dolar = miscService.searchDollarPrice().venta();
+
+            priceList = productSupplierRepository.productsBySupplierManager(supplier.getIdSupplier(),dolar);
+        } else if (authService.hasRole("ROLE_EMPLOYEE")) {
+            priceList = productSupplierRepository.productsBySupplierEmployee(supplier.getIdSupplier());
+        }
+
 
         return new SupplierProductListDTO(
                 supplier.getIdSupplier(),
                 supplier.getCompanyName(),
-                extendedProductDTOList
+                priceList
         );
 
+    }
+
+    public ProductPricesDTO listPricesByProduct(Long idProduct) {
+        Product product = productRepository.findById(idProduct).orElseThrow(() -> new ProductNotFoundException("El producto no existe"));
+
+        List<?> priceList = new ArrayList<>();
+
+        if(authService.hasRole("ROLE_MANAGER")){
+            BigDecimal dolar = miscService.searchDollarPrice().venta();
+
+            priceList = productSupplierRepository.listPricesByProductManager(idProduct,dolar);
+        } else if (authService.hasRole("ROLE_EMPLOYEE")) {
+            priceList = productSupplierRepository.listPricesByProductEmployee(idProduct);
+        }
+
+        return new ProductPricesDTO(product.getIdProduct(),product.getName(),priceList);
     }
 
     @Override

@@ -2,7 +2,10 @@ package com.utn.ProgIII.security;
 
 import com.utn.ProgIII.exceptions.CredentialNotFoundException;
 import com.utn.ProgIII.model.Credential.Credential;
+import com.utn.ProgIII.model.User.User;
+import com.utn.ProgIII.model.User.UserStatus;
 import com.utn.ProgIII.repository.CredentialRepository;
+import com.utn.ProgIII.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,17 +21,27 @@ import java.util.Optional;
 public class UserDetailServiceImpl implements UserDetailsService {
 
     private final CredentialRepository credentialRepository;
+    private final UserRepository userRepository;
 
-    public UserDetailServiceImpl(CredentialRepository credentialRepository){
+    public UserDetailServiceImpl(CredentialRepository credentialRepository, UserRepository userRepository){
         this.credentialRepository = credentialRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         Credential credential = credentialRepository.findByUsername(username).orElseThrow(
-                () -> new CredentialNotFoundException("El usuario no se encuentra en el Sistema")
+                () -> new CredentialNotFoundException("El usuario no se encuentra en el sistema")
         );
+
+        User user = userRepository.findByCredential(credential);
+
+        if(user.getStatus() == UserStatus.DISABLED)
+        {
+            throw new CredentialNotFoundException("El usuario esta desactivado, contactar a su administrador");
+        }
+
 
         GrantedAuthority authorities = new SimpleGrantedAuthority(credential.getRole().name());
 

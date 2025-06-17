@@ -3,9 +3,11 @@ package com.utn.ProgIII.service.implementations;
 import com.utn.ProgIII.dto.CreateCredentialDTO;
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
+import com.utn.ProgIII.exceptions.ForbiddenModificationException;
+import com.utn.ProgIII.exceptions.InvalidRequestException;
+import com.utn.ProgIII.exceptions.SelfDeleteUserException;
 import com.utn.ProgIII.exceptions.UserNotFoundException;
 import com.utn.ProgIII.mapper.UserMapper;
-import com.utn.ProgIII.model.Credential.Credential;
 import com.utn.ProgIII.model.Credential.Role;
 import com.utn.ProgIII.model.User.User;
 import com.utn.ProgIII.model.User.UserStatus;
@@ -15,6 +17,8 @@ import com.utn.ProgIII.validations.UserValidations;
 import com.utn.ProgIII.service.interfaces.UserService;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
+import org.apache.commons.lang3.EnumUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,6 +29,7 @@ import java.util.List;
  */
 @Service
 public class UserServiceImpl implements UserService {
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final UserValidations userValidations;
@@ -35,7 +40,7 @@ public class UserServiceImpl implements UserService {
         if(!userRepository.existsByCredentialRole(Role.ADMIN)) {
             CreateCredentialDTO testCreds = CreateCredentialDTO.builder()
                     .username("admin")
-                    .password("admin")
+                    .password("admin1234")
                     .role("ADMIN")
                     .build();
 
@@ -48,16 +53,18 @@ public class UserServiceImpl implements UserService {
                     .build());
 
             System.out.println("No se han encontrado administradores, se ha creado uno por defecto");
-            System.out.println("El usuario es 'admin' y la contrasenia es 'admin'");
+            System.out.println("El usuario es 'admin' y la contrasenia es 'admin1234'");
         }
     }
 
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, UserValidations userValidations, CredentialValidations credentialValidations) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, UserValidations userValidations,
+                           CredentialValidations credentialValidations, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.userValidations = userValidations;
         this.credentialValidations = credentialValidations;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -72,6 +79,8 @@ public class UserServiceImpl implements UserService {
 
         userValidations.validateUserByDni(dto.dni());
         credentialValidations.validateUsernameNotExists(dto.credential().username());
+
+        user.getCredential().setPassword(passwordEncoder.encode(user.getCredential().getPassword()));
 
         user = userRepository.save(user);
 
@@ -93,55 +102,36 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Muestra los datos de todos los usuarios presentes en el sistema
+     * Muestra los datos de todos los usuarios presentes en el sistema, segun el rol o estado
+     * @param role El rol de los usuarios que se desea ver
+     * @param status El estado de los usuarios que se desea ver
      * @return Una lista con los DTO de cada usuario existente en el sistema
+     * @throws InvalidRequestException Si alguno de los parametros tiene valores erroneos
+     * <p>
      */
     @Override
-    public List<UserWithCredentialDTO> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        List<UserWithCredentialDTO> usersWithCredential = new ArrayList<>();
+    public List<UserWithCredentialDTO> filterUsers(String role, String status) {
+        List<User> users;
+        List<UserWithCredentialDTO> usersDTO = new ArrayList<>();
 
-        for (User user : users) {
-            usersWithCredential.add(userMapper.
-                    toUserWithCredentialDTO(user));
+        if(role!= null && !EnumUtils.isValidEnum(Role.class, role.toUpperCase())) throw new InvalidRequestException("Ese rol no esta presente");
+        if(status != null && !EnumUtils.isValidEnum(UserStatus.class, status.toUpperCase())) throw new InvalidRequestException("Ese estado no esta presente");
+
+        if (role == null && status == null) {
+            users = userRepository.findAll();
+        } else if (status == null) {
+            users = userRepository.findByCredential_Role(Role.valueOf(role.toUpperCase()));
+        } else if (role == null) {
+            users = userRepository.findAllByStatus(UserStatus.valueOf(status.toUpperCase()));
+        } else {
+            users = userRepository.findByCredential_RoleAndStatus(Role.valueOf(role.toUpperCase()),UserStatus.valueOf(status.toUpperCase()));
         }
 
-        return usersWithCredential;
-    }
-
-
-    /**
-     * Muestra los datos de todos los usuarios activos en el sistema
-     * @return Una lista con los DTO de cada usuario activo existente en el sistema
-     */
-    @Override
-    public List<UserWithCredentialDTO> getEnabledUsers() {
-        List<User> users = userRepository.findAllByStatus((UserStatus.ENABLED));
-        List<UserWithCredentialDTO> enabledUsersWithCredential = new ArrayList<>();
-
-        for (User user : users) {
-            enabledUsersWithCredential.add(userMapper.
-                    toUserWithCredentialDTO(user));
+        for (User user: users) {
+            usersDTO.add(userMapper.toUserWithCredentialDTO(user));
         }
 
-        return enabledUsersWithCredential;
-    }
-
-    /**
-     * Muestra los datos de todos los usuarios dados de baja en el sistema
-     * @return Una lista con los DTO de cada usuario dado de baja existente en el sistema
-     */
-    @Override
-    public List<UserWithCredentialDTO> getDisabledUsers() {
-        List<User> users = userRepository.findAllByStatus((UserStatus.DISABLED));
-        List<UserWithCredentialDTO> disabledUsersWithCredential = new ArrayList<>();
-
-        for (User user : users) {
-            disabledUsersWithCredential.add(userMapper.
-                    toUserWithCredentialDTO(user));
-        }
-
-        return disabledUsersWithCredential;
+        return usersDTO;
     }
 
     /**
@@ -154,55 +144,73 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserWithCredentialDTO updateUser(Long id, CreateUserDTO dto) {
-        User userToUpdate = userRepository.findById(id)
+        User currentUserData = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
+        User newUserData = userMapper.toEntity(dto);
 
-        userValidations.validateModifiedUserByDni(userToUpdate.getDni(),dto.dni());
-        credentialValidations.validateModifiedUsernameNotExists(userToUpdate.getCredential().getUsername(),
-                dto.credential().username());
+        userValidations.validateModifiedUserByDni(currentUserData.getDni(), newUserData.getDni());
+        credentialValidations.validateModifiedUsernameNotExists(currentUserData.getCredential().getUsername(),
+                newUserData.getCredential().getUsername());
 
-        userToUpdate.setFirstname(dto.firstname());
-        userToUpdate.setLastname(dto.lastname());
-        userToUpdate.setDni(dto.dni());
-        userToUpdate.setStatus(UserStatus.valueOf(dto.status().toUpperCase()));
+        if(userValidations.checkifRequestedUserIsTheSame(newUserData) && newUserData.getStatus() == UserStatus.DISABLED)
+        {
+            throw new ForbiddenModificationException("No podes desactivar tu usuario");
+        }
 
-        Credential credentialToUpdate = userToUpdate.getCredential();
-        credentialToUpdate.setUsername(dto.credential().username());
-        credentialToUpdate.setPassword(dto.credential().password());
-        credentialToUpdate.setRole(Role.valueOf(dto.credential().role().toUpperCase()));
+        if(userValidations.checkifRequestedUserIsTheSame(newUserData) && newUserData.getCredential().getRole() != Role.ADMIN)
+        {
+            throw new ForbiddenModificationException("No podes cambiarte a ese rol");
+        }
 
-        userToUpdate = userRepository.save(userToUpdate);
+        newUserData.setIdUser(currentUserData.getIdUser());
+        newUserData.getCredential().setIdCredential(currentUserData.getCredential().getIdCredential());
+        newUserData.getCredential().setPassword(passwordEncoder.encode(newUserData.getCredential().getPassword()));
 
-        return userMapper.toUserWithCredentialDTO(userToUpdate);
+        currentUserData = userRepository.save(newUserData);
+
+        return userMapper.toUserWithCredentialDTO(currentUserData);
+    }
+
+    @Override
+    public void deleteOrRemoveUser(Long id, String method) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
+
+        if(userValidations.checkifRequestedUserIsTheSame(user))
+        {
+            throw new SelfDeleteUserException("No podes eliminar tu usuario");
+        }
+
+        switch (method.toUpperCase())
+        {
+            case "HARD":
+                deleteUserHard(user);
+                break;
+            case "SOFT":
+                deleteUserSoft(user);
+                break;
+            default:
+                throw new InvalidRequestException("La opcion de eliminacion no es correcta");
+        }
+
     }
 
     /**
      * Hace baja logica del sistema al usuario con el id solicitado por parametro
-     * @param id El id correspondiente al usuario que se solicito dar de baja
+     * @param user El usuario que se dara de baja temporal
      */
-    @Override
     @Transactional
-    public void deleteUserSoft(Long id) {
-        User userToDelete = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
-
-        userToDelete.setStatus(UserStatus.DISABLED);
-
-        userRepository.save(userToDelete);
+    private void deleteUserSoft(User user) {
+        user.setStatus(UserStatus.DISABLED);
+        userRepository.save(user);
     }
 
     /**
      * Elimina fisicamente del sistema al usuario con el id solicitado por parametro
-     * @param id El id correspondiente al usuario que se solicito eliminar
+     * @param user El usuario que se eliminara
      */
-    @Override
     @Transactional
-    public void deleteUserHard(Long id) {
-        if (userRepository.findById(id).isEmpty()) {
-            throw new UserNotFoundException("Usuario no encontrado");
-        } else {
-            userRepository.deleteById(id);
-        }
+    private void deleteUserHard(User user) {
+            userRepository.delete(user);
     }
 
 }

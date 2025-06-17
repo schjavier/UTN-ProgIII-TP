@@ -4,14 +4,16 @@ import com.utn.ProgIII.dto.LoginRequestDTO;
 import com.utn.ProgIII.security.JwtUtil;
 import com.utn.ProgIII.security.UserDetailServiceImpl;
 import com.utn.ProgIII.service.interfaces.AuthService;
-import com.utn.ProgIII.validations.CredentialValidations;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.List;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -30,7 +32,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
         public String login(LoginRequestDTO loginRequestDTO) {
-
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginRequestDTO.username(),
                 loginRequestDTO.password()
@@ -41,5 +42,21 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
+    @Override
+    public List<String> getAuthorities() {
 
+        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        return authorities.stream().map(GrantedAuthority::getAuthority).toList();
+    }
+
+    public boolean hasRole (String roleName)
+    {
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(roleName));
+    }
+
+    @Override
+    public Long getRoleCount() {
+        return (long) SecurityContextHolder.getContext().getAuthentication().getAuthorities().size();
+    }
 }

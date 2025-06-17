@@ -1,7 +1,9 @@
 package com.utn.ProgIII.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -113,14 +115,48 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<String> handleAuthException(){
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("El usuario y la contraseña no coinciden");
+    public ResponseEntity<String> handleAuthException(AuthenticationException e){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No se encontro el usuario");
+    }
+
+    @ExceptionHandler(UnexpectedServerErrorException.class)
+    public ResponseEntity<String> UnexpectedErrorException(UnexpectedServerErrorException e) {
+        if(e.getHttpcode() != -1)
+        {
+            return ResponseEntity.status(e.getHttpcode()).body(e.getMessage()); // esto es muy improvable que pase... pero puede salvarnos...
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<String> ExpiredTokenException(ExpiredJwtException e)
+    {
+        return ResponseEntity.status(419).body("La sesión ha expirado. Por favor, iniciar sesion de nuevo");
+    }
+
+    @ExceptionHandler(SelfDeleteUserException.class)
+    public ResponseEntity<String> SelfDeleteUserProtection(SelfDeleteUserException e)
+    {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<String> wrongFieldSortException(PropertyReferenceException e)
+    {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<String> handleMissingParams(MissingServletRequestParameterException ex) {
         String name = ex.getParameterName();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El parametro \"" + name + "\" esta ausente");
+    }
+
+    @ExceptionHandler(ForbiddenModificationException.class)
+    public ResponseEntity<String> forbiddenModificationException(ForbiddenModificationException e)
+    {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
 }
