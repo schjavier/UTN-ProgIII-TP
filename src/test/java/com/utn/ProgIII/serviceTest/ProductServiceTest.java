@@ -89,5 +89,9 @@ public class ProductServiceTest {
     }
 
 
+    public void getUserBy_shouldThrowException_whenIfCondition(){
+
+
+    }
 
 }

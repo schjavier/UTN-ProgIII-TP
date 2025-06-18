@@ -44,7 +44,9 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(()-> new ProductNotFoundException("Producto no encontrado"));
 
-        if((authService.hasRole("ROLE_EMPLOYEE") && authService.getRoleCount() == 1) && product.getStatus() == ProductStatus.DISABLED)
+//        (authService.hasRole("ROLE_EMPLOYEE") && authService.getRoleCount() == 1)
+
+        if( authService.isEmployee("ROLE_EMPLOYEE") && product.getStatus() == ProductStatus.DISABLED)
         {
             throw new ProductNotFoundException("Producto no encontrado");
         }

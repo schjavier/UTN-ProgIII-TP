@@ -49,6 +49,12 @@ public class AuthServiceImpl implements AuthService {
         return authorities.stream().map(GrantedAuthority::getAuthority).toList();
     }
 
+    public boolean isEmployee(String roleName) {
+
+        return hasRole(roleName) && (getRoleCount() == 1);
+
+    }
+
     public boolean hasRole (String roleName)
     {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
@@ -59,4 +65,6 @@ public class AuthServiceImpl implements AuthService {
     public Long getRoleCount() {
         return (long) SecurityContextHolder.getContext().getAuthentication().getAuthorities().size();
     }
+
+
 }
