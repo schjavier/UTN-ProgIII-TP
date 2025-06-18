@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SupplierServiceImpl implements SupplierService {
@@ -79,6 +80,14 @@ public class SupplierServiceImpl implements SupplierService {
         }
 
         return page;
+    }
+
+    @Override
+    public List<ViewSupplierDTO> getAllSuppliers() {
+        return supplierRepository.findAll()
+                .stream()
+                .map(suppliermapper::toViewSupplierDTO)
+                .collect(Collectors.toList());
     }
 
     /**

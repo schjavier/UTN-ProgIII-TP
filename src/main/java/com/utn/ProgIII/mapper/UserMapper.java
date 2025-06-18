@@ -91,4 +91,45 @@ public class UserMapper {
 
         return result;
     }
+
+    public User toEntity(UserWithCredentialDTO dto){
+        User result = new User();
+
+        result.setFirstname(dto.firstname());
+        result.setLastname(dto.lastname());
+        result.setDni(dto.dni());
+
+
+        if (dto.credential() == null) {
+            throw new NullCredentialsException("El usuario debe tener credenciales");
+        }
+
+        if(!EnumUtils.isValidEnum(UserStatus.class, dto.status().toUpperCase()))
+        {
+            throw new InvalidRequestException("El estado no es valido");
+        }
+
+        result.setStatus(UserStatus.valueOf(dto.status().toUpperCase()));
+
+        if(!EnumUtils.isValidEnum(Role.class, dto.credential().role().toUpperCase()))
+        {
+            throw new InvalidRequestException("El rol no es valido");
+        }
+
+
+        Credential credential = Credential.builder()
+                .password(dto.credential().password())
+                .username(dto.credential().username())
+                .role(Role.valueOf(dto.credential().role().toUpperCase()))
+                .build();
+        result.setCredential(credential);
+
+        Set<ConstraintViolation<Credential>> violations = validator.validate(result.getCredential());
+        if(!violations.isEmpty())
+        {
+            throw new ConstraintViolationException(violations);
+        }
+
+        return result;
+    }
 }

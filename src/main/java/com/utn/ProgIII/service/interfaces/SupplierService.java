@@ -14,6 +14,7 @@ public interface SupplierService {
     ViewSupplierDTO updateSupplier(AddSupplierDTO supplierDTO, Long id);
     ViewSupplierDTO createSupplier(AddSupplierDTO supplierDTO);
     Page<ViewSupplierDTO> listSuppliers(Pageable pageable);
+    List<ViewSupplierDTO> getAllSuppliers();
 
 
 }
