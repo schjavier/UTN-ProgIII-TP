@@ -14,6 +14,10 @@ public class ProductSupplierValidations {
         this.productSupplierRepository = productSupplierRepository;
     }
 
+    /**
+     * Valida si una relacion entre producto y proveedor existe
+     * @param productSupplier Objeto de relacion
+     */
     public void validateRelationship(ProductSupplier productSupplier){
         if (productSupplierRepository.existsByProductAndSupplier(productSupplier.getProduct(),productSupplier.getSupplier())){
             throw new DuplicateRelationshipException("La relación del proveedor con el producto ya se encuentra registrada");

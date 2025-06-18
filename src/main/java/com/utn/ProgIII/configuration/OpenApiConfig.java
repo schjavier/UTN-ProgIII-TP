@@ -9,6 +9,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+/**
+ * Clase para configurar el swagger
+ */
 public class OpenApiConfig {
     @Bean
     public OpenAPI customOpenAPI() {
@@ -16,7 +19,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("API Catalogo")
-                        .version("0.0.68")
+                        .version("0.0.162")
                         .description("Documentacion oficial de la API"))
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(new Components()

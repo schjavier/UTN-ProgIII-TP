@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/misc")
 @Tag(name = "Miscelaneos", description = "Operaciones relacionadas con acciones miscelaneas")
+/**
+ * Clase que maneja requests sobre cosas miscelaneas
+ */
 public class MiscController {
 
     @Autowired

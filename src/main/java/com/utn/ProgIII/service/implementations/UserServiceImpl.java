@@ -35,6 +35,9 @@ public class UserServiceImpl implements UserService {
     private final UserValidations userValidations;
     private final CredentialValidations credentialValidations;
 
+    /**
+     * Se crea un administrador en caso de que no exista
+     */
     @PostConstruct
     public void init() {
         if(!userRepository.existsByCredentialRole(Role.ADMIN)) {
@@ -171,6 +174,11 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserWithCredentialDTO(currentUserData);
     }
 
+    /**
+     * Un metodo que elimina un usuario de manera logica o fisica (permanente)
+     * @param id El id del usuario
+     * @param method El metodo de eliminacion (hard o soft)
+     */
     @Override
     public void deleteOrRemoveUser(Long id, String method) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));

@@ -5,12 +5,16 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -157,6 +161,24 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> forbiddenModificationException(ForbiddenModificationException e)
     {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<String> methodArgumentNotValidException(MethodArgumentNotValidException e)
+    {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handleMethodArgumentNotValid(e));
+    }
+
+    private String handleMethodArgumentNotValid(MethodArgumentNotValidException e)
+    {
+         List<FieldError> errors = e.getFieldErrors();
+         String messasage = "Error en pedido:\n";
+         for(FieldError error : errors)
+         {
+             messasage = messasage.concat("- " + error.getDefaultMessage() + "\n");
+         }
+
+         return messasage;
     }
 
 }
