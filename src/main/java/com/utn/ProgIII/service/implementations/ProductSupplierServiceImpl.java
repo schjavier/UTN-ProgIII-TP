@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+/**
+ * Un servicio que se encarga de hacer funciones para la relacion entre productos y proveedores
+ */
 public class ProductSupplierServiceImpl implements ProductSupplierService {
 
     private final ProductSupplierRepository productSupplierRepository;
@@ -54,6 +57,11 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     }
 
 
+    /**
+     * Se crea una nueva relacion entre un producto y proveedor, con su precio y margen de ganancia
+     * @param createProductSupplierDTO Un dto que se usa crear una relacion
+     * @return Un dto de la relacion entre el producto y proveedor creada
+     */
     @Override
     public ResponseProductSupplierDTO createProductSupplier(CreateProductSupplierDTO createProductSupplierDTO) {
 
@@ -77,6 +85,12 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         return mapper.fromEntityToDto(productSupplier);
     }
 
+    /**
+     * Se actualiza una relacion existente, con sus datos
+     * @param updateProductSupplierDTO Un objeto con los datos para modificar la relacion
+     * @param id El id para la relacion a editar
+     * @return Un dto con los datos modificados
+     */
     @Override
     public ResponseProductSupplierDTO updateProductSupplier(UpdateProductSupplierDTO updateProductSupplierDTO, Long id) {
 
@@ -95,6 +109,11 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         return mapper.fromEntityToDto(productSupplier);
     }
 
+    /**
+     * Lista las relaciones segun el nombre de la empresa, los datos mostrados varian segun el nivel de acceso del usuario
+     * @param companyName Nombre de proveedor para buscar
+     * @return Una lista de dtos con los datos para mostrar
+     */
     @Override
     public SupplierProductListDTO listProductsBySupplier(String companyName) {
 
@@ -103,7 +122,8 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
 
         List<?> priceList = new ArrayList<>();
 
-        if(authService.hasRole("ROLE_MANAGER")){
+
+        if (!authService.isEmployee()) {
             try {
                 BigDecimal dolar = miscService.searchDollarPrice().venta();
 
@@ -111,7 +131,7 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
             } catch (UnexpectedServerErrorException e) {
                 priceList = productSupplierRepository.productsBySupplierManagerFallback(supplier.getIdSupplier());
             }
-        } else if (authService.hasRole("ROLE_EMPLOYEE")) {
+        } else {
             priceList = productSupplierRepository.productsBySupplierEmployee(supplier.getIdSupplier());
         }
 
@@ -124,12 +144,18 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
 
     }
 
+    /**
+     * Lista las relaciones segun el id de un producto cargado, los datos mostrados varian segun el nivel de acceso del usuario
+     * @param idProduct El id del producto
+     * @return Una lista de dtos para mostrar
+     */
     public ProductPricesDTO listPricesByProduct(Long idProduct) {
         Product product = productRepository.findById(idProduct).orElseThrow(() -> new ProductNotFoundException("El producto no existe"));
 
         List<?> priceList = new ArrayList<>();
 
-        if(authService.hasRole("ROLE_MANAGER")){
+      
+        if(!authService.isEmployee()){
             try {
                 BigDecimal dolar = miscService.searchDollarPrice().venta();
 
@@ -137,18 +163,32 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
             } catch (UnexpectedServerErrorException e) {
                 priceList = productSupplierRepository.listPricesByProductManagerFallback(idProduct);
             }
-        } else if (authService.hasRole("ROLE_EMPLOYEE")) {
-            priceList = productSupplierRepository.listPricesByProductEmployee(idProduct);
+        } else {
+           priceList = productSupplierRepository.listPricesByProductEmployee(idProduct);
         }
 
         return new ProductPricesDTO(product.getIdProduct(),product.getName(),priceList);
     }
 
+    /**
+     * Se usa para modificar relaciones existentes
+     * @param filepath Path interno del archivo
+     * @param idSupplier El id del proveedor para modificar sus relaciones
+     * @return
+     */
     @Override
     public String uploadCsv(String filepath, Long idSupplier) {
         return csvReader.uploadToDatabase(filepath,idSupplier);
     }
 
+    /**
+     * Se usa para cargar relaciones nuevas y modifican el precio de las existentes
+     * @param filepath Path interno del archivo
+     * @param idSupplier El id del proveedor para modificar sus relaciones
+     * @param bulkProfitMargin El margen de ganancia
+     * @return Un mensaje de error diciendo que productos no fueron cargados
+     * @see CsvReader
+     */
     @Override
     public String uploadCsv(String filepath, Long idSupplier, BigDecimal bulkProfitMargin) {
 

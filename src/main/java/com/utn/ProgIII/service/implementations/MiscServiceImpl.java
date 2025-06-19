@@ -16,6 +16,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 @Service
+/**
+ * Un servicio que se encarga de buscar el valor del dolar usando la api de dolarapi.com
+ */
 public class MiscServiceImpl implements MiscService {
     private final String dolar_api_url = "https://dolarapi.com/v1/";
 

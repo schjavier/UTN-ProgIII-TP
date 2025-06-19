@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @Tag(name = "Sesion y cuenta", description = "Inicio de sesion")
+/**
+ * Clase para manejar requests de manejo de cuentas
+ */
 public class AuthController {
 
     private final AuthService authService;

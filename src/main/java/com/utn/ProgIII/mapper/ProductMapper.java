@@ -8,9 +8,17 @@ import org.apache.commons.lang3.EnumUtils;
 import org.springframework.stereotype.Component;
 
 @Component
+/**
+ * Una clase que se dedica a convertir un dto a un objeto y viceversa
+ */
 public class ProductMapper {
 
 
+    /**
+     * Se encarga de convertir un objeto a un dto
+     * @param product El objeto
+     * @return Un dto nuevo
+     */
     public ProductDTO toProductDTO (Product product) {
         Long idProduct = product.getIdProduct();
         String name = product.getName();
@@ -19,7 +27,11 @@ public class ProductMapper {
         return new ProductDTO(idProduct,name,status);
     }
 
-
+    /**
+     * Se encarga de convertir un objeto a un DTO
+     * @param productDTO Un dto
+     * @return Un objeto nuevo
+     */
     public Product toEntity (ProductDTO productDTO){
         Product result = new Product();
 
