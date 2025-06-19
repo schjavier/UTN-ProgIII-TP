@@ -17,6 +17,10 @@ public class UserValidations {
     }
 
 
+    /**
+     * Se verifica si un usuario
+     * @param dni
+     */
     public void validateUserByDni(String dni){
         if(userRepository.existsByDni(dni)){
             throw new DuplicateEntityException("El dni ingresado ya se encuentra registrado");

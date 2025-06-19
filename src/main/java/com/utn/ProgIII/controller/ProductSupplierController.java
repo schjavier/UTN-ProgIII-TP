@@ -25,6 +25,9 @@ import java.nio.file.Files;
 @RequestMapping("/productSupplier")
 @Tag(name = "Productos y Proveedores", description = "Operaciones relacionadas con la relación de productos y proveedores")
 
+/**
+ * Clase que maneja requests sobre la relacion de productos y proveedores
+ */
 public class ProductSupplierController {
 
     private final ProductSupplierService productSupplierService;
@@ -36,11 +39,14 @@ public class ProductSupplierController {
     @PostMapping
     @Operation(summary = "Crea un ProductSupplier", description = "Crea una relacion entre un proveedor y producto")
     @ApiResponse(responseCode = "200", description = "Creado")
-    @ApiResponse(responseCode = "404", description = "Datos erroneos", content = @Content(
+    @ApiResponse(responseCode = "400", description = "Datos erroneos", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(description = "(Un mensaje que tiene los errores del usuario)")
+    ))
+    @ApiResponse(responseCode = "404", description = "No encontrado", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(description = "Un mensaje que tiene un error de usuario")
     ))
-
     public ResponseEntity<ResponseProductSupplierDTO> createProductSupplier(@Valid @RequestBody
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Relacion entre proveedor y producto para crear")
                                                                                 CreateProductSupplierDTO request
@@ -54,7 +60,6 @@ public class ProductSupplierController {
 
     @PatchMapping("/{id}")
     @ApiResponse(responseCode = "200",description = "Datos modificados")
-    //@ApiResponse(responseCode = "400",description = "Datos erroneos") esto no se lanza?
     @ApiResponse(responseCode = "404",description = "Relacion no encontrada", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "La relación que quiere editar no se encuentra")
