@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,7 +32,6 @@ public class AuthServiceTest {
 
     private static final String EMPLOYEE_ROLE = "ROLE_EMPLOYEE";
     private static final String ADMIN_ROLE = "ROLE_ADMIN";
-//    private static final
 
     @Mock
     private AuthenticationManager authenticationManager;
