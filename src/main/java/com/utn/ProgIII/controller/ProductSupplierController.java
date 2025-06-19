@@ -76,10 +76,32 @@ public class ProductSupplierController {
     }
 
     @Operation(summary = "Busca todos los productos de un proveedor segun su nombre", description = "Busca todos los productos de un proveedor segun su nombre")
-    @ApiResponse(responseCode = "200",description = "Lista devuelta", content = @Content(
-            mediaType = "application/json",
-            array = @ArraySchema(schema = @Schema(implementation = SupplierProductListDTO.class))
-    ))
+    @ApiResponse(
+            responseCode = "200",
+            description = "Lista de precios devuelta",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = SupplierProductListDTO.class),
+                    examples = {
+                            @ExampleObject(
+                                    name = "manager-view",
+                                    summary = "Vista para rol MANAGER o superior",
+                                    description = "Incluye todos los precios (costo y venta) y margenes de ganancia",
+                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idSupplier\": 1, \"companyName\": \"Proveedor\", \"cost\": 100.00, \"profitMargin\": 20.00, \"price\": 120.00, \"dollarPrice\": 0.1043}]}"
+                            ),
+                            @ExampleObject(
+                                    name = "manager-view-no-dollar-api",
+                                    summary = "Vista para rol MANAGER o superior (API dólar caída)",
+                                    description = "Incluye todos los precios (costo y venta) y margenes de ganancia",
+                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idSupplier\": 1, \"companyName\": \"Proveedor\", \"cost\": 100.00, \"profitMargin\": 20.00, \"price\": 120.00, \"dollarPrice\": \"not available\"}]}"
+                            ),
+                            @ExampleObject(
+                                    name = "employee-view",
+                                    summary = "Vista para rol EMPLOYEE",
+                                    description = "Solo muestra precios finales sin incluir margenes de ganancia",
+                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idSupplier\": 1, \"companyName\": \"Proveedor\", \"price\": 120.00, \"dollarPrice\": 0.1043}]}"
+                            )
+                    }))
     @ApiResponse(responseCode = "404",description = "Proveedor inexistente", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "El proveedor no existe")
@@ -105,13 +127,19 @@ public class ProductSupplierController {
                                     name = "manager-view",
                                     summary = "Vista para rol MANAGER o superior",
                                     description = "Incluye todos los precios (costo y venta) y margenes de ganancia",
-                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idSupplier\": 1, \"companyName\": \"Proveedor\", \"cost\": 100.00, \"profitMargin\": 20.00, \"price\": 120.00}]}"
+                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idSupplier\": 1, \"companyName\": \"Proveedor\", \"cost\": 100.00, \"profitMargin\": 20.00, \"price\": 120.00, \"dollarPrice\": 0.1043}]}"
+                            ),
+                            @ExampleObject(
+                                    name = "manager-view-no-dollar-api",
+                                    summary = "Vista para rol MANAGER o superior (API dólar caída)",
+                                    description = "Incluye todos los precios (costo y venta) y margenes de ganancia",
+                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idSupplier\": 1, \"companyName\": \"Proveedor\", \"cost\": 100.00, \"profitMargin\": 20.00, \"price\": 120.00, \"dollarPrice\": \"not available\"}]}"
                             ),
                             @ExampleObject(
                                     name = "employee-view",
                                     summary = "Vista para rol EMPLOYEE",
                                     description = "Solo muestra precios finales sin incluir margenes de ganancia",
-                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idSupplier\": 1, \"companyName\": \"Proveedor\", \"price\": 120.00}]}"
+                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idSupplier\": 1, \"companyName\": \"Proveedor\", \"price\": 120.00, \"dollarPrice\": 0.1043}]}"
                             )
                     }
             )
