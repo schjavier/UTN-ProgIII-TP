@@ -116,9 +116,26 @@ public class ApiManagerImp implements  ApiManager{
     }
 
     @Override
+    public <T> T Patch(String path, String id, Object requestBody, Class<T> responseType) throws IOException, InterruptedException {
+        return Patch(path,id,requestBody,responseType,null);
+    }
+
+    @Override
     public <T> T Delete(String path, String id, Class<T> responseType, Map<String,String> queryParams) throws IOException, InterruptedException {
         HttpRequest request = createRequestBuilder(path, id, queryParams)
                 .DELETE()
+                .build();
+
+        return sendRequest(request, responseType);
+    }
+
+    @Override
+    public <T> T Patch(String path, String id, Object requestBody, Class<T> responseType, Map<String, String> queryParams) throws IOException, InterruptedException {
+        String json = objectMapper.writeValueAsString(requestBody);
+
+        HttpRequest request = createRequestBuilder(path, id, queryParams)
+                .header("Content-Type", "application/json")
+                .method("PATCH", BodyPublishers.ofString(json))
                 .build();
 
         return sendRequest(request, responseType);

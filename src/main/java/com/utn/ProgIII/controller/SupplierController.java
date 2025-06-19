@@ -97,7 +97,7 @@ public class SupplierController {
         return ResponseEntity.ok(supplierService.listSuppliers(paginacion));
     }
 
-
+    //faltan anotaciones
     @GetMapping
     public ResponseEntity<List<ViewSupplierDTO>> getAllSuppliers() {
          return ResponseEntity.ok(supplierService.getAllSuppliers());

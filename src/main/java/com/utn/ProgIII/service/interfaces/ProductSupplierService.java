@@ -12,4 +12,7 @@ public interface ProductSupplierService {
     ProductPricesDTO listPricesByProduct(Long idProduct);
     String uploadCsv(String filepath, Long idSupplier);
     String uploadCsv(String filepath, Long idSupplier, BigDecimal bulkProfitMargin);
+
+    ResponseProductSupplierDTO findById(Long id);
+
 }

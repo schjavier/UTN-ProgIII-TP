@@ -17,6 +17,7 @@ import com.utn.ProgIII.service.interfaces.AuthService;
 import com.utn.ProgIII.service.interfaces.MiscService;
 import com.utn.ProgIII.service.interfaces.ProductSupplierService;
 import com.utn.ProgIII.validations.ProductSupplierValidations;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -155,4 +156,10 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         return csvReader.uploadToDatabase(filepath,idSupplier,bulkProfitMargin);
     }
 
+    @Override
+    public ResponseProductSupplierDTO findById(Long id) {
+        return productSupplierRepository.findById(id)
+                .map(mapper::fromEntityToDto)
+                .orElseThrow(() -> new EntityNotFoundException("ProductSupplier not found with id: " + id));
+    }
 }

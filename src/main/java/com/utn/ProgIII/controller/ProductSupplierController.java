@@ -52,6 +52,7 @@ public class ProductSupplierController {
 
     }
 
+
     @PatchMapping("/{id}")
     @ApiResponse(responseCode = "200",description = "Datos modificados")
     //@ApiResponse(responseCode = "400",description = "Datos erroneos") esto no se lanza?
@@ -68,6 +69,13 @@ public class ProductSupplierController {
         ResponseProductSupplierDTO response = productSupplierService.updateProductSupplier(request, id);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    //faltan anotaciones
+    @GetMapping("/relationship/{id}")
+    public ResponseEntity<ResponseProductSupplierDTO> getProductSupplierById(@PathVariable Long id) {
+        ResponseProductSupplierDTO productSupplier = productSupplierService.findById(id);
+        return ResponseEntity.ok(productSupplier);
     }
 
     @Operation(summary = "Busca todos los productos de un proveedor segun su nombre", description = "Busca todos los productos de un proveedor segun su nombre")

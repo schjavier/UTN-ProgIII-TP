@@ -1,10 +1,7 @@
 package com.utn.ProgIII.View.Menu;
 
 import com.utn.ProgIII.View.ApiManager.ApiManagerImp;
-import com.utn.ProgIII.dto.ProductDTO;
-import com.utn.ProgIII.dto.ResponseProductSupplierDTO;
-import com.utn.ProgIII.dto.UserWithCredentialDTO;
-import com.utn.ProgIII.dto.ViewSupplierDTO;
+import com.utn.ProgIII.dto.*;
 import com.utn.ProgIII.mapper.ProductMapper;
 import com.utn.ProgIII.mapper.ProductSupplierMapper;
 import com.utn.ProgIII.mapper.SupplierMapper;
@@ -70,6 +67,8 @@ public class MenuAdmin {
         ProductSupplier productSupplier;
         ProductSupplierMapper productSupplierMapper = new ProductSupplierMapper();
         ResponseProductSupplierDTO productSupplierDTO;
+        SupplierProductListDTO[] supplierProductListDTOS;
+        ProductPricesDTO productPricesDTO;
 
 
         String id;
@@ -695,9 +694,12 @@ public class MenuAdmin {
                         System.out.println("   Procesando...");
 
                         productDTO = manager.Get("product",id,ProductDTO.class);
-                        product = productMapper.toEntity(productDTO);
 
-                        newProductSupplier.setProduct(product);
+                        newProduct = productMapper.toEntity(productDTO);
+
+                        newProduct.setIdProduct(productDTO.idProduct());
+
+                        newProductSupplier.setProduct(newProduct);
 
                         System.out.println("Ingrese el costo");
                         newProductSupplier.setCost(scan.nextBigDecimal());
@@ -718,9 +720,99 @@ public class MenuAdmin {
 
                     case 2:  // modificar costo o margen ganancia  (ver patch)
 
+                        System.out.println("Ingese el Id producto-proveedor");
+                        id = scan.nextLine();
+                        System.out.println("   Procesando...");
+
+                        productSupplierDTO = manager.Get("productSupplier/relationship",id,ResponseProductSupplierDTO.class);
+
+                        System.out.println(productSupplierDTO.toString());
+
+                        newProductSupplier = productSupplierMapper.fromDtoToEntity(productSupplierDTO);
+
+                        while (opcion != 0) {
+
+                            System.out.println("-- Ingrese el campo que desea modificar --\n");
+
+                            System.out.println("1. Costo");
+                            System.out.println("2. Porcentaje de ganancia");
+                            opcion = chooseOption(scan);
+
+                            if(opcion == 1){
+                                System.out.println("Costo");
+                                newProductSupplier.setCost(scan.nextBigDecimal());
+                                scan.nextLine();
+                            }
+                            else{
+                                System.out.println("Porcentaje de ganancia");
+                                newProductSupplier.setProfitMargin(scan.nextBigDecimal());
+                                scan.nextLine();
+                            }
+
+                            productSupplierDTO = manager.Patch("productSupplier",id,newProductSupplier,ResponseProductSupplierDTO.class);
+
+                            System.out.println(productSupplierDTO.toString());
+
+                            System.out.println("¿Desea modificar otro campo?");
+                            System.out.println("1. Si");
+                            System.out.println("0. No");
+                            opcion = scan.nextInt();
+                            scan.nextLine();
+
+                            //mostrar producto modificado !!!!!!!!!!!!!!!!!!
+                        }
+
                         break;
 
-                    case 3:  // filtrar por id o nombre compañia
+                    case 3:  // filtrar por id de producto , nombre compañia, por id de relacion
+                        printSubMenuFilterProductSupplier();
+                        opcion = chooseOption(scan);
+
+                        switch (opcion){
+                            case 1: //id relacion
+
+                                System.out.println("Ingrese el Id de producto-proveedor");
+                                id = scan.nextLine();
+                                System.out.println("   Procesando...");
+
+                                productSupplierDTO = manager.Get("productSupplier/relationship",id,ResponseProductSupplierDTO.class);
+
+                                System.out.println(productSupplierDTO.toString());
+
+                                break;
+
+                            case 2: //nombre compañia
+
+                                System.out.println("Ingrese el nombre de la compañia");
+                                searchParam = scan.nextLine();
+                                System.out.println("   Procesando...");
+
+                                supplierProductListDTOS = manager.Get("productSupplier/filter",searchParam, SupplierProductListDTO[].class);
+
+                                for (SupplierProductListDTO supplierProductDto : supplierProductListDTOS){
+                                    System.out.println(supplierProductDto.toString());
+                                }
+
+                                break;
+
+                            case 3: //id producto  /filter-product
+                                System.out.println("Ingrese el Id del producto");
+                                id = scan.nextLine();
+                                System.out.println("   Procesando...");
+
+                                productPricesDTO = manager.Get("productSupplier/filter-product",id,ProductPricesDTO.class);
+
+                                System.out.println(productPricesDTO.toString());
+
+                                break;
+
+                            case 0:
+                                //volver atras
+                                break;
+
+                            default:
+                                System.out.println("Opcion invalida");
+                        }
 
                         break;
 
@@ -842,6 +934,16 @@ public class MenuAdmin {
         System.out.println("1. Crear nueva asignación producto-proveedor");
         System.out.println("2. Modificar datos de relación");
         System.out.println("3. Filtrar producto-proveedor");
+
+        System.out.println("0. Volver atras");
+    }
+
+    public static void printSubMenuFilterProductSupplier(){
+        System.out.println("-- Filtrar producto por proveedor --");
+
+        System.out.println("1. Numero Id relacion producto-proveedor");
+        System.out.println("2. Nombre Compañia");
+        System.out.println("3. Numero Id producto");
 
         System.out.println("0. Volver atras");
     }
