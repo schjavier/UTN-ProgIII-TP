@@ -42,12 +42,12 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
-    @Override
-    public List<String> getAuthorities() {
-
-        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        return authorities.stream().map(GrantedAuthority::getAuthority).toList();
-    }
+//    @Override
+//    public List<String> getAuthorities() {
+//
+//        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+//        return authorities.stream().map(GrantedAuthority::getAuthority).toList();
+//    }
 
     public boolean isEmployee(String roleName) {
 

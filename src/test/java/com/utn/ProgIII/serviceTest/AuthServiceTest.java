@@ -20,11 +20,10 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,18 +42,19 @@ public class AuthServiceTest {
     @Mock
     private JwtUtil jwtUtil;
 
-    @InjectMocks
-    AuthServiceImpl authService;
 
     @Mock
     private SecurityContext securityContext;
     @Mock
     private Authentication authentication;
 
+    @InjectMocks
+    AuthServiceImpl authService;
 
     @BeforeEach
     void setUp(){
         SecurityContextHolder.setContext(securityContext);
+
     }
 
     @Test
@@ -80,22 +80,78 @@ public class AuthServiceTest {
     }
 
     @Test
-    void getAuthorities_shouldReturnListOfAuthorities(){
-        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_EMPLOYEE");
+    public void isEmployee_shouldReturnTrue_whenSingleEmployeeRole(){
 
-        List<GrantedAuthority> authorityList = new ArrayList<>();
-        authorityList.add(authority);
+        GrantedAuthority authority = new SimpleGrantedAuthority(EMPLOYEE_ROLE);
 
         when(securityContext.getAuthentication()).thenReturn(authentication);
-        when(authentication.getAuthorities()).thenReturn();
+        when(authentication.getAuthorities()).thenAnswer(
+                invocation -> Collections.singleton(authority)
+        );
 
-        // hay problemas con thenReturn
-        //estoy trabado hasta aca con este metodo! ya va a salir!
+        boolean result = authService.isEmployee("ROLE_EMPLOYEE");
+
+        assertTrue(result);
 
     }
 
     @Test
-    public void isEmployee_shouldReturnTrue_WhenUserHasRoleEmployee(){
+    public void isEmployee_shouldReturnFalse_whenMultipleRoles(){
+        GrantedAuthority authority = new SimpleGrantedAuthority(EMPLOYEE_ROLE);
+        GrantedAuthority authority2 = new SimpleGrantedAuthority(ADMIN_ROLE);
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getAuthorities()).thenAnswer(
+                invocation -> List.of(authority, authority2)
+        );
+
+        boolean result = authService.isEmployee("ROLE_EMPLOYEE");
+
+        assertFalse(result);
+
+    }
+
+    @Test
+    public void hasRole_shouldReturnTrue_whenUserHasRole(){
+        GrantedAuthority authority = new SimpleGrantedAuthority(EMPLOYEE_ROLE);
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getAuthorities()).thenAnswer(
+                invocation -> List.of(authority)
+        );
+
+        boolean result = authService.hasRole("ROLE_EMPLOYEE");
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void hasRole_shouldReturnFalse_whenUserHasNotHaveRole(){
+        GrantedAuthority authority = new SimpleGrantedAuthority(EMPLOYEE_ROLE);
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getAuthorities()).thenAnswer(
+                invocation -> List.of(authority)
+        );
+
+        boolean result = authService.hasRole("ROLE_ADMIN");
+
+        assertFalse(result);
+    }
+    @Test
+    void roleCount_shouldReturnNumberOfRoles(){
+        GrantedAuthority authority = new SimpleGrantedAuthority(EMPLOYEE_ROLE);
+        GrantedAuthority authority2 = new SimpleGrantedAuthority(ADMIN_ROLE);
+
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getAuthorities()).thenAnswer(
+                invocation -> List.of(authority, authority2)
+        );
+
+        Long count = authService.getRoleCount();
+
+        assertEquals(2L, count);
 
     }
 

@@ -73,8 +73,6 @@ public class ProductServiceTest {
         Mockito.verify(productRepository).findById(PRODUCT_ID);
         Mockito.verify(productMapper).toProductDTO(productMock);
 
-
-
     }
 
     @Test
