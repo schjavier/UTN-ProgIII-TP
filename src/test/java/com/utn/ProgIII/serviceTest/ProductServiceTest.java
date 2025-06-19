@@ -58,6 +58,8 @@ public class ProductServiceTest {
     private Product disabledProductMock;
     private ProductDTO productDTOMock;
     private ProductDTO productDTOMock2;
+    private List<Product> productList;
+    private List<Product> onlyEnabledProductList;
 
     @BeforeEach
     void setUp(){
@@ -68,8 +70,17 @@ public class ProductServiceTest {
         disabledProductMock = new Product();
         disabledProductMock.setIdProduct(PRODUCT_ID);
         disabledProductMock.setStatus(STATUS_DISABLED);
+
         productDTOMock = new ProductDTO(PRODUCT_ID, PRODUCT_NAME, STATUS.toString());
         productDTOMock2 = new ProductDTO(PRODUCT2_ID, PRODUCT2_NAME, STATUS_DISABLED.toString());
+
+        productList = new ArrayList<>();
+        productList.add(productMock);
+        productList.add(disabledProductMock);
+
+        onlyEnabledProductList = new ArrayList<>();
+        onlyEnabledProductList.add(productMock);
+
 
     }
 
@@ -131,11 +142,7 @@ public class ProductServiceTest {
     }
 
     @Test
-    void getAllProducts_shouldReturnListOfAllProducts_whenUserAdmin(){
-
-        List<Product> productList = new ArrayList<>();
-        productList.add(productMock);
-        productList.add(disabledProductMock);
+    void getAllProducts_shouldReturnListOfAllProducts_whenUserManager(){
 
         when(authService.hasRole("ROLE_MANAGER")).thenReturn(true);
         when(productRepository.findAll()).thenAnswer(
@@ -152,5 +159,24 @@ public class ProductServiceTest {
         verify(productRepository, never()).findByStatus(any());
     }
 
+    @Test
+    void getAllProducts_shouldReturnOnlyEnabledProducts_whenUserEmployee(){
+
+        when(authService.hasRole("ROLE_MANAGER")).thenReturn(false);
+        when(authService.hasRole("ROLE_EMPLOYEE")).thenReturn(true);
+        when(productRepository.findByStatus(STATUS)).thenAnswer(
+                invocation -> onlyEnabledProductList
+        );
+
+        when(productMapper.toProductDTO(productMock)).thenReturn(productDTOMock);
+
+        List<ProductDTO> result = productService.getAllProduct();
+
+        assertEquals(1, result.size());
+        assertTrue(result.contains(productDTOMock));
+        verify(productRepository).findByStatus(STATUS);
+
+
+    }
 
 }
