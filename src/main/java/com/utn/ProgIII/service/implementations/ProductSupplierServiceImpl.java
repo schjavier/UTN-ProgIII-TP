@@ -2,10 +2,7 @@ package com.utn.ProgIII.service.implementations;
 
 import com.utn.ProgIII.csv.CsvReader;
 import com.utn.ProgIII.dto.*;
-import com.utn.ProgIII.exceptions.InvalidRequestException;
-import com.utn.ProgIII.exceptions.ProductNotFoundException;
-import com.utn.ProgIII.exceptions.ProductSupplierNotExistException;
-import com.utn.ProgIII.exceptions.SupplierNotFoundException;
+import com.utn.ProgIII.exceptions.*;
 import com.utn.ProgIII.mapper.ProductSupplierMapper;
 import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.ProductSupplier.*;
@@ -107,9 +104,13 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         List<?> priceList = new ArrayList<>();
 
         if(authService.hasRole("ROLE_MANAGER")){
-            BigDecimal dolar = miscService.searchDollarPrice().venta();
+            try {
+                BigDecimal dolar = miscService.searchDollarPrice().venta();
 
-            priceList = productSupplierRepository.productsBySupplierManager(supplier.getIdSupplier(),dolar);
+                priceList = productSupplierRepository.productsBySupplierManager(supplier.getIdSupplier(),dolar);
+            } catch (UnexpectedServerErrorException e) {
+                priceList = productSupplierRepository.productsBySupplierManagerFallback(supplier.getIdSupplier());
+            }
         } else if (authService.hasRole("ROLE_EMPLOYEE")) {
             priceList = productSupplierRepository.productsBySupplierEmployee(supplier.getIdSupplier());
         }
@@ -129,9 +130,13 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         List<?> priceList = new ArrayList<>();
 
         if(authService.hasRole("ROLE_MANAGER")){
-            BigDecimal dolar = miscService.searchDollarPrice().venta();
+            try {
+                BigDecimal dolar = miscService.searchDollarPrice().venta();
 
-            priceList = productSupplierRepository.listPricesByProductManager(idProduct,dolar);
+                priceList = productSupplierRepository.listPricesByProductManager(idProduct,dolar);
+            } catch (UnexpectedServerErrorException e) {
+                priceList = productSupplierRepository.listPricesByProductManagerFallback(idProduct);
+            }
         } else if (authService.hasRole("ROLE_EMPLOYEE")) {
             priceList = productSupplierRepository.listPricesByProductEmployee(idProduct);
         }

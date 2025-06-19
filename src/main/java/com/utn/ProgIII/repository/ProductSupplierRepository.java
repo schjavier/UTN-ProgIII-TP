@@ -1,10 +1,7 @@
 package com.utn.ProgIII.repository;
 
-import com.utn.ProgIII.dto.ExtendedProductEmployeeDTO;
-import com.utn.ProgIII.dto.ProductPriceSupplierEmployeeDTO;
-import com.utn.ProgIII.dto.ProductPriceSupplierManagerDTO;
+import com.utn.ProgIII.dto.*;
 import com.utn.ProgIII.model.Product.Product;
-import com.utn.ProgIII.dto.ExtendedProductManagerDTO;
 import com.utn.ProgIII.model.ProductSupplier.ProductSupplier;
 import com.utn.ProgIII.model.Supplier.Supplier;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,10 +14,16 @@ import java.util.List;
 public interface ProductSupplierRepository extends JpaRepository<ProductSupplier, Long> {
 
     @Query("SELECT NEW com.utn.ProgIII.dto.ExtendedProductManagerDTO(" +
-            "p.idProduct, p.name, ps.cost, ps.profitMargin, ps.price, ps.price/:dolarPrice) " +
+            "p.idProduct, p.name, ps.cost, ps.profitMargin, ps.price, ps.price/:dollarPrice) " +
             "FROM ProductSupplier ps JOIN ps.product p " +
             "WHERE ps.supplier.id = :idSupplier")
-    List<ExtendedProductManagerDTO> productsBySupplierManager(@Param("idSupplier") Long idSupplier, @Param("dolarPrice") BigDecimal dollarPrice);
+    List<ExtendedProductManagerDTO> productsBySupplierManager(@Param("idSupplier") Long idSupplier, @Param("dollarPrice") BigDecimal dollarPrice);
+
+    @Query("SELECT NEW com.utn.ProgIII.dto.ExtendedProductManagerDTONoDollarPrice(" +
+            "p.idProduct, p.name, ps.cost, ps.profitMargin, ps.price, 'not available') " +
+            "FROM ProductSupplier ps JOIN ps.product p " +
+            "WHERE ps.supplier.id = :idSupplier")
+    List<ExtendedProductManagerDTONoDollarPrice> productsBySupplierManagerFallback(@Param("idSupplier") Long idSupplier);
 
     @Query("SELECT NEW com.utn.ProgIII.dto.ExtendedProductEmployeeDTO(" +
             "p.idProduct, p.name, ps.price) " +
@@ -31,10 +34,16 @@ public interface ProductSupplierRepository extends JpaRepository<ProductSupplier
 
 
     @Query("SELECT NEW com.utn.ProgIII.dto.ProductPriceSupplierManagerDTO(" +
-            "s.idSupplier, s.companyName, ps.cost, ps.profitMargin, ps.price, ps.price/:dolarPrice) " +
+            "s.idSupplier, s.companyName, ps.cost, ps.profitMargin, ps.price, ps.price/:dollarPrice) " +
             "FROM ProductSupplier ps JOIN ps.supplier s " +
             "WHERE ps.product.idProduct = :idProduct")
-    List<ProductPriceSupplierManagerDTO> listPricesByProductManager(@Param("idProduct") Long idProduct, @Param("dolarPrice") BigDecimal dollarPrice);
+    List<ProductPriceSupplierManagerDTO> listPricesByProductManager(@Param("idProduct") Long idProduct, @Param("dollarPrice") BigDecimal dollarPrice);
+
+    @Query("SELECT NEW com.utn.ProgIII.dto.ProductPriceSupplierManagerDTONoDollarPrice(" +
+            "s.idSupplier, s.companyName, ps.cost, ps.profitMargin, ps.price, 'not available') " +
+            "FROM ProductSupplier ps JOIN ps.supplier s " +
+            "WHERE ps.product.idProduct = :idProduct")
+    List<ProductPriceSupplierManagerDTONoDollarPrice> listPricesByProductManagerFallback(@Param("idProduct") Long idProduct);
 
     @Query("SELECT NEW com.utn.ProgIII.dto.ProductPriceSupplierEmployeeDTO(" +
             "s.idSupplier, s.companyName, ps.price) " +
