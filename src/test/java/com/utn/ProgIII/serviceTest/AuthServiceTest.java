@@ -87,7 +87,7 @@ public class AuthServiceTest {
                 invocation -> Collections.singleton(authority)
         );
 
-        boolean result = authService.isEmployee("ROLE_EMPLOYEE");
+        boolean result = authService.isEmployee();
 
         assertTrue(result);
 
@@ -103,7 +103,7 @@ public class AuthServiceTest {
                 invocation -> List.of(authority, authority2)
         );
 
-        boolean result = authService.isEmployee("ROLE_EMPLOYEE");
+        boolean result = authService.isEmployee();
 
         assertFalse(result);
 

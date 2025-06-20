@@ -117,13 +117,13 @@ public class ProductServiceTest {
     public void getUserBy_shouldThrowException_whenUserIsEmployeeAndProductIsDisabled(){
 
         when(productRepository.findById(PRODUCT_ID)).thenReturn(Optional.of(disabledProductMock));
-        when(authService.isEmployee("ROLE_EMPLOYEE")).thenReturn(true);
+        when(authService.isEmployee()).thenReturn(true);
 
         assertThrows(ProductNotFoundException.class,
                 () -> productService.getProductById(PRODUCT_ID));
 
         verify(productRepository).findById(PRODUCT_ID);
-        verify(authService).isEmployee("ROLE_EMPLOYEE");
+        verify(authService).isEmployee();
         verify(productMapper, never()).toProductDTO(any());
     }
 
@@ -131,7 +131,7 @@ public class ProductServiceTest {
     @Test
     void getUserById_shouldReturnProduct_whenEmployeeAndProductEnabled(){
         when(productRepository.findById(PRODUCT_ID)).thenReturn(Optional.of(productMock));
-        when(authService.isEmployee("ROLE_EMPLOYEE")).thenReturn(true);
+        when(authService.isEmployee()).thenReturn(true);
         when(productMapper.toProductDTO(productMock)).thenReturn(productDTOMock);
 
         ProductDTO result = productService.getProductById(PRODUCT_ID);
