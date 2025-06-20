@@ -31,7 +31,7 @@ public class Supplier {
 
 
     @NotBlank(message = "El numero de telefono no puede estar vacio")
-    @Pattern(regexp = "^(?:(?:00)?549?)?0?(?:11|[2368]\\d)(?:(?=\\d{0,2}15)\\d{2})?\\d{8}$",
+    @Pattern(regexp = "^(?:(?:00)?549?)?0?(?:11|[2368]\\d)(?:(?=\\d{0,2}15)\\d{2})?\\d{8}$", // un numero de telefono que tiene 10 caracteres, puede tener el 54 del codigo argentino
             message = "El formato del numero de telefono no es valido")
     private String phoneNumber;
 

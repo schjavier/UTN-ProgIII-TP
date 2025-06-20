@@ -172,8 +172,12 @@ public class ProductServiceImpl implements ProductService {
         product.setName(productDto.name());
         product.setStatus(ProductStatus.valueOf(productDto.status().toUpperCase()));
 
-        product = productRepository.save(product);
+        if(product.getStatus() == ProductStatus.DISABLED)
+        {
+            productSupplierRepository.removeAllByProduct_IdProduct(product.getIdProduct());
+        }
 
+        product = productRepository.save(product);
         return productMapper.toProductDTO(product);
     }
 

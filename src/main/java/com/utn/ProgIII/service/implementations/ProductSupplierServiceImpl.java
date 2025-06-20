@@ -5,6 +5,7 @@ import com.utn.ProgIII.dto.*;
 import com.utn.ProgIII.exceptions.*;
 import com.utn.ProgIII.mapper.ProductSupplierMapper;
 import com.utn.ProgIII.model.Product.Product;
+import com.utn.ProgIII.model.Product.ProductStatus;
 import com.utn.ProgIII.model.ProductSupplier.*;
 import com.utn.ProgIII.model.Supplier.Supplier;
 import com.utn.ProgIII.repository.ProductRepository;
@@ -70,6 +71,11 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
 
         Product product = productRepository.findById(createProductSupplierDTO.idProduct())
                 .orElseThrow( ()-> new ProductNotFoundException("No existe producto con ese ID"));
+
+        if(product.getStatus() == ProductStatus.DISABLED)
+        {
+            throw new ProductNotFoundException("Ese producto está desactivado, activarlo y intente de nuevo");
+        }
 
         ProductSupplier productSupplier = new ProductSupplier(
                 supplier,
@@ -151,6 +157,11 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
      */
     public ProductPricesDTO listPricesByProduct(Long idProduct) {
         Product product = productRepository.findById(idProduct).orElseThrow(() -> new ProductNotFoundException("El producto no existe"));
+
+        if(product.getStatus() == ProductStatus.DISABLED)
+        {
+            throw new ProductNotFoundException("El producto esta desactivado, y no tendra precios.");
+        }
 
         List<?> priceList = new ArrayList<>();
 

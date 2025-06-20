@@ -14,13 +14,13 @@ import java.util.List;
 public interface ProductSupplierRepository extends JpaRepository<ProductSupplier, Long> {
 
     @Query("SELECT NEW com.utn.ProgIII.dto.ExtendedProductManagerDTO(" +
-            "p.idProduct, p.name, ps.cost, ps.profitMargin, ps.price, ps.price/:dollarPrice) " +
+            "ps.idProductSupplier,p.idProduct, p.name, ps.cost, ps.profitMargin, ps.price, ps.price/:dollarPrice) " +
             "FROM ProductSupplier ps JOIN ps.product p " +
             "WHERE ps.supplier.id = :idSupplier")
     List<ExtendedProductManagerDTO> productsBySupplierManager(@Param("idSupplier") Long idSupplier, @Param("dollarPrice") BigDecimal dollarPrice);
 
     @Query("SELECT NEW com.utn.ProgIII.dto.ExtendedProductManagerDTONoDollarPrice(" +
-            "p.idProduct, p.name, ps.cost, ps.profitMargin, ps.price, 'not available') " +
+            "ps.idProductSupplier,p.idProduct, p.name, ps.cost, ps.profitMargin, ps.price, 'not available') " +
             "FROM ProductSupplier ps JOIN ps.product p " +
             "WHERE ps.supplier.id = :idSupplier")
     List<ExtendedProductManagerDTONoDollarPrice> productsBySupplierManagerFallback(@Param("idSupplier") Long idSupplier);
@@ -34,13 +34,13 @@ public interface ProductSupplierRepository extends JpaRepository<ProductSupplier
 
 
     @Query("SELECT NEW com.utn.ProgIII.dto.ProductPriceSupplierManagerDTO(" +
-            "s.idSupplier, s.companyName, ps.cost, ps.profitMargin, ps.price, ps.price/:dollarPrice) " +
+            "ps.idProductSupplier,s.idSupplier, s.companyName, ps.cost, ps.profitMargin, ps.price, ps.price/:dollarPrice) " +
             "FROM ProductSupplier ps JOIN ps.supplier s " +
             "WHERE ps.product.idProduct = :idProduct")
     List<ProductPriceSupplierManagerDTO> listPricesByProductManager(@Param("idProduct") Long idProduct, @Param("dollarPrice") BigDecimal dollarPrice);
 
     @Query("SELECT NEW com.utn.ProgIII.dto.ProductPriceSupplierManagerDTONoDollarPrice(" +
-            "s.idSupplier, s.companyName, ps.cost, ps.profitMargin, ps.price, 'not available') " +
+            "ps.idProductSupplier,s.idSupplier, s.companyName, ps.cost, ps.profitMargin, ps.price, 'not available') " +
             "FROM ProductSupplier ps JOIN ps.supplier s " +
             "WHERE ps.product.idProduct = :idProduct")
     List<ProductPriceSupplierManagerDTONoDollarPrice> listPricesByProductManagerFallback(@Param("idProduct") Long idProduct);

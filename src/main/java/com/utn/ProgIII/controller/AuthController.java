@@ -16,12 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@RestController
-@RequestMapping("/auth")
-@Tag(name = "Sesion y cuenta", description = "Inicio de sesion")
 /**
  * Clase para manejar requests de manejo de cuentas
  */
+@RestController
+@RequestMapping("/auth")
+@Tag(name = "Sesion y cuenta", description = "Inicio de sesion")
+@ApiResponse(responseCode = "403", description = "direccion no encontrada", content = @Content())
 public class AuthController {
 
     private final AuthService authService;
@@ -38,7 +39,7 @@ public class AuthController {
     ))
     @ApiResponse(responseCode = "201", description = "Usuario inexistente", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
-            schema = @Schema(example = "El usuario y la contraseña no coinciden")
+            schema = @Schema(example = "Usuario no encontrado")
     ))
     public ResponseEntity<LoginResponseDTO> userLogin(@RequestBody LoginRequestDTO loginRequest) {
 
