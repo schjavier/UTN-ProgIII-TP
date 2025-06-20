@@ -144,7 +144,6 @@ public class ProductServiceTest {
     @Test
     void getAllProducts_shouldReturnListOfAllProducts_whenUserManager(){
 
-        when(authService.hasRole("ROLE_MANAGER")).thenReturn(true);
         when(productRepository.findAll()).thenAnswer(
                 invocation -> productList
         );
@@ -162,8 +161,7 @@ public class ProductServiceTest {
     @Test
     void getAllProducts_shouldReturnOnlyEnabledProducts_whenUserEmployee(){
 
-        when(authService.hasRole("ROLE_MANAGER")).thenReturn(false);
-        when(authService.hasRole("ROLE_EMPLOYEE")).thenReturn(true);
+        when(authService.isEmployee()).thenReturn(true);
         when(productRepository.findByStatus(STATUS)).thenAnswer(
                 invocation -> onlyEnabledProductList
         );
