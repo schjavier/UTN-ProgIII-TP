@@ -3,6 +3,7 @@ package com.utn.ProgIII.service.implementations;
 import com.utn.ProgIII.dto.ProductDTO;
 
 import com.utn.ProgIII.exceptions.InvalidProductStatusException;
+import com.utn.ProgIII.exceptions.InvalidRequestException;
 import com.utn.ProgIII.exceptions.ProductNotFoundException;
 import com.utn.ProgIII.mapper.ProductMapper;
 import com.utn.ProgIII.model.Product.Product;
@@ -13,6 +14,7 @@ import com.utn.ProgIII.service.interfaces.AuthService;
 import com.utn.ProgIII.service.interfaces.ProductService;
 import jakarta.transaction.Transactional;
 import com.utn.ProgIII.validations.ProductValidations;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,6 +22,9 @@ import java.util.List;
 
 
 @Service
+/**
+ * Un servicio que se encarga de hacer funciones para productos
+ */
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
@@ -38,15 +43,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
+    /**
+     * Busca un producto por id
+     * @param id El id del producto
+     * @return Un dto del producto
+     */
     @Override
     public ProductDTO getProductById(Long id) {
 
         Product product = productRepository.findById(id)
                 .orElseThrow(()-> new ProductNotFoundException("Producto no encontrado"));
 
-//        (authService.hasRole("ROLE_EMPLOYEE") && authService.getRoleCount() == 1)
-
-        if( authService.isEmployee("ROLE_EMPLOYEE") && product.getStatus() == ProductStatus.DISABLED)
+        if(authService.isEmployee() && product.getStatus() == ProductStatus.DISABLED)
         {
             throw new ProductNotFoundException("Producto no encontrado");
         }
@@ -55,6 +63,10 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toProductDTO(product);
     }
 
+    /**
+     * Busca todos los productos
+     * @return Una lista de dtos de productos
+     */
     @Override
     public List<ProductDTO> getAllProduct() {
 
@@ -62,10 +74,10 @@ public class ProductServiceImpl implements ProductService {
 
 
 
-        if(authService.hasRole("ROLE_MANAGER"))
+        if(!authService.isEmployee())
         {
             products = productRepository.findAll();
-        } else if (authService.hasRole("ROLE_EMPLOYEE")) {
+        } else {
             products = productRepository.findByStatus(ProductStatus.ENABLED);
         }
 
@@ -78,6 +90,12 @@ public class ProductServiceImpl implements ProductService {
         return productDTOList;
     }
 
+    /**
+     * Busca productos segun estado
+     * @param status El estado del producto
+     * @return Lista de dto de productos
+     * @see ProductStatus
+     */
     @Override
     public List<ProductDTO> getAllProductByStatus(String status) {
 
@@ -97,12 +115,17 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    /**
+     * Busca un producto segun nombre
+     * @param name El nombre del producto, se usa un LIKE de sql
+     * @return Retorna una lista de dtos de productos
+     */
     @Override
     public List<ProductDTO> getProductByName(String name) {
         List<Product> products = productRepository.findByNameContaining(name);
         List<ProductDTO> productDTOS = new ArrayList<>();
 
-        if(authService.hasRole("ROLE_EMPLOYEE") && authService.getRoleCount() == 1)
+        if(authService.isEmployee())
         {
             products = products.stream().filter(x -> x.getStatus() == ProductStatus.ENABLED).toList();
         }
@@ -114,6 +137,11 @@ public class ProductServiceImpl implements ProductService {
         return productDTOS;
     }
 
+    /**
+     * Crea un producto nuevo y lo guarda en la base de datos
+     * @param productDto Un dto de un producto que se va a crear
+     * @return Un dto del producto creado
+     */
     @Override
     public ProductDTO createProductDto(ProductDTO productDto) {
 
@@ -124,8 +152,20 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toProductDTO(product);
     }
 
+    /**
+     * Se actualiza un producto segun su id
+     * @param id El id del producto que se modificara
+     * @param productDto Los datos para modificar el producto
+     * @return Un dto del producto modificado
+     */
     @Override
     public ProductDTO updateProduct(Long id, ProductDTO productDto) {
+
+        if(!EnumUtils.isValidEnum(ProductStatus.class,productDto.status()))
+        {
+            throw new InvalidRequestException("Ese estado no es valido");
+        }
+
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado"));
 
@@ -137,6 +177,10 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toProductDTO(product);
     }
 
+    /**
+     * Se da de baja (logica) un producto segun su id, tambien se eliminan las relaciones de los provedores
+     * @param id El id del producto
+     */
     @Override
     @Transactional
     public void deleteProduct(Long id) {

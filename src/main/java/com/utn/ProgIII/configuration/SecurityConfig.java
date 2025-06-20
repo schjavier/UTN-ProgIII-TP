@@ -24,6 +24,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+/**
+ * Clase para configurar la gerarquia y permisos de roles con SpringSecurity
+ */
 public class SecurityConfig {
 
     @Bean

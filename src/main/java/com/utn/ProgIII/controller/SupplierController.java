@@ -24,6 +24,9 @@ import static org.springframework.http.ResponseEntity.status;
 @RestController
 @RequestMapping("/supplier")
 @Tag(name = "Proveedores", description = "Operaciones relacionades con los proveedores")
+/**
+ * Clase que maneja requests sobre proveedores
+ */
 public class SupplierController {
 
     @Autowired

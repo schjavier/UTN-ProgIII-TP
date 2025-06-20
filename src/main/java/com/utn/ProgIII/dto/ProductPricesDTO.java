@@ -10,7 +10,7 @@ public record ProductPricesDTO(
         Long idProduct,
         @Schema(example = "Papas")
         String name,
-        @ArraySchema(schema = @Schema(oneOf = {ProductPriceSupplierEmployeeDTO.class,
+        @ArraySchema(schema = @Schema(oneOf = {ProductPriceSupplierEmployeeDTO.class, ProductPriceSupplierManagerDTONoDollarPrice.class,
                 ProductPriceSupplierManagerDTO.class}))
         List<?> prices
 ) {

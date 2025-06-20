@@ -98,8 +98,8 @@ public class SupplierServiceImpl implements SupplierService {
 
     /**
      * Modifica un proveedor segun los datos enviados
-     * @param supplierDTO
-     * @return
+     * @param supplierDTO Los datos para modificar
+     * @return Los datos modificados del proveedor
      */
     @Override
     @Transactional

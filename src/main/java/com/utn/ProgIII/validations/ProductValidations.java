@@ -12,6 +12,10 @@ public class ProductValidations {
     private ProductRepository productRepository;
 
 
+    /**
+     * Se verifica si un producto con ese nombre existe
+     * @param product
+     */
     public void validateProductNameExists(Product product)
     {
         if(productRepository.existsByName(product.getName()))

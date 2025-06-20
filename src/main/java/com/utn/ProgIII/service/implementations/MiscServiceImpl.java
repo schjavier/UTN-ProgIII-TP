@@ -16,6 +16,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 @Service
+/**
+ * Un servicio que se encarga de buscar el valor del dolar usando la api de dolarapi.com
+ */
 public class MiscServiceImpl implements MiscService {
     private final String dolar_api_url = "https://dolarapi.com/v1/";
 
@@ -26,13 +29,14 @@ public class MiscServiceImpl implements MiscService {
     public ViewDolarDTO searchDollarPrice() {
         JSONObject dolar;
         try {
-            BackendRequest dollarrequest = new BackendRequest(dolar_api_url,"dolares/oficial");
+            BackendRequest dollarrequest = new BackendRequest(dolar_api_url, "dolares/oficial");
             dolar = JSONConverter.makeJsonObject(dollarrequest.searchData());
-        } catch (IOException | InterruptedException | IncorrectParseMethodException e) {
+        } catch (IOException e) {
+            throw new UnexpectedServerErrorException("Ocurrio un error conectando a la API del precio del dolar");
+        } catch (InterruptedException | IncorrectParseMethodException e) {
             throw new UnexpectedServerErrorException("Un error inesperado ocurrio en el servicio.");
-        } catch (BadRequestException e)
-        {
-            throw new UnexpectedServerErrorException("Un error inesperado ocurrió en la API, puede no estar disponible.", e.getHttpCode());
+        } catch (BadRequestException e) {
+            throw new UnexpectedServerErrorException("Un error inesperado ocurrió en la API, puede no estar disponible", e.getHttpCode());
         }
         return dollarmapper.dollarJsonObjectToDTO(dolar);
     }

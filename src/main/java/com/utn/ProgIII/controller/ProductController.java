@@ -20,6 +20,9 @@ import java.util.List;
 @RequestMapping("/product")
 
 @Tag(name = "Productos", description = "Operaciones relacionadas con productos")
+/**
+ * Clase que maneja requests sobre productos
+ */
 public class ProductController {
 
     private final ProductService productService;
