@@ -5,6 +5,7 @@ import com.utn.ProgIII.dto.UserWithCredentialDTO;
 import com.utn.ProgIII.dto.ViewSupplierDTO;
 import com.utn.ProgIII.service.interfaces.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -68,7 +69,7 @@ public class ProductController {
             schema = @Schema(example = "Proveedor no encontrado")
     ))
     @Operation(summary = "Se muestra un producto por ID", description = "Se muestra el producto con todos sus datos")
-    public ResponseEntity<ProductDTO> getProductById (@PathVariable Long id) {
+    public ResponseEntity<ProductDTO> getProductById (@PathVariable @Parameter(description = "El ID del producto", example = "1") Long id) {
         ProductDTO response = productService.getProductById(id);
 
         return ResponseEntity.ok(response);
@@ -99,7 +100,7 @@ public class ProductController {
     ))
     @Operation(summary = "Se muestra una lista de productos por su estado", description = "Se muestra una lista según su estado")
 
-    public ResponseEntity<List<ProductDTO>> getAllProductByStatus(@PathVariable String status){
+    public ResponseEntity<List<ProductDTO>> getAllProductByStatus(@PathVariable @Parameter(description = "El estado de un producto (ENABLED,DISABLED)", example = "ENABLED") String status){
 
         List <ProductDTO> response = productService.getAllProductByStatus(status);
 
@@ -110,7 +111,7 @@ public class ProductController {
     @GetMapping("/search/name/{name}")
     @Operation(summary = "Se muestra una lista de productos por nombres", description = "Se muestra una lista de productos por nombres")
     @ApiResponse(responseCode = "200", description = "Lista de productos según nombre")
-    public ResponseEntity<List<ProductDTO>> getProductByName(@PathVariable String name){
+    public ResponseEntity<List<ProductDTO>> getProductByName(@PathVariable @Parameter(description = "El nombre de un producto", example = "Manzana") String name){
 
         List<ProductDTO> response = productService.getProductByName(name);
 
@@ -131,7 +132,7 @@ public class ProductController {
             content = {
                     @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = ViewSupplierDTO.class)))
+                            array = @ArraySchema(schema = @Schema(implementation = ProductDTO.class)))
             })
     @ApiResponse(responseCode = "400", description = "Datos erróneos", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
@@ -145,7 +146,7 @@ public class ProductController {
     })
     @Operation(summary = "Busca una página de productos", description = "Lista una página de productos")
     @GetMapping("/page")
-    public ResponseEntity<Page<ProductDTO>> getUsers(
+    public ResponseEntity<Page<ProductDTO>> getProducts(
             @ParameterObject @PageableDefault(size = 10) Pageable paginacion
     )
     {
@@ -165,7 +166,7 @@ public class ProductController {
             schema = @Schema(example = "Producto no encontrado")
     ))
 
-    public ProductDTO update (@PathVariable Long id, @RequestBody ProductDTO modifyProductDTO){
+    public ProductDTO update (@PathVariable @Parameter(description = "El ID de un producto", example = "1") Long id, @RequestBody ProductDTO modifyProductDTO){
 
        return productService.updateProduct(id,modifyProductDTO);
     }

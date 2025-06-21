@@ -51,7 +51,7 @@ public class UserController {
             schema = @Schema(example = "Usuario no encontrado")
     ))
     @GetMapping("/{id}")
-    public ResponseEntity<UserWithCredentialDTO> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserWithCredentialDTO> getUserById(@PathVariable @Parameter(description = "El ID de un usuario") Long id) {
         UserWithCredentialDTO response = userService.getUserById(id);
         return ResponseEntity.ok(response);
     }
@@ -70,7 +70,7 @@ public class UserController {
             content = {
                     @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = ViewSupplierDTO.class)))
+                            array = @ArraySchema(schema = @Schema(implementation = UserWithCredentialDTO.class)))
             })
     @ApiResponse(responseCode = "400", description = "Datos erróneos", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
@@ -103,8 +103,8 @@ public class UserController {
             array = @ArraySchema(schema = @Schema(implementation = UserWithCredentialDTO.class))
     ))
     @GetMapping()
-    public ResponseEntity<List<UserWithCredentialDTO>> getOrFilterUsers(@RequestParam(required = false, name = "Rol") String role,
-                                                                        @RequestParam(required = false, name = "Estado") String status) {
+    public ResponseEntity<List<UserWithCredentialDTO>> getOrFilterUsers(@RequestParam(required = false) String role,
+                                                                        @RequestParam(required = false ) String status) {
         return ResponseEntity.ok(userService.filterUsers(role,status));
     }
 
@@ -151,7 +151,7 @@ public class UserController {
             schema = @Schema(example = "(Un mensaje de error diciendo al administrador que no puede cambiar su nivel de acceso o estado de cuenta)")
     ))
     @PutMapping("/{id}")
-    public ResponseEntity<UserWithCredentialDTO> updateUser(@PathVariable Long id,
+    public ResponseEntity<UserWithCredentialDTO> updateUser(@PathVariable @Parameter(description = "El id de un usuario", example = "1") Long id,
                                                             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Los datos cambiados del usuario")
                                                             @RequestBody CreateUserDTO dto) {
         UserWithCredentialDTO response = userService.updateUser(id, dto);
@@ -182,7 +182,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(
             @PathVariable Long id,
-            @RequestParam(defaultValue = "soft", name = "Tipo de eliminación") @Parameter(description = "soft = baja lógica<br>hard = baja fisica") String deletionType) {
+            @RequestParam(defaultValue = "soft") @Parameter(description = "soft = baja lógica<br>hard = baja fisica") String deletionType) {
 
         userService.deleteOrRemoveUser(id, deletionType);
         return ResponseEntity.noContent().build();

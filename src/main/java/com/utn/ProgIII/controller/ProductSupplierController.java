@@ -3,6 +3,7 @@ package com.utn.ProgIII.controller;
 import com.utn.ProgIII.dto.*;
 import com.utn.ProgIII.service.interfaces.ProductSupplierService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -40,11 +41,11 @@ public class ProductSupplierController {
     @ApiResponse(responseCode = "201", description = "Creado")
     @ApiResponse(responseCode = "400", description = "Datos erróneos", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
-            schema = @Schema(description = "(Un mensaje que tiene los errores del usuario)")
+            schema = @Schema(example = "(Un mensaje que tiene los errores del usuario)")
     ))
     @ApiResponse(responseCode = "404", description = "No encontrado o no activo", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
-            schema = @Schema(description = "(Un mensaje que tiene un error de usuario)")
+            schema = @Schema(example = "(Un mensaje que tiene un error de usuario (producto no activo/existente, proveedor inexistente))")
     ))
     public ResponseEntity<ResponseProductSupplierDTO> createProductSupplier(@Valid @RequestBody
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Relación entre proveedor y producto para crear")
@@ -67,7 +68,7 @@ public class ProductSupplierController {
     public ResponseEntity<ResponseProductSupplierDTO> modifyProductSupplier(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Relación para modificar los precios y el profit margin")
             @Valid @RequestBody UpdateProductSupplierDTO request,
-            @PathVariable Long id){
+            @PathVariable @Parameter(example = "1", description = "El ID de un listado de precio") Long id){
 
         ResponseProductSupplierDTO response = productSupplierService.updateProductSupplier(request, id);
 
@@ -107,7 +108,7 @@ public class ProductSupplierController {
             schema = @Schema(example = "El proveedor no existe")
     ))
     @GetMapping("/filter/{companyName}")
-    public ResponseEntity<SupplierProductListDTO> listAllProductsBySupplier(@PathVariable String companyName){
+    public ResponseEntity<SupplierProductListDTO> listAllProductsBySupplier(@PathVariable @Parameter(description = "El nombre de una empresa") String companyName){
 
         SupplierProductListDTO response = productSupplierService.listProductsBySupplier(companyName);
         return ResponseEntity.ok(response);
@@ -115,7 +116,7 @@ public class ProductSupplierController {
     }
 
     @GetMapping("/filter-product/{productId}")
-    @Operation(summary = "Devuelve una lista de precios existentes de un producto según su ID.", description = "Devuelve una lista de precios existentes de un producto segun su ID. Los contenidos dependen del rol del usuario.")
+    @Operation(summary = "Devuelve una lista de precios existentes de un producto según su ID.", description = "Devuelve una lista de precios existentes de un producto según su ID. Los contenidos dependen del rol del usuario.")
     @ApiResponse(
             responseCode = "200",
             description = "Lista de precios devuelta",
@@ -148,7 +149,7 @@ public class ProductSupplierController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "El producto está desactivado, y no tendrá precios.")
     ))
-    public ResponseEntity<ProductPricesDTO> listAllPricesByProduct(@PathVariable Long productId){
+    public ResponseEntity<ProductPricesDTO> listAllPricesByProduct(@PathVariable @Parameter(description = "El ID de un producto", example = "1") Long productId){
         return ResponseEntity.ok(productSupplierService.listPricesByProduct(productId));
     }
 
@@ -158,10 +159,13 @@ public class ProductSupplierController {
             description = "Actualiza los precios de los productos de un proveedor por medio de una lista en formato .csv, " +
                     "pero solamente si la relación entre el producto y el proveedor ya existen. Finalmente, devuelve una lista con aquellos " +
                     "productos que no pudieron ser cargados")
-    @ApiResponse(responseCode = "200",description = "Actualizacion realizada, devuelve un listado con aquellos productos que no pudieron ser cargados")
+    @ApiResponse(responseCode = "200",description = "Actualizacion realizada, devuelve un listado con aquellos productos que no pudieron ser cargados", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "Productos no subidos:\nProduct 1\nProduct 3")
+    ))
     @ApiResponse(responseCode = "500",description = "El servidor no pudo procesar el archivo", content = @Content())
     @PostMapping(path = "/upload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<String> updateWithFile(@RequestParam("file") MultipartFile file,@RequestParam Long idSupplier) {
+    public ResponseEntity<String> updateWithFile(@RequestParam("file") MultipartFile file,@RequestParam @Parameter(example = "1", description = "El ID de un proveedor") Long idSupplier) {
         String filename = file.getOriginalFilename();
         String response;
 
@@ -178,7 +182,7 @@ public class ProductSupplierController {
     }
 
 
-    @Operation(summary = "Actualiza los precios de los productos de un proveedor masivamente y vincula productos sin relacion existente, ignora aquellos que estén desactivados",
+    @Operation(summary = "Actualiza los precios de los productos de un proveedor masivamente y vincula productos sin relación existente, ignora aquellos que estén desactivados",
             description = "Actualiza los precios de los productos de un proveedor por medio de una lista en formato .csv, " +
                     "y carga nuevas entradas con un porcentaje de ganancia definido si aún no están relacionados. Finalmente, devuelve una lista con aquellos " +
                     "productos que no pudieron ser cargados")
@@ -192,8 +196,8 @@ public class ProductSupplierController {
     ))
     @PostMapping(path = "/uploadNonRelatedProducts", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<String> updateWithFileAndProfitMargin(@RequestParam("file") MultipartFile file,
-                                                                @RequestParam Long idSupplier,
-                                                                @RequestParam(required = false) BigDecimal bulkProfitMargin) {
+                                                                @RequestParam @Parameter(example = "1", description = "El ID de un proveedor") Long idSupplier,
+                                                                @RequestParam(required = false) @Parameter(example = "20", description = "El porcentaje de margen de ganancia") BigDecimal bulkProfitMargin) {
         String filename = file.getOriginalFilename();
         String response;
         if (bulkProfitMargin == null) bulkProfitMargin = BigDecimal.valueOf(0);
