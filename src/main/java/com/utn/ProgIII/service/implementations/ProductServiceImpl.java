@@ -22,9 +22,6 @@ import java.util.List;
 
 
 @Service
-/**
- * Un servicio que se encarga de hacer funciones para productos
- */
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
@@ -44,9 +41,9 @@ public class ProductServiceImpl implements ProductService {
 
 
     /**
-     * Busca un producto por id
-     * @param id El id del producto
-     * @return Un dto del producto
+     * Busca un producto por su ID
+     * @param id ID del producto
+     * @return <code>ProductDTO</code>
      */
     @Override
     public ProductDTO getProductById(Long id) {
@@ -56,31 +53,33 @@ public class ProductServiceImpl implements ProductService {
 
         if(authService.isEmployee() && product.getStatus() == ProductStatus.DISABLED)
         {
-            throw new ProductNotFoundException("Producto no encontrado");
-        }
 
+            throw new ProductNotFoundException("Producto no encontrado");
+
+        }
 
         return productMapper.toProductDTO(product);
     }
 
     /**
      * Busca todos los productos
-     * @return Una lista de dtos de productos
+     * @return Una lista de <code>ProductDto</code>
+     * @see ProductDTO
      */
     @Override
     public List<ProductDTO> getAllProduct() {
 
         List<Product> products = new ArrayList<>();
 
-
-
         if(!authService.isEmployee())
         {
             products = productRepository.findAll();
-        } else {
-            products = productRepository.findByStatus(ProductStatus.ENABLED);
-        }
 
+        } else {
+
+            products = productRepository.findByStatus(ProductStatus.ENABLED);
+
+        }
 
         List<ProductDTO> productDTOList = new ArrayList<>();
 
@@ -91,10 +90,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * Busca productos segun estado
+     * Busca productos según estado
      * @param status El estado del producto
-     * @return Lista de dto de productos
+     * @return Lista <code>ProductDto</code>
      * @see ProductStatus
+     * @see ProductDTO
+     *
      */
     @Override
     public List<ProductDTO> getAllProductByStatus(String status) {
@@ -111,15 +112,17 @@ public class ProductServiceImpl implements ProductService {
             return productDTOList;
 
         } catch (IllegalArgumentException e){
-            throw new InvalidProductStatusException("El estado ingresado es invalido");
+            throw new InvalidProductStatusException("El estado ingresado es inválido");
         }
     }
 
     /**
-     * Busca un producto segun nombre
+     * Busca un producto según nombre
      * @param name El nombre del producto, se usa un LIKE de sql
-     * @return Retorna una lista de dtos de productos
+     * @return Retorna una lista de <code>ProductDto</code>
+     * @see ProductDTO
      */
+
     @Override
     public List<ProductDTO> getProductByName(String name) {
         List<Product> products = productRepository.findByNameContaining(name);
@@ -139,9 +142,11 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * Crea un producto nuevo y lo guarda en la base de datos
-     * @param productDto Un dto de un producto que se va a crear
-     * @return Un dto del producto creado
+     * @param productDto Un DTO de un producto que se creará
+     * @return Un <code>ProductDto</code> del producto creado
+     * @see ProductDTO
      */
+
     @Override
     public ProductDTO createProductDto(ProductDTO productDto) {
 
@@ -153,17 +158,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * Se actualiza un producto segun su id
-     * @param id El id del producto que se modificara
+     * Se actualiza un producto según su ID
+     * @param id ID del producto que se modificará
      * @param productDto Los datos para modificar el producto
-     * @return Un dto del producto modificado
+     * @return Un ProductDTO del producto modificado
+     * @see ProductDTO
      */
     @Override
     public ProductDTO updateProduct(Long id, ProductDTO productDto) {
 
         if(!EnumUtils.isValidEnum(ProductStatus.class,productDto.status()))
         {
-            throw new InvalidRequestException("Ese estado no es valido");
+            throw new InvalidRequestException("El estado de producto ingresado no es válido");
         }
 
         Product product = productRepository.findById(id)
@@ -182,8 +188,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * Se da de baja (logica) un producto segun su id, tambien se eliminan las relaciones de los provedores
-     * @param id El id del producto
+     * Se da de baja (lógica) un producto según su ID, también se eliminan las relaciones de los proveedores
+     * @param id identificador único del producto
      */
     @Override
     @Transactional

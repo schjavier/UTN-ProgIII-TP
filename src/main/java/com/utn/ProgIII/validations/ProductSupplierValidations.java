@@ -15,8 +15,8 @@ public class ProductSupplierValidations {
     }
 
     /**
-     * Valida si una relacion entre producto y proveedor existe
-     * @param productSupplier Objeto de relacion
+     * Valida si la relación entre un producto y un proveedor existe
+     * @param productSupplier Objeto de relación
      */
     public void validateRelationship(ProductSupplier productSupplier){
         if (productSupplierRepository.existsByProductAndSupplier(productSupplier.getProduct(),productSupplier.getSupplier())){

@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 /**
- * Un servicio que se encarga de hacer acciones relacionadas a la sesion del usuario
+ * Servicio que permite a un usuario entrar al sistema
  */
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -30,9 +30,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * Maneja el inicio de sesion
-     * @param loginRequestDTO El objeto de inicio de sesion
-     * @return Una token de validacion
+     * Maneja el ingreso al sistema
+     * @param loginRequestDTO DTO con las credenciales para ingresar
+     * @return un JWT (Json Web Token)
      */
     @Override
         public String login(LoginRequestDTO loginRequestDTO) {
@@ -46,10 +46,9 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
-
     /**
-     * Verifica si el usuario logeado es un empleado
-     * @return un booleano true si lo es
+     * Verifica si el usuario logueado es un empleado
+     * @return <code>boolean</code> true si lo es, false de otro modo
      */
     public boolean isEmployee() {
 
@@ -57,8 +56,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * Verifica si el usuario logeado tiene cierto rol
-     * @param roleName El nombre del rol (ej ROLE_MANAGER)
+     * Verifica si el usuario logueado tiene cierto rol
+     * @param roleName El nombre del rol (ej.: ROLE_MANAGER)
      * @return un booleano true si lo tiene
      */
     public boolean hasRole (String roleName)
@@ -67,10 +66,10 @@ public class AuthServiceImpl implements AuthService {
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(roleName));
     }
 
-    @Override
     /**
      * Devuelve la cantidad de roles que un usuario tiene
      */
+    @Override
     public Long getRoleCount() {
         return (long) SecurityContextHolder.getContext().getAuthentication().getAuthorities().size();
     }

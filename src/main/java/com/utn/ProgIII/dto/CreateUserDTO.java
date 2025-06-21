@@ -4,8 +4,6 @@ import com.utn.ProgIII.model.User.UserStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
-import java.util.Arrays;
-
 /**
  * Formato que adquieren los datos recibidos desde una request previo a ser enviados al mapper
  */

@@ -1,7 +1,6 @@
 package com.utn.ProgIII.service.interfaces;
 
 import com.utn.ProgIII.dto.ProductDTO;
-import com.utn.ProgIII.model.Product.ProductStatus;
 
 import java.util.List;
 

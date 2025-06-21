@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-/**
- * Un servicio que se encarga de hacer funciones para la relacion entre productos y proveedores
+/*
+ * Un servicio que se encarga de hacer funciones para la relación entre productos y proveedores
  */
 public class ProductSupplierServiceImpl implements ProductSupplierService {
 
@@ -59,9 +59,9 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
 
 
     /**
-     * Se crea una nueva relacion entre un producto y proveedor, con su precio y margen de ganancia
-     * @param createProductSupplierDTO Un dto que se usa crear una relacion
-     * @return Un dto de la relacion entre el producto y proveedor creada
+     * Se crea una nueva relación entre un producto y proveedor, con su precio y margen de ganancia
+     * @param createProductSupplierDTO Un DTO que se usa crear una relación
+     * @return Un DTO de la relación entre el producto y proveedor creada
      */
     @Override
     public ResponseProductSupplierDTO createProductSupplier(CreateProductSupplierDTO createProductSupplierDTO) {
@@ -92,10 +92,10 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     }
 
     /**
-     * Se actualiza una relacion existente, con sus datos
-     * @param updateProductSupplierDTO Un objeto con los datos para modificar la relacion
-     * @param id El id para la relacion a editar
-     * @return Un dto con los datos modificados
+     * Se actualiza una relación existente, con sus datos
+     * @param updateProductSupplierDTO Un objeto con los datos para modificar la relación
+     * @param id El ID para la relación a editar
+     * @return Un DTO con los datos modificados
      */
     @Override
     public ResponseProductSupplierDTO updateProductSupplier(UpdateProductSupplierDTO updateProductSupplierDTO, Long id) {
@@ -116,9 +116,9 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     }
 
     /**
-     * Lista las relaciones segun el nombre de la empresa, los datos mostrados varian segun el nivel de acceso del usuario
+     * Lista las relaciones según el nombre de la empresa, los datos mostrados varían según el nivel de acceso del usuario
      * @param companyName Nombre de proveedor para buscar
-     * @return Una lista de dtos con los datos para mostrar
+     * @return Una lista de DTO con los datos para mostrar
      */
     @Override
     public SupplierProductListDTO listProductsBySupplier(String companyName) {
@@ -151,9 +151,9 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     }
 
     /**
-     * Lista las relaciones segun el id de un producto cargado, los datos mostrados varian segun el nivel de acceso del usuario
-     * @param idProduct El id del producto
-     * @return Una lista de dtos para mostrar
+     * Lista las relaciones según el ID de un producto cargado, los datos mostrados varían según el nivel de acceso del usuario
+     * @param idProduct El ID del producto
+     * @return Una lista de DTO para mostrar
      */
     public ProductPricesDTO listPricesByProduct(Long idProduct) {
         Product product = productRepository.findById(idProduct).orElseThrow(() -> new ProductNotFoundException("El producto no existe"));
@@ -184,8 +184,7 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     /**
      * Se usa para modificar relaciones existentes
      * @param filepath Path interno del archivo
-     * @param idSupplier El id del proveedor para modificar sus relaciones
-     * @return
+     * @param idSupplier El ID del proveedor para modificar sus relaciones
      */
     @Override
     public String uploadCsv(String filepath, Long idSupplier) {
@@ -195,7 +194,7 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     /**
      * Se usa para cargar relaciones nuevas y modifican el precio de las existentes
      * @param filepath Path interno del archivo
-     * @param idSupplier El id del proveedor para modificar sus relaciones
+     * @param idSupplier El ID del proveedor para modificar sus relaciones
      * @param bulkProfitMargin El margen de ganancia
      * @return Un mensaje de error diciendo que productos no fueron cargados
      * @see CsvReader

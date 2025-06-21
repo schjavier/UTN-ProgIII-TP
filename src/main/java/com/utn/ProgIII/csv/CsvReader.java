@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-/**
- * Clase que sirve para leer archivos csv para realizar operaciones sobre la base de datos
+/*
+  Clase que sirve para leer archivos .csv para realizar operaciones sobre la base de datos
  */
 public class CsvReader {
     private final SupplierRepository supplierRepository;
@@ -38,9 +38,9 @@ public class CsvReader {
     }
 
     /**
-     * Crea una lista desde el csv para poder realizar operaciones
+     * Crea una lista desde el archivo .csv para poder realizar operaciones
      * @param path El path interno del archivo
-     * @return Una lista de datos de productos en forma de dto
+     * @return Una lista de datos de productos en forma de DTO
      * @throws IOException En caso de que falle leerse un archivo
      */
     public static List<ProductInfoFromCsvDTO> readFile(String path) throws IOException {
@@ -62,10 +62,10 @@ public class CsvReader {
     }
 
     /**
-     * Actualiza relaciones existentes de productos desde una lista de dtos
+     * Actualiza relaciones existentes de productos desde una lista de DTO
      * @param csvFilePath El path interno del archivo
      * @param supplierId El proveedor que se le actualizaran las relaciones
-     * @return Un mensaje de error que lista los productos que no fueron actualzados
+     * @return Un mensaje de error que lista los productos que no fueron actualizados
      */
     public String uploadToDatabase(String csvFilePath, Long supplierId) {
         StringBuilder message = new StringBuilder("Productos no subidos: \n");
@@ -95,7 +95,7 @@ public class CsvReader {
     }
 
     /**
-     * Carga relaciones nuevas en caso de que no existan entre un producto y proveedor, cambian el costo de las relaciones existentes
+     * Carga relaciones nuevas en caso de que no existan entre un producto y proveedor, cambia el costo de las existentes
      * @param csvFilePath El camino interno del archivo
      * @param supplierId El proveedor que se le actualizaran las relaciones
      * @param bulkProfitMargin El margen de ganancia con el que se cargan las nuevas relaciones
@@ -134,10 +134,10 @@ public class CsvReader {
     }
 
     /**
-     * Actualiza el precio de una relacion
-     * @param productUpdateInfo El dto del csv
-     * @param relationship La relacion existente
-     * @return La relacion modificada
+     * Actualiza el precio de una relación
+     * @param productUpdateInfo El DTO CSV
+     * @param relationship La relación existente
+     * @return La relación modificada
      */
     public ProductSupplier updateRelationshipPricing(ProductInfoFromCsvDTO productUpdateInfo, ProductSupplier relationship) {
         relationship.setCost(productUpdateInfo.cost());

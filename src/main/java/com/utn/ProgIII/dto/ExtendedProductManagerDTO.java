@@ -1,7 +1,5 @@
 package com.utn.ProgIII.dto;
 
-
-import com.utn.ProgIII.model.Product.ProductStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
