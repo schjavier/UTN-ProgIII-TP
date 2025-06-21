@@ -4,6 +4,8 @@ import com.utn.ProgIII.model.ProductSupplier.ProductSupplier;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import java.util.List;
 
@@ -15,6 +17,7 @@ import java.util.List;
 @Setter
 @ToString
 @Builder
+@Audited
 public class Product {
 
     @Id
@@ -27,6 +30,7 @@ public class Product {
 
     @OneToMany (mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @ToString.Exclude
+    @NotAudited
     private List<ProductSupplier> productSuppliers;
 
     @Enumerated(EnumType.STRING)
