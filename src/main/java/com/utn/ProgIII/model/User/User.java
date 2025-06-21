@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 /**
  * Clase que se encarga de representar los usuarios recibidos desde el repositorio, emulando la estructura de la tabla
@@ -18,6 +19,7 @@ import lombok.*;
 @Setter
 @Entity
 @Builder
+@Audited
 public class User {
 
     @Id

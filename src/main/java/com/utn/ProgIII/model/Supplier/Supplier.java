@@ -5,6 +5,8 @@ import com.utn.ProgIII.model.ProductSupplier.ProductSupplier;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Audited
 public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +31,7 @@ public class Supplier {
     @NotBlank(message = "El CUIT de la compañía no puede estar vacío")
     @Pattern(regexp = "^(20|23|24|27|30|33|34)-?\\d{8}-?\\d$", message = "El formato del CUIT no es válido")
     private String cuit;
+
 
     @NotBlank(message = "El número de teléfono no puede estar vacío")
     @Pattern(regexp = "^(?:(?:00)?549?)?0?(?:11|[2368]\\d)(?:(?=\\d{0,2}15)\\d{2})?\\d{8}$",
@@ -45,6 +49,7 @@ public class Supplier {
 
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @ToString.Exclude
+    @NotAudited
     private List<ProductSupplier> productSupplier;
 
     public Supplier(String companyname, String cuit, String phonenumber, String email, Address address) {
