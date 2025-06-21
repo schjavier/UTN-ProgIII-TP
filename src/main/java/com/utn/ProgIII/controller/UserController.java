@@ -2,14 +2,20 @@ package com.utn.ProgIII.controller;
 
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
+import com.utn.ProgIII.dto.ViewSupplierDTO;
 import com.utn.ProgIII.service.interfaces.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,6 +57,41 @@ public class UserController {
     }
 
     /**
+     * Una página que contiene los datos de usuarios.
+     * <p>Se puede definir el tamaño con ?size=?</p>
+     * <p>Se puede definir el número de página con ?page=?</p>
+     * <p>Se puede ordenar según parámetro de objeto con ?sort=?</p>
+     * @param paginacion Una página con su contenido e información
+     * @return Una página con contenido e información
+     */
+    @ApiResponse(
+            responseCode = "200",
+            description = "Encontrado",
+            content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ViewSupplierDTO.class)))
+            })
+    @ApiResponse(responseCode = "400", description = "Datos erróneos", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "No property 'firstNam' found for type 'User'; Did you mean 'firstname'")
+    ))
+    @ApiResponse(responseCode = "404", description = "No encontrado", content = {
+            @Content(
+                    mediaType = "text/plain;charset=UTF-8",
+                    schema = @Schema(example = "No hay usuarios")
+            )
+    })
+    @Operation(summary = "Busca una página de usuarios", description = "Lista una página de usuarios")
+    @GetMapping("/page")
+    public ResponseEntity<Page<UserWithCredentialDTO>> getUsers(
+            @ParameterObject @PageableDefault(size = 10) Pageable paginacion
+    )
+    {
+        return ResponseEntity.ok(userService.getUsersPage(paginacion));
+    }
+
+    /**
      * Muestra todos los usuarios que cumplan con los criterios solicitados o todos si no se proporciona ninguno
      * @return Una respuesta en formato json con los datos de los usuarios que cumplen los criterios solicitados
      */
@@ -62,8 +103,8 @@ public class UserController {
             array = @ArraySchema(schema = @Schema(implementation = UserWithCredentialDTO.class))
     ))
     @GetMapping()
-    public ResponseEntity<List<UserWithCredentialDTO>> getOrFilterUsers(@RequestParam(required = false) String role,
-                                                                        @RequestParam(required = false) String status) {
+    public ResponseEntity<List<UserWithCredentialDTO>> getOrFilterUsers(@RequestParam(required = false, name = "Rol") String role,
+                                                                        @RequestParam(required = false, name = "Estado") String status) {
         return ResponseEntity.ok(userService.filterUsers(role,status));
     }
 
@@ -141,7 +182,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(
             @PathVariable Long id,
-            @RequestParam(defaultValue = "soft") String deletionType) {
+            @RequestParam(defaultValue = "soft", name = "Tipo de eliminación") @Parameter(description = "soft = baja lógica<br>hard = baja fisica") String deletionType) {
 
         userService.deleteOrRemoveUser(id, deletionType);
         return ResponseEntity.noContent().build();

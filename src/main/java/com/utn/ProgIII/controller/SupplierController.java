@@ -25,7 +25,7 @@ import static org.springframework.http.ResponseEntity.status;
  * Clase que maneja requests sobre proveedores
  */
 @RestController
-@RequestMapping("/supplier")
+@RequestMapping("/suppliers")
 @Tag(name = "Proveedores", description = "Operaciones relacionades con los proveedores")
 @ApiResponse(responseCode = "403", description = "Acceso prohibido/dirección no encontrada", content = @Content())
 public class SupplierController {

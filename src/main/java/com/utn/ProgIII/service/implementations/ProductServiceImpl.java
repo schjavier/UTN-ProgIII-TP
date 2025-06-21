@@ -2,9 +2,11 @@ package com.utn.ProgIII.service.implementations;
 
 import com.utn.ProgIII.dto.ProductDTO;
 
+import com.utn.ProgIII.dto.UserWithCredentialDTO;
 import com.utn.ProgIII.exceptions.InvalidProductStatusException;
 import com.utn.ProgIII.exceptions.InvalidRequestException;
 import com.utn.ProgIII.exceptions.ProductNotFoundException;
+import com.utn.ProgIII.exceptions.UserNotFoundException;
 import com.utn.ProgIII.mapper.ProductMapper;
 import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.Product.ProductStatus;
@@ -15,6 +17,8 @@ import com.utn.ProgIII.service.interfaces.ProductService;
 import jakarta.transaction.Transactional;
 import com.utn.ProgIII.validations.ProductValidations;
 import org.apache.commons.lang3.EnumUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -138,6 +142,34 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return productDTOS;
+    }
+
+    /**
+     * Una página que contiene los datos de productos.
+     * <p>Se puede definir el tamaño con ?size=?</p>
+     * <p>Se puede definir el número de página con ?page=?</p>
+     * <p>Se puede ordenar según parámetro de objeto con ?sort=?</p>
+     * @param paginacion Una página con contenido e información
+     * @return Una página con contenido e información
+     */
+    @Override
+    public Page<ProductDTO> getProductPage(Pageable paginacion) { // no se bien como hacer para que haya solo una pagina de productos activados para el empleado :c
+
+        Page<ProductDTO> page = null;
+
+        if(authService.isEmployee())
+        {
+            page = productRepository.findByStatus(ProductStatus.ENABLED,paginacion).map(productMapper::toProductDTO);
+        } else {
+            page = productRepository.findAll(paginacion).map(productMapper::toProductDTO);
+        }
+
+        if(page.getNumberOfElements() == 0)
+        {
+            throw new ProductNotFoundException("No hay productos");
+        }
+
+        return page;
     }
 
     /**

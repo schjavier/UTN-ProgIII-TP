@@ -1,6 +1,8 @@
 package com.utn.ProgIII.controller;
 
 import com.utn.ProgIII.dto.ProductDTO;
+import com.utn.ProgIII.dto.UserWithCredentialDTO;
+import com.utn.ProgIII.dto.ViewSupplierDTO;
 import com.utn.ProgIII.service.interfaces.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -8,6 +10,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -109,6 +115,41 @@ public class ProductController {
         List<ProductDTO> response = productService.getProductByName(name);
 
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Una página que contiene los datos de productos.
+     * <p>Se puede definir el tamaño con ?size=?</p>
+     * <p>Se puede definir el número de página con ?page=?</p>
+     * <p>Se puede ordenar según parámetro de objeto con ?sort=?</p>
+     * @param paginacion Una página con su contenido e información
+     * @return Una página con contenido e información
+     */
+    @ApiResponse(
+            responseCode = "200",
+            description = "Encontrado",
+            content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ViewSupplierDTO.class)))
+            })
+    @ApiResponse(responseCode = "400", description = "Datos erróneos", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "No property 'nam' found for type 'Product'; Did you mean 'name'")
+    ))
+    @ApiResponse(responseCode = "404", description = "No encontrado", content = {
+            @Content(
+                    mediaType = "text/plain;charset=UTF-8",
+                    schema = @Schema(example = "No hay usuarios")
+            )
+    })
+    @Operation(summary = "Busca una página de productos", description = "Lista una página de productos")
+    @GetMapping("/page")
+    public ResponseEntity<Page<ProductDTO>> getUsers(
+            @ParameterObject @PageableDefault(size = 10) Pageable paginacion
+    )
+    {
+        return ResponseEntity.ok(productService.getProductPage(paginacion));
     }
 
     //modificar un producto

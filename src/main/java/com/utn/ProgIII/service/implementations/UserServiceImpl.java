@@ -3,10 +3,8 @@ package com.utn.ProgIII.service.implementations;
 import com.utn.ProgIII.dto.CreateCredentialDTO;
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
-import com.utn.ProgIII.exceptions.ForbiddenModificationException;
-import com.utn.ProgIII.exceptions.InvalidRequestException;
-import com.utn.ProgIII.exceptions.SelfDeleteUserException;
-import com.utn.ProgIII.exceptions.UserNotFoundException;
+import com.utn.ProgIII.dto.ViewSupplierDTO;
+import com.utn.ProgIII.exceptions.*;
 import com.utn.ProgIII.mapper.UserMapper;
 import com.utn.ProgIII.model.Credential.Role;
 import com.utn.ProgIII.model.User.User;
@@ -18,6 +16,8 @@ import com.utn.ProgIII.service.interfaces.UserService;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.EnumUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -102,6 +102,26 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
 
         return userMapper.toUserWithCredentialDTO(user);
+    }
+
+    /**
+     * Una página que contiene los datos de usuarios.
+     * <p>Se puede definir el tamaño con ?size=?</p>
+     * <p>Se puede definir el número de página con ?page=?</p>
+     * <p>Se puede ordenar según parámetro de objeto con ?sort=?</p>
+     * @param paginacion Una página con contenido e información
+     * @return Una página con contenido e información
+     */
+    public Page<UserWithCredentialDTO> getUsersPage(Pageable paginacion)
+    {
+        Page<UserWithCredentialDTO> page = userRepository.findAll(paginacion).map(userMapper::toUserWithCredentialDTO);
+
+        if(page.getNumberOfElements() == 0)
+        {
+            throw new UserNotFoundException("No hay usuarios");
+        }
+
+        return page;
     }
 
     /**
