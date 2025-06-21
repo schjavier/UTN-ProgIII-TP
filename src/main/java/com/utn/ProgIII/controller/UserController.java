@@ -27,7 +27,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/users")
-@ApiResponse(responseCode = "403", description = "Acceso prohibido/dirección no encontrada", content = @Content())
 @Tag(name = "Usuarios", description = "Operaciones relacionadas con los usuarios")
 public class UserController {
     private final UserService userService;
@@ -46,6 +45,7 @@ public class UserController {
     @ApiResponse(responseCode = "200",description = "Usuario encontrado", content = @Content(
             schema = @Schema(implementation = UserWithCredentialDTO.class)
     ))
+    @ApiResponse(responseCode = "403", description = "Acceso prohibido/dirección no encontrada", content = @Content())
     @ApiResponse(responseCode = "404",description = "Usuario no encontrado", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "Usuario no encontrado")
@@ -76,6 +76,7 @@ public class UserController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "No property 'firstNam' found for type 'User'; Did you mean 'firstname'")
     ))
+    @ApiResponse(responseCode = "403", description = "Acceso prohibido/dirección no encontrada", content = @Content())
     @ApiResponse(responseCode = "404", description = "No encontrado", content = {
             @Content(
                     mediaType = "text/plain;charset=UTF-8",
@@ -102,6 +103,7 @@ public class UserController {
             mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = UserWithCredentialDTO.class))
     ))
+    @ApiResponse(responseCode = "403", description = "Acceso prohibido/dirección no encontrada", content = @Content())
     @GetMapping()
     public ResponseEntity<List<UserWithCredentialDTO>> getOrFilterUsers(@RequestParam(required = false) String role,
                                                                         @RequestParam(required = false ) String status) {
@@ -120,6 +122,7 @@ public class UserController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "(Un mensaje de los errores del usuario)")
     ))
+    @ApiResponse(responseCode = "403", description = "Acceso prohibido/dirección no encontrada", content = @Content())
     @ApiResponse(responseCode = "409", description = "Usuario existente por dni", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(examples = {"El nombre de usuario ya existe en la base de datos", "El dni ingresado ya se encuentra registrado"})
@@ -175,6 +178,7 @@ public class UserController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "Usuario no encontrado")
     ))
+    @ApiResponse(responseCode = "403", description = "Acceso prohibido/dirección no encontrada", content = @Content())
     @ApiResponse(responseCode = "409", description = "Intento de eliminación del usuario logueado", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "No podes eliminar tu usuario")

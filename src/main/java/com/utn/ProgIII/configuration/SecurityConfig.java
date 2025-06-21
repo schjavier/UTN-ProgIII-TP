@@ -38,19 +38,19 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
 
                         .requestMatchers("/users/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/product/**").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.PUT, "/product/**").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.DELETE, "/product/**").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/product/**").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.POST, "/products/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.GET, "/products/**").hasRole("EMPLOYEE")
 
                         .requestMatchers(HttpMethod.POST, "/productSupplier/**").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.PATCH,  "/productSupplier/**").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.GET, "/productSupplier/**").hasRole("EMPLOYEE")
 
-                        .requestMatchers(HttpMethod.POST, "/supplier/**").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.PUT, "/supplier/**").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.DELETE, "/supplier/**").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/supplier/**").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.POST, "/suppliers/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/suppliers/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/suppliers/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.GET, "/suppliers/**").hasRole("EMPLOYEE")
 
                         .requestMatchers(HttpMethod.GET, "/misc/dollar").hasRole("MANAGER")
 
