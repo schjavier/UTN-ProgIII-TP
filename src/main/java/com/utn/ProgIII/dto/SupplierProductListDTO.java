@@ -8,7 +8,7 @@ import java.util.List;
 public record SupplierProductListDTO(
         @Schema(example = "1")
         Long idSupplier,
-        @Schema(example = "Compania test")
+        @Schema(example = "Empresa test")
         String companyName,
         @ArraySchema(schema= @Schema(oneOf = {ProductPriceSupplierEmployeeDTO.class, ProductPriceSupplierManagerDTONoDollarPrice.class,
                 ProductPriceSupplierManagerDTO.class}))

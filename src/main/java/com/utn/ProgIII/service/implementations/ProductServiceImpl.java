@@ -41,8 +41,8 @@ public class ProductServiceImpl implements ProductService {
 
 
     /**
-     * Busca un producto por su id
-     * @param id id del producto
+     * Busca un producto por su ID
+     * @param id ID del producto
      * @return <code>ProductDTO</code>
      */
     @Override
@@ -112,12 +112,12 @@ public class ProductServiceImpl implements ProductService {
             return productDTOList;
 
         } catch (IllegalArgumentException e){
-            throw new InvalidProductStatusException("El estado ingresado es invalido");
+            throw new InvalidProductStatusException("El estado ingresado es inválido");
         }
     }
 
     /**
-     * Busca un producto segun nombre
+     * Busca un producto según nombre
      * @param name El nombre del producto, se usa un LIKE de sql
      * @return Retorna una lista de <code>ProductDto</code>
      * @see ProductDTO
@@ -142,7 +142,7 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * Crea un producto nuevo y lo guarda en la base de datos
-     * @param productDto Un dto de un producto que se va a crear
+     * @param productDto Un DTO de un producto que se creará
      * @return Un <code>ProductDto</code> del producto creado
      * @see ProductDTO
      */
@@ -158,8 +158,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * Se actualiza un producto según su id
-     * @param id id del producto que se modificara
+     * Se actualiza un producto según su ID
+     * @param id ID del producto que se modificará
      * @param productDto Los datos para modificar el producto
      * @return Un ProductDTO del producto modificado
      * @see ProductDTO
@@ -169,7 +169,7 @@ public class ProductServiceImpl implements ProductService {
 
         if(!EnumUtils.isValidEnum(ProductStatus.class,productDto.status()))
         {
-            throw new InvalidRequestException("El estado de producto ingresado, no es valido");
+            throw new InvalidRequestException("El estado de producto ingresado no es válido");
         }
 
         Product product = productRepository.findById(id)
@@ -184,7 +184,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * Se da de baja (lógica) un producto según su id, también se eliminan las relaciones de los proveedores
+     * Se da de baja (lógica) un producto según su ID, también se eliminan las relaciones de los proveedores
      * @param id identificador único del producto
      */
     @Override

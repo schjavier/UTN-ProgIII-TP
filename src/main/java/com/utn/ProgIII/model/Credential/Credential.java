@@ -8,7 +8,7 @@ import lombok.*;
 
 /**
  * Clase que se encarga de representar las credenciales recibidas desde el repositorio, emulando la estructura de la tabla
- * homonima que se encuentra en la base de datos
+ * homónima que se encuentra en la base de datos
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,14 +21,14 @@ public class Credential {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCredential;
 
-    @NotBlank(message = "El nombre de usuario no debe estar vacio")
+    @NotBlank(message = "El nombre de usuario no debe estar vacío")
     @Size(min = 3, max = 16, message = "El nombre de usuario debe tener entre 3 y 16 caracteres")
     @Pattern(regexp = "^[a-zA-Z0-9_]+$",
-            message = "El nombre de usuario solo puede tener letras, numeros, y guiones bajos")
+            message = "El nombre de usuario solo puede tener letras, números, y guiones bajos")
     private String username;
 
-    @NotBlank(message = "La contrasenia no debe estar vacia")
-    @Size(min = 8, max = 64, message = "La contrasenia debe tener entre 8 y 64 caracteres")
+    @NotBlank(message = "La contraseña no debe estar vacía")
+    @Size(min = 8, max = 64, message = "La contraseña debe tener entre 8 y 64 caracteres")
     private String password;
 
     @Enumerated(EnumType.STRING)

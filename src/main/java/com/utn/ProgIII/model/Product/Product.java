@@ -7,7 +7,6 @@ import lombok.*;
 
 import java.util.List;
 
-
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,7 +20,7 @@ public class Product {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long idProduct;
 
-    @NotBlank(message = "El nombre del producto no puede estar vacio")
+    @NotBlank(message = "El nombre del producto no puede estar vacío")
     @Size(min = 3, max = 50, message = "El nombre del producto debe contener entre 3 y 50 caracteres")
     private String name;
 

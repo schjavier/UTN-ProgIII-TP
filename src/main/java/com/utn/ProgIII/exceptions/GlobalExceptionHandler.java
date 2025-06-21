@@ -14,14 +14,11 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * Clase para gestionar de manera global las excepciones.
  * <p>
- * Cada vez que realizamos una validación que lanza una exception debemos agregarla aca.
- *
  */
 
 @ControllerAdvice
@@ -120,14 +117,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<String> handleAuthException(AuthenticationException e){
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No se encontro el usuario");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No se encontró el usuario");
     }
 
     @ExceptionHandler(UnexpectedServerErrorException.class)
     public ResponseEntity<String> UnexpectedErrorException(UnexpectedServerErrorException e) {
         if(e.getHttpcode() != -1)
         {
-            return ResponseEntity.status(e.getHttpcode()).body(e.getMessage()); // esto es muy improvable que pase... pero puede salvarnos...
+            return ResponseEntity.status(e.getHttpcode()).body(e.getMessage());
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
@@ -136,7 +133,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<String> ExpiredTokenException(ExpiredJwtException e)
     {
-        return ResponseEntity.status(419).body("La sesión ha expirado. Por favor, iniciar sesion de nuevo");
+        return ResponseEntity.status(419).body("La sesión ha expirado. Por favor, iniciar sesión de nuevo");
     }
 
     @ExceptionHandler(SelfDeleteUserException.class)
@@ -154,7 +151,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<String> handleMissingParams(MissingServletRequestParameterException ex) {
         String name = ex.getParameterName();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El parametro \"" + name + "\" esta ausente");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El parámetro \"" + name + "\" está ausente");
     }
 
     @ExceptionHandler(ForbiddenModificationException.class)
@@ -172,13 +169,13 @@ public class GlobalExceptionHandler {
     private String handleMethodArgumentNotValid(MethodArgumentNotValidException e)
     {
          List<FieldError> errors = e.getFieldErrors();
-         String messasage = "Error en pedido:\n";
+         String message = "Error en pedido:\n";
          for(FieldError error : errors)
          {
-             messasage = messasage.concat("- " + error.getDefaultMessage() + "\n");
+             message = message.concat("- " + error.getDefaultMessage() + "\n");
          }
 
-         return messasage;
+         return message;
     }
 
 }

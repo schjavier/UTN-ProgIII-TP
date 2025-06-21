@@ -23,9 +23,9 @@ import static org.springframework.http.ResponseEntity.status;
 
 @RestController
 @RequestMapping("/supplier")
-@Tag(name = "Proveedores", description = "Operaciones relacionades con los proveedores")
-/**
- * Clase que maneja requests sobre proveedores
+@Tag(name = "Proveedores", description = "Operaciones relacionadas con los proveedores")
+/*
+  Clase que maneja requests sobre proveedores
  */
 public class SupplierController {
 
@@ -48,7 +48,7 @@ public class SupplierController {
     @ApiResponse(responseCode = "400", description = "Error en datos introducidos", content = {
             @Content(
                     mediaType = "text/plain;charset=UTF-8",
-                    schema = @Schema(example = "(Un mensaje de error mostrando los errores del usuario)")
+                    schema = @Schema(example = "(Un mensaje mostrando los errores del usuario)")
             )
     })
     @ApiResponse(responseCode = "409", description = "Proveedor existente con ese nombre", content = {
@@ -64,12 +64,12 @@ public class SupplierController {
     }
 
     /**
-     * Una pagina que contiene los datos de provedores.
+     * Una página que contiene los datos de provedores.
      * <p>Se puede definir el tamaño con ?size=?</p>
-     * <p>Se puede definir el numero de pagina con ?page=?</p>
-     * <p>Se puede ordenar segun paramatro de objeto con ?sort=?</p>
-     * @param paginacion Una pagina con contenido y informacion de pagina
-     * @return Una pagina con contenido y informacion de pagina
+     * <p>Se puede definir el número de página con ?page=?</p>
+     * <p>Se puede ordenar según parámetro de objeto con ?sort=?</p>
+     * @param paginacion Una página con su contenido e información
+     * @return Una página con contenido e información
      */
     @ApiResponse(
             responseCode = "200",
@@ -79,7 +79,7 @@ public class SupplierController {
                             mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = ViewSupplierDTO.class)))
             })
-    @ApiResponse(responseCode = "400", description = "Datos erroneos", content = @Content(
+    @ApiResponse(responseCode = "400", description = "Datos erróneos", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "No property 'companyNam' found for type 'Supplier'; Did you mean 'companyName'")
     ))
@@ -89,7 +89,7 @@ public class SupplierController {
                     schema = @Schema(example = "No hay proveedores")
             )
     })
-    @Operation(summary = "Busca una pagina de proveedores", description = "Lista una pagina de proveedores")
+    @Operation(summary = "Busca una página de proveedores", description = "Lista una página de proveedores")
     @GetMapping("/page")
     public ResponseEntity<Page<ViewSupplierDTO>> getSuppliers(
             @ParameterObject @PageableDefault(size = 10) Pageable paginacion
@@ -100,7 +100,7 @@ public class SupplierController {
 
     /**
      * Consigue un proveedor con su respectivo id
-     * @param id El id del proveedor
+     * @param id El ID del proveedor
      * @return Un DTO de proveedor
      */
     @ApiResponse(responseCode = "200", description = "Encontrado", content = {
@@ -116,7 +116,7 @@ public class SupplierController {
             )
     })
     @GetMapping("/{id}")
-    @Operation(summary = "Busca un proveedor", description = "Busca un proveedor segun id")
+    @Operation(summary = "Busca un proveedor", description = "Busca un proveedor según ID")
     public ResponseEntity<ViewSupplierDTO> getSupplier(
             @Parameter(description = "Id de proveedor", example = "1")
             @PathVariable Long id) {
@@ -124,9 +124,9 @@ public class SupplierController {
     }
 
     /**
-     * Actualiza un proveedor existente con todos sus datos segun la id que tiene. Responde a peticiones http con la url "/{id}"
+     * Actualiza un proveedor existente con todos sus datos según el ID que tiene. Responde a peticiones http con la url "/{id}"
      * @param supplier_DTO Un objeto DTO que tiene todos los datos del proveedor
-     * @param id El id del proveedor para modificar
+     * @param id El ID del proveedor para modificar
      * @return Un DTO que muestra todo el proveedor con sus cambios.
      */
     @ApiResponse(responseCode = "200", description = "Proveedor Actualizado", content = @Content(
@@ -135,11 +135,11 @@ public class SupplierController {
     ))
     @ApiResponse(responseCode = "400", description = "Error en datos introducidos", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
-            schema = @Schema(defaultValue = "(Un mensaje de error mostrando los errores del usuario)")
+            schema = @Schema(defaultValue = "(Un mensaje mostrando los errores del usuario)")
     ))
     @ApiResponse(responseCode = "404", description = "Proveedor no encontrado", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
-            schema = @Schema(example = "El proveedor no existe!!")
+            schema = @Schema(example = "El proveedor no existe")
     ))
 
     @ApiResponse(responseCode = "409", description = "Datos de proveedor ya existentes", content = @Content(
@@ -151,7 +151,7 @@ public class SupplierController {
     public ResponseEntity<?> updateSupplier(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Los datos actualizados")
             @RequestBody AddSupplierDTO supplier_DTO,
-            @Parameter(description = "El id del proveedor a modificar", example = "1")
+            @Parameter(description = "El ID del proveedor a modificar", example = "1")
             @PathVariable Long id)
     {
         return ResponseEntity.ok(supplierService.updateSupplier(supplier_DTO,id));
@@ -159,18 +159,18 @@ public class SupplierController {
 
     /**
      * Elimina un proveedor de la base de datos. Responde a peticiones http con la url "/{id}"
-     * @param id El id del proveedor para eliminar
-     * @return Un booleano verdadero, en caso de exito.
+     * @param id El ID del proveedor para eliminar
+     * @return Un booleano verdadero, en caso de éxito.
      */
     @ApiResponse(responseCode = "204", description = "Eliminado correctamente", content = @Content())
     @ApiResponse(responseCode = "404", description = "Proveedor No encontrado", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
-            schema = @Schema(example = "Proveedor no encontrado!!")
+            schema = @Schema(example = "Proveedor no encontrado")
     ))
     @DeleteMapping("/{id}")
-    @Operation(summary = "Elimina un proveedor segun su id")
+    @Operation(summary = "Elimina un proveedor según su id")
     public ResponseEntity<?> deleteSupplier(
-            @Parameter(description = "El id del proveedor para eliminar <b>permanentemente</b>", example = "1")
+            @Parameter(description = "El ID del proveedor para eliminar <b>permanentemente</b>", example = "1")
             @PathVariable int id)
     {
         supplierService.deleteSupplier(id);
