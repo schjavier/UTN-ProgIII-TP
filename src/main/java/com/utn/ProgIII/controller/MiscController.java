@@ -19,9 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/misc")
 @Tag(name = "Misceláneos", description = "Operaciones relacionadas con acciones misceláneas")
-/*
-  Clase que maneja requests sobre cosas misceláneas
- */
+@ApiResponse(responseCode = "403", description = "Acceso prohibido/dirección no encontrada", content = @Content())
 public class MiscController {
 
     @Autowired

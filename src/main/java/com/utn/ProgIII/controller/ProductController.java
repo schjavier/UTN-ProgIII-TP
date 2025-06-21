@@ -14,14 +14,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
-@RestController
-@RequestMapping("/product")
-
-@Tag(name = "Productos", description = "Operaciones relacionadas con productos")
-/*
+/**
  * Clase que maneja requests sobre productos
  */
+@RestController
+@RequestMapping("/products")
+@Tag(name = "Productos", description = "Operaciones relacionadas con productos")
+@ApiResponse(responseCode = "403", description = "Acceso prohibido/dirección no encontrada", content = @Content())
 public class ProductController {
 
     private final ProductService productService;
@@ -35,15 +34,14 @@ public class ProductController {
     @PostMapping
     @Operation(summary = "Se agrega un producto", description = "Se agrega un producto con los datos del usuario")
     @ApiResponse(responseCode = "201", description = "Producto creado")
-    @ApiResponse(responseCode = "409", description = "Producto ya existente", content = @Content(
-            mediaType = "text/plain;charset=UTF-8",
-            schema = @Schema(example = "Ese producto ya existe")
-    ))
     @ApiResponse(responseCode = "400",description = "Error en datos introducidos", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "(un mensaje con todos los errores del usuario)")
     ))
-
+    @ApiResponse(responseCode = "409", description = "Producto ya existente", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "Ese producto ya existe")
+    ))
     public ResponseEntity<ProductDTO> addProduct (
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "El producto para crear")
             @RequestBody ProductDTO productDTO

@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 
 public record ExtendedProductManagerDTONoDollarPrice(
         @Schema(example = "1")
+        Long PriceId,
+        @Schema(example = "1")
         Long idProduct,
         @Schema(example = "Pasas de uva")
         String name,

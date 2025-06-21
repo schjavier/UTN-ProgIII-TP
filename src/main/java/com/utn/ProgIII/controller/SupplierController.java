@@ -21,12 +21,13 @@ import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.ResponseEntity.status;
 
+/**
+ * Clase que maneja requests sobre proveedores
+ */
 @RestController
 @RequestMapping("/supplier")
-@Tag(name = "Proveedores", description = "Operaciones relacionadas con los proveedores")
-/*
-  Clase que maneja requests sobre proveedores
- */
+@Tag(name = "Proveedores", description = "Operaciones relacionades con los proveedores")
+@ApiResponse(responseCode = "403", description = "Acceso prohibido/dirección no encontrada", content = @Content())
 public class SupplierController {
 
     @Autowired
@@ -38,7 +39,7 @@ public class SupplierController {
      * @return Un usuario cargado desde el backend
      */
     @Operation(summary = "Agregar un proveedor", description = "Agrega un proveedor")
-    @PostMapping
+    @PostMapping()
     @ApiResponse(responseCode = "201", description = "Proveedor creado", content = {
             @Content(
                     mediaType = "application/json",
@@ -51,10 +52,10 @@ public class SupplierController {
                     schema = @Schema(example = "(Un mensaje mostrando los errores del usuario)")
             )
     })
-    @ApiResponse(responseCode = "409", description = "Proveedor existente con ese nombre", content = {
+    @ApiResponse(responseCode = "409", description = "Proveedor existente con ese nombre/cuit", content = {
             @Content(
                     mediaType = "text/plain;charset=UTF-8",
-                    schema = @Schema(example = "El proveedor con ese nombre ya existe en la base de datos")
+                    schema = @Schema(examples = {"El proveedor con ese nombre ya existe en la base de datos", "El proveedor con ese CUIT y existe en la base de datos"})
             )
     })
     public ResponseEntity<ViewSupplierDTO> addSupplier(

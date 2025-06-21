@@ -21,6 +21,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/users")
+@ApiResponse(responseCode = "403", description = "Acceso prohibido/direccion no encontrada", content = @Content())
 @Tag(name = "Usuarios", description = "Operaciones relacionadas con los usuarios")
 public class UserController {
     private final UserService userService;

@@ -29,7 +29,6 @@ public class Supplier {
     @Pattern(regexp = "^(20|23|24|27|30|33|34)-?\\d{8}-?\\d$", message = "El formato del CUIT no es válido")
     private String cuit;
 
-
     @NotBlank(message = "El número de teléfono no puede estar vacío")
     @Pattern(regexp = "^(?:(?:00)?549?)?0?(?:11|[2368]\\d)(?:(?=\\d{0,2}15)\\d{2})?\\d{8}$",
             message = "El formato del numero de teléfono no es válido")

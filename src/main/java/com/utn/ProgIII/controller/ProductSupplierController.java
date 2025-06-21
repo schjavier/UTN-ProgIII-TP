@@ -20,13 +20,13 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 
+/**
+ * Clase que maneja requests sobre la relación de productos y proveedores
+ */
 @RestController
 @RequestMapping("/productSupplier")
 @Tag(name = "Productos y Proveedores", description = "Operaciones relacionadas con la relación de productos y proveedores")
-
-/*
-  Clase que maneja requests sobre la relación de productos y proveedores
- */
+@ApiResponse(responseCode = "403", description = "Acceso prohibido/dirección no encontrada", content = @Content())
 public class ProductSupplierController {
 
     private final ProductSupplierService productSupplierService;
@@ -37,14 +37,14 @@ public class ProductSupplierController {
 
     @PostMapping
     @Operation(summary = "Crea un ProductSupplier", description = "Crea una relación entre un proveedor y producto")
-    @ApiResponse(responseCode = "200", description = "Creado")
+    @ApiResponse(responseCode = "201", description = "Creado")
     @ApiResponse(responseCode = "400", description = "Datos erróneos", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(description = "(Un mensaje que tiene los errores del usuario)")
     ))
-    @ApiResponse(responseCode = "404", description = "No encontrado", content = @Content(
+    @ApiResponse(responseCode = "404", description = "No encontrado o no activo", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
-            schema = @Schema(description = "Un mensaje que tiene un error de usuario")
+            schema = @Schema(description = "(Un mensaje que tiene un error de usuario)")
     ))
     public ResponseEntity<ResponseProductSupplierDTO> createProductSupplier(@Valid @RequestBody
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Relación entre proveedor y producto para crear")
@@ -74,7 +74,7 @@ public class ProductSupplierController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @Operation(summary = "Busca todos los productos de un proveedor según su nombre", description = "Busca todos los productos de un proveedor según su nombre")
+    @Operation(summary = "Busca todos los productos de un proveedor según su nombre", description = "Busca todos los productos de un proveedor según su nombre. Los contenidos dependen del permiso del usuario.")
     @ApiResponse(
             responseCode = "200",
             description = "Lista de precios devuelta",
@@ -85,20 +85,21 @@ public class ProductSupplierController {
                             @ExampleObject(
                                     name = "manager-view",
                                     summary = "Vista para rol MANAGER o superior",
+
                                     description = "Incluye todos los precios (costo y venta) y márgenes de ganancia",
-                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idSupplier\": 1, \"companyName\": \"Proveedor\", \"cost\": 100.00, \"profitMargin\": 20.00, \"price\": 120.00, \"dollarPrice\": 0.1043}]}"
+                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"PriceId\":1, \"idSupplier\": 1, \"companyName\": \"Proveedor\", \"cost\": 100.00, \"profitMargin\": 20.00, \"price\": 120.00, \"dollarPrice\": 0.1043}]}"
                             ),
                             @ExampleObject(
                                     name = "manager-view-no-dollar-api",
                                     summary = "Vista para rol MANAGER o superior (API dólar caída)",
                                     description = "Incluye todos los precios (costo y venta) y márgenes de ganancia",
-                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idSupplier\": 1, \"companyName\": \"Proveedor\", \"cost\": 100.00, \"profitMargin\": 20.00, \"price\": 120.00, \"dollarPrice\": \"not available\"}]}"
+                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"PriceId\":1,  \"idSupplier\": 1, \"companyName\": \"Proveedor\", \"cost\": 100.00, \"profitMargin\": 20.00, \"price\": 120.00, \"dollarPrice\": \"not available\"}]}"
                             ),
                             @ExampleObject(
                                     name = "employee-view",
                                     summary = "Vista para rol EMPLOYEE",
                                     description = "Solo muestra precios finales sin incluir márgenes de ganancia",
-                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idSupplier\": 1, \"companyName\": \"Proveedor\", \"price\": 120.00, \"dollarPrice\": 0.1043}]}"
+                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idSupplier\": 1, \"companyName\": \"Proveedor\", \"price\": 120.00}]}"
                             )
                     }))
     @ApiResponse(responseCode = "404",description = "Proveedor inexistente", content = @Content(
@@ -114,7 +115,7 @@ public class ProductSupplierController {
     }
 
     @GetMapping("/filter-product/{productId}")
-    @Operation(summary = "Devuelve una lista de precios de un producto según su id. Contenidos dependen del permiso del usuario.")
+    @Operation(summary = "Devuelve una lista de precios existentes de un producto según su ID.", description = "Devuelve una lista de precios existentes de un producto segun su ID. Los contenidos dependen del rol del usuario.")
     @ApiResponse(
             responseCode = "200",
             description = "Lista de precios devuelta",
@@ -138,11 +139,15 @@ public class ProductSupplierController {
                                     name = "employee-view",
                                     summary = "Vista para rol EMPLOYEE",
                                     description = "Solo muestra precios finales sin incluir márgenes de ganancia",
-                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idSupplier\": 1, \"companyName\": \"Proveedor\", \"price\": 120.00, \"dollarPrice\": 0.1043}]}"
+                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idSupplier\": 1, \"companyName\": \"Proveedor\", \"price\": 120.00  }]}"
                             )
                     }
             )
     )
+    @ApiResponse(responseCode = "404", description = "Producto desactivado", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "El producto está desactivado, y no tendrá precios.")
+    ))
     public ResponseEntity<ProductPricesDTO> listAllPricesByProduct(@PathVariable Long productId){
         return ResponseEntity.ok(productSupplierService.listPricesByProduct(productId));
     }
@@ -153,8 +158,8 @@ public class ProductSupplierController {
             description = "Actualiza los precios de los productos de un proveedor por medio de una lista en formato .csv, " +
                     "pero solamente si la relación entre el producto y el proveedor ya existen. Finalmente, devuelve una lista con aquellos " +
                     "productos que no pudieron ser cargados")
-    @ApiResponse(responseCode = "200",description = "Actualización realizada, devuelve listado con aquellos productos que no pudieron ser cargados")
-    @ApiResponse(responseCode = "500",description = "El servidor no pudo procesar el archivo")
+    @ApiResponse(responseCode = "200",description = "Actualizacion realizada, devuelve un listado con aquellos productos que no pudieron ser cargados")
+    @ApiResponse(responseCode = "500",description = "El servidor no pudo procesar el archivo", content = @Content())
     @PostMapping(path = "/upload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<String> updateWithFile(@RequestParam("file") MultipartFile file,@RequestParam Long idSupplier) {
         String filename = file.getOriginalFilename();
@@ -172,12 +177,19 @@ public class ProductSupplierController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Actualiza los precios de los productos de un proveedor masivamente y vincula aquellos sin relación existente",
+
+    @Operation(summary = "Actualiza los precios de los productos de un proveedor masivamente y vincula productos sin relacion existente, ignora aquellos que estén desactivados",
             description = "Actualiza los precios de los productos de un proveedor por medio de una lista en formato .csv, " +
                     "y carga nuevas entradas con un porcentaje de ganancia definido si aún no están relacionados. Finalmente, devuelve una lista con aquellos " +
                     "productos que no pudieron ser cargados")
-    @ApiResponse(responseCode = "200",description = "Actualización realizada, devuelve listado con aquellos productos que no pudieron ser cargados")
-    @ApiResponse(responseCode = "500",description = "El servidor no pudo procesar el archivo")
+    @ApiResponse(responseCode = "200",description = "Actualizacion realizada, devuelve listado con aquellos productos que no pudieron ser cargados (productos desactivados o no existentes)", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "Productos no subidos:\nProduct 1\nProduct 3")
+    ))
+    @ApiResponse(responseCode = "500",description = "El servidor no pudo procesar el archivo", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "Error subiendo el archivo: (mensaje de excepción)")
+    ))
     @PostMapping(path = "/uploadNonRelatedProducts", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<String> updateWithFileAndProfitMargin(@RequestParam("file") MultipartFile file,
                                                                 @RequestParam Long idSupplier,
