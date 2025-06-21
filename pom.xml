@@ -93,8 +93,12 @@
             <version>0.12.6</version>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-envers</artifactId>
+        </dependency>
 
-<!--End Security Dependencies-->
+        <!--End Security Dependencies-->
 
         <!-- Local Library -->
         <dependency>
