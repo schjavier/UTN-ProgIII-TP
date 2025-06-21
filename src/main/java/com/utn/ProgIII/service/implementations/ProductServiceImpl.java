@@ -2,9 +2,11 @@ package com.utn.ProgIII.service.implementations;
 
 import com.utn.ProgIII.dto.ProductDTO;
 
+import com.utn.ProgIII.dto.UserWithCredentialDTO;
 import com.utn.ProgIII.exceptions.InvalidProductStatusException;
 import com.utn.ProgIII.exceptions.InvalidRequestException;
 import com.utn.ProgIII.exceptions.ProductNotFoundException;
+import com.utn.ProgIII.exceptions.UserNotFoundException;
 import com.utn.ProgIII.mapper.ProductMapper;
 import com.utn.ProgIII.model.Product.Product;
 import com.utn.ProgIII.model.Product.ProductStatus;
@@ -15,6 +17,8 @@ import com.utn.ProgIII.service.interfaces.ProductService;
 import jakarta.transaction.Transactional;
 import com.utn.ProgIII.validations.ProductValidations;
 import org.apache.commons.lang3.EnumUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,8 +45,8 @@ public class ProductServiceImpl implements ProductService {
 
 
     /**
-     * Busca un producto por su id
-     * @param id id del producto
+     * Busca un producto por su ID
+     * @param id ID del producto
      * @return <code>ProductDTO</code>
      */
     @Override
@@ -112,12 +116,12 @@ public class ProductServiceImpl implements ProductService {
             return productDTOList;
 
         } catch (IllegalArgumentException e){
-            throw new InvalidProductStatusException("El estado ingresado es invalido");
+            throw new InvalidProductStatusException("El estado ingresado es inválido");
         }
     }
 
     /**
-     * Busca un producto segun nombre
+     * Busca un producto según nombre
      * @param name El nombre del producto, se usa un LIKE de sql
      * @return Retorna una lista de <code>ProductDto</code>
      * @see ProductDTO
@@ -141,8 +145,36 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
+     * Una página que contiene los datos de productos.
+     * <p>Se puede definir el tamaño con ?size=?</p>
+     * <p>Se puede definir el número de página con ?page=?</p>
+     * <p>Se puede ordenar según parámetro de objeto con ?sort=?</p>
+     * @param paginacion Una página con contenido e información
+     * @return Una página con contenido e información
+     */
+    @Override
+    public Page<ProductDTO> getProductPage(Pageable paginacion) {
+
+        Page<ProductDTO> page = null;
+
+        if(authService.isEmployee())
+        {
+            page = productRepository.findByStatus(ProductStatus.ENABLED,paginacion).map(productMapper::toProductDTO);
+        } else {
+            page = productRepository.findAll(paginacion).map(productMapper::toProductDTO);
+        }
+
+        if(page.getNumberOfElements() == 0)
+        {
+            throw new ProductNotFoundException("No hay productos");
+        }
+
+        return page;
+    }
+
+    /**
      * Crea un producto nuevo y lo guarda en la base de datos
-     * @param productDto Un dto de un producto que se va a crear
+     * @param productDto Un DTO de un producto que se creará
      * @return Un <code>ProductDto</code> del producto creado
      * @see ProductDTO
      */
@@ -158,8 +190,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * Se actualiza un producto según su id
-     * @param id id del producto que se modificara
+     * Se actualiza un producto según su ID
+     * @param id ID del producto que se modificará
      * @param productDto Los datos para modificar el producto
      * @return Un ProductDTO del producto modificado
      * @see ProductDTO
@@ -169,7 +201,7 @@ public class ProductServiceImpl implements ProductService {
 
         if(!EnumUtils.isValidEnum(ProductStatus.class,productDto.status()))
         {
-            throw new InvalidRequestException("El estado de producto ingresado, no es valido");
+            throw new InvalidRequestException("El estado de producto ingresado no es válido");
         }
 
         Product product = productRepository.findById(id)
@@ -178,13 +210,17 @@ public class ProductServiceImpl implements ProductService {
         product.setName(productDto.name());
         product.setStatus(ProductStatus.valueOf(productDto.status().toUpperCase()));
 
-        product = productRepository.save(product);
+        if(product.getStatus() == ProductStatus.DISABLED)
+        {
+            productSupplierRepository.removeAllByProduct_IdProduct(product.getIdProduct());
+        }
 
+        product = productRepository.save(product);
         return productMapper.toProductDTO(product);
     }
 
     /**
-     * Se da de baja (lógica) un producto según su id, también se eliminan las relaciones de los proveedores
+     * Se da de baja (lógica) un producto según su ID, también se eliminan las relaciones de los proveedores
      * @param id identificador único del producto
      */
     @Override

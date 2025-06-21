@@ -39,7 +39,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
         if(user.getStatus() == UserStatus.DISABLED)
         {
-            throw new CredentialNotFoundException("El usuario esta desactivado, contactar a su administrador");
+            throw new CredentialNotFoundException("El usuario esta desactivado, contacte a su administrador");
         }
 
 

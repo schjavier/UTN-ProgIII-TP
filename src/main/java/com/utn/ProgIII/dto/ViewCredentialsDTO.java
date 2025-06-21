@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record ViewCredentialsDTO(
         @Schema(example = "Usuario123")
         String username,
-        @Schema(example = "(contraseña incriptada)")
+        @Schema(example = "(contraseña encriptada)")
         String password,
         @Schema(implementation = Role.class)
         String role

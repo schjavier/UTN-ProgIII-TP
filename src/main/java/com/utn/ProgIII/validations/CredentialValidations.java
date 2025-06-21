@@ -5,8 +5,8 @@ import com.utn.ProgIII.repository.CredentialRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-/**
- * Componente que se encarga de las validaciones relacionadas a credenciales
+/*
+ * Componente que se encarga de las validaciones relacionadas con credenciales
  */
 public class CredentialValidations {
     private final CredentialRepository credentialRepository;
@@ -16,7 +16,7 @@ public class CredentialValidations {
     }
 
     /**
-     * Valida si el nombre de usuario existe, se lanza una excepcion si es el caso
+     * Valida si el nombre de usuario existe, se lanza una excepción si es el caso
      * @param username Nombre de usuario
      */
     public void validateUsernameNotExists(String username) {
@@ -26,7 +26,7 @@ public class CredentialValidations {
     }
 
     /**
-     * Valida que no se repitan los nombres de usuario en la base de datos cuando se modifica un usuario
+     * Valida que no se repitan los nombres de usuario en la base de datos cuando se modifica alguno
      * @param currentUsername Nombre de usuario actual
      * @param newUsername Nombre de usuario nuevo
      */

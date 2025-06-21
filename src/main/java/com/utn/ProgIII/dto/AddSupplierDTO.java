@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record AddSupplierDTO(
-        @Schema(example = "Compania test")
+        @Schema(example = "Empresa test")
         String companyName,
         @Schema(example = "23-11111111-9")
         String cuit,

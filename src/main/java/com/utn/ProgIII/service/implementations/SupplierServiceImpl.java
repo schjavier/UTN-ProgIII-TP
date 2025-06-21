@@ -1,7 +1,6 @@
 package com.utn.ProgIII.service.implementations;
 
 import com.utn.ProgIII.dto.AddSupplierDTO;
-import com.utn.ProgIII.exceptions.InvalidRequestException;
 import com.utn.ProgIII.exceptions.SupplierNotFoundException;
 import com.utn.ProgIII.mapper.SupplierMapper;
 import com.utn.ProgIII.model.Address.Address;
@@ -12,12 +11,8 @@ import com.utn.ProgIII.service.interfaces.SupplierService;
 import com.utn.ProgIII.validations.SupplierValidations;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-
-import java.util.List;
 
 @Service
 public class SupplierServiceImpl implements SupplierService {
@@ -33,8 +28,8 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     /**
-     * El proveedor es agregado una vez de que se transforma el a un DTO
-     * @param supplierDTO El objeto de transferencia recivido desde el frontend
+     * El proveedor es agregado una vez que se transforma a un DTO
+     * @param supplierDTO El objeto de transferencia recibido desde el frontend
      * @return Un objeto DTO para mostrar los datos como una respuesta frontend
      */
     @Override
@@ -50,7 +45,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     /**
      * Devuelve un DTO de un proveedor que sea pedido.
-     * @param id El id del proveedor.
+     * @param id El ID del proveedor.
      * @return {@link ViewSupplierDTO} un objeto para ver el resultado.
      */
     @Override
@@ -62,12 +57,12 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     /**
-     * Una pagina que contiene los datos de provedores.
+     * Una página que contiene los datos de provedores.
      * <p>Se puede definir el tamaño con ?size=?</p>
-     * <p>Se puede definir el numero de pagina con ?page=?</p>
-     * <p>Se puede ordenar segun paramatro de objeto con ?sort=?</p>
-     * @param paginacion Una pagina con contenido y informacion de pagina
-     * @return Una pagina con contenido y informacion de pagina
+     * <p>Se puede definir el número de página con ?page=?</p>
+     * <p>Se puede ordenar según parámetro de objeto con ?sort=?</p>
+     * @param paginacion Una página con contenido e información
+     * @return Una página con contenido e información
      */
     public Page<ViewSupplierDTO> listSuppliers(Pageable paginacion)
     {
@@ -83,8 +78,8 @@ public class SupplierServiceImpl implements SupplierService {
 
     /**
      * Elimina un proveedor en caso de que exista
-     * @param id El id del proveedor
-     * @return un booleano representando el exito.
+     * @param id El ID del proveedor
+     * @return un booleano representando el éxito.
      */
     @Override
     public void deleteSupplier(long id) {
@@ -97,14 +92,14 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     /**
-     * Modifica un proveedor segun los datos enviados
+     * Modifica un proveedor según los datos enviados
      * @param supplierDTO Los datos para modificar
      * @return Los datos modificados del proveedor
      */
     @Override
     @Transactional
     public ViewSupplierDTO updateSupplier(AddSupplierDTO supplierDTO, Long id) {
-        Supplier supplier_to_update = supplierRepository.findById(id).orElseThrow(() -> new SupplierNotFoundException("El proveedor no existe!!"));
+        Supplier supplier_to_update = supplierRepository.findById(id).orElseThrow(() -> new SupplierNotFoundException("El proveedor no existe"));
 
         supplierValidations.validateModifiedCompanyNameNotExists(supplier_to_update.getCompanyName(),
                 supplierDTO.companyName());

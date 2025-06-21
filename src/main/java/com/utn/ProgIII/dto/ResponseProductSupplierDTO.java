@@ -13,7 +13,7 @@ public record ResponseProductSupplierDTO(
         String productName,
         @Schema(example = "1")
         Long idSupplier,
-        @Schema(example = "Compania Test")
+        @Schema(example = "Compañía Test")
         String supplierName,
         @Schema(example = "200")
         BigDecimal cost,

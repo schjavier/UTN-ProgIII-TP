@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-/**
- * Clase para configurar el swagger
+/*
+  Clase para configurar el swagger
  */
 public class OpenApiConfig {
     @Bean
@@ -18,9 +18,9 @@ public class OpenApiConfig {
         final String securitySchemeName = "bearer-key";
         return new OpenAPI()
                 .info(new Info()
-                        .title("API Catalogo")
+                        .title("API Catálogo")
                         .version("0.0.162")
-                        .description("Documentacion oficial de la API"))
+                        .description("Documentación oficial de la API"))
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(new Components()
                         .addSecuritySchemes(securitySchemeName,

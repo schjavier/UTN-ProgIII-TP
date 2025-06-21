@@ -8,8 +8,8 @@ import org.apache.commons.lang3.EnumUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-/**
- * Una clase que se dedica a convertir un dto a un objeto y viceversa
+/*
+ * Una clase que se dedica a convertir un DTO a un objeto y viceversa
  */
 public class ProductMapper {
 
@@ -39,7 +39,7 @@ public class ProductMapper {
 
         if(productDTO.status() != null && !EnumUtils.isValidEnum(ProductStatus.class, productDTO.status().toUpperCase()))
         {
-            throw new InvalidRequestException("El estado no es valido");
+            throw new InvalidRequestException("El estado no es válido");
         }
 
         result.setStatus(productDTO.status() == null ? ProductStatus.ENABLED : ProductStatus.valueOf(productDTO.status().toUpperCase()));

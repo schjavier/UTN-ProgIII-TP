@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 
 public record ProductPriceSupplierManagerDTO(
         @Schema(example = "1")
+        Long PriceId,
+        @Schema(example = "1")
         Long idSupplier,
         @Schema(example = "Empresa")
         String companyName,

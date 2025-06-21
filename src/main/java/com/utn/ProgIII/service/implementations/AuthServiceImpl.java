@@ -56,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * Verifica si el usuario logeado tiene cierto rol
+     * Verifica si el usuario logueado tiene cierto rol
      * @param roleName El nombre del rol (ej.: ROLE_MANAGER)
      * @return un booleano true si lo tiene
      */
