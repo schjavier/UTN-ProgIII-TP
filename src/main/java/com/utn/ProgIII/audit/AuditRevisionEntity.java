@@ -11,8 +11,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.RevisionEntity;
+import org.hibernate.envers.RevisionNumber;
+import org.hibernate.envers.RevisionTimestamp;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "revinfo")
@@ -22,12 +25,16 @@ import org.hibernate.envers.RevisionEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AuditRevisionEntity extends DefaultRevisionEntity {
+public class AuditRevisionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @RevisionNumber
     @Column(name = "rev")
     private int id;
+
+    @RevisionTimestamp
+    private Date date;
 
     private Long idUser;
 }
