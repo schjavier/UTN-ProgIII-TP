@@ -153,7 +153,7 @@ public class ProductServiceImpl implements ProductService {
      * @return Una página con contenido e información
      */
     @Override
-    public Page<ProductDTO> getProductPage(Pageable paginacion) { // no se bien como hacer para que haya solo una pagina de productos activados para el empleado :c
+    public Page<ProductDTO> getProductPage(Pageable paginacion) { // no sé bien cómo hacer para que haya solo una página de productos activados para el empleado :c
 
         Page<ProductDTO> page = null;
 

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 /*
- * Componente que se encarga de las validaciones relacionadas a credenciales
+ * Componente que se encarga de las validaciones relacionadas con credenciales
  */
 public class CredentialValidations {
     private final CredentialRepository credentialRepository;

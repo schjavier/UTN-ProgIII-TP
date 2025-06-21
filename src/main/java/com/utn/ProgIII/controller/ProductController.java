@@ -1,8 +1,6 @@
 package com.utn.ProgIII.controller;
 
 import com.utn.ProgIII.dto.ProductDTO;
-import com.utn.ProgIII.dto.UserWithCredentialDTO;
-import com.utn.ProgIII.dto.ViewSupplierDTO;
 import com.utn.ProgIII.service.interfaces.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -100,7 +98,7 @@ public class ProductController {
     ))
     @Operation(summary = "Se muestra una lista de productos por su estado", description = "Se muestra una lista según su estado")
 
-    public ResponseEntity<List<ProductDTO>> getAllProductByStatus(@PathVariable @Parameter(description = "El estado de un producto (ENABLED,DISABLED)", example = "ENABLED") String status){
+    public ResponseEntity<List<ProductDTO>> getAllProductByStatus(@PathVariable @Parameter(description = "El estado de un producto (ENABLED, DISABLED)", example = "ENABLED") String status){
 
         List <ProductDTO> response = productService.getAllProductByStatus(status);
 

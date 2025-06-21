@@ -159,7 +159,7 @@ public class ProductSupplierController {
             description = "Actualiza los precios de los productos de un proveedor por medio de una lista en formato .csv, " +
                     "pero solamente si la relación entre el producto y el proveedor ya existen. Finalmente, devuelve una lista con aquellos " +
                     "productos que no pudieron ser cargados")
-    @ApiResponse(responseCode = "200",description = "Actualizacion realizada, devuelve un listado con aquellos productos que no pudieron ser cargados", content = @Content(
+    @ApiResponse(responseCode = "200",description = "Actualización realizada, devuelve un listado con aquellos productos que no pudieron ser cargados", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "Productos no subidos:\nProduct 1\nProduct 3")
     ))
@@ -186,7 +186,7 @@ public class ProductSupplierController {
             description = "Actualiza los precios de los productos de un proveedor por medio de una lista en formato .csv, " +
                     "y carga nuevas entradas con un porcentaje de ganancia definido si aún no están relacionados. Finalmente, devuelve una lista con aquellos " +
                     "productos que no pudieron ser cargados")
-    @ApiResponse(responseCode = "200",description = "Actualizacion realizada, devuelve listado con aquellos productos que no pudieron ser cargados (productos desactivados o no existentes)", content = @Content(
+    @ApiResponse(responseCode = "200",description = "Actualización realizada, devuelve listado con aquellos productos que no pudieron ser cargados (productos desactivados o no existentes)", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "Productos no subidos:\nProduct 1\nProduct 3")
     ))

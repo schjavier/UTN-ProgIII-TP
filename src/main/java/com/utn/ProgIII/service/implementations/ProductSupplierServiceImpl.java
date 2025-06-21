@@ -158,9 +158,8 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     public ProductPricesDTO listPricesByProduct(Long idProduct) {
         Product product = productRepository.findById(idProduct).orElseThrow(() -> new ProductNotFoundException("El producto no existe"));
 
-        if(product.getStatus() == ProductStatus.DISABLED)
-        {
-            throw new ProductNotFoundException("El producto esta desactivado, y no tendra precios.");
+        if (product.getStatus() == ProductStatus.DISABLED) {
+            throw new ProductNotFoundException("El producto está desactivado, y no tendrá precios.");
         }
 
         List<?> priceList = new ArrayList<>();
@@ -202,9 +201,8 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     @Override
     public String uploadCsv(String filepath, Long idSupplier, BigDecimal bulkProfitMargin) {
 
-        if(0 > bulkProfitMargin.compareTo(BigDecimal.valueOf(0)))
-        {
-            throw new InvalidRequestException("El porcentaje de ganancia no es valido");
+        if (0 > bulkProfitMargin.compareTo(BigDecimal.valueOf(0))) {
+            throw new InvalidRequestException("El porcentaje de ganancia no es válido");
         }
 
         return csvReader.uploadToDatabase(filepath,idSupplier,bulkProfitMargin);

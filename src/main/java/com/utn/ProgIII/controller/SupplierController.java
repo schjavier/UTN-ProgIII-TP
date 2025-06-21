@@ -26,7 +26,7 @@ import static org.springframework.http.ResponseEntity.status;
  */
 @RestController
 @RequestMapping("/suppliers")
-@Tag(name = "Proveedores", description = "Operaciones relacionades con los proveedores")
+@Tag(name = "Proveedores", description = "Operaciones relacionadas con los proveedores")
 @ApiResponse(responseCode = "403", description = "Acceso prohibido/dirección no encontrada", content = @Content())
 public class SupplierController {
 
@@ -52,7 +52,7 @@ public class SupplierController {
                     schema = @Schema(example = "(Un mensaje mostrando los errores del usuario)")
             )
     })
-    @ApiResponse(responseCode = "409", description = "Proveedor existente con ese nombre/cuit", content = {
+    @ApiResponse(responseCode = "409", description = "Proveedor existente con ese nombre/CUIT", content = {
             @Content(
                     mediaType = "text/plain;charset=UTF-8",
                     schema = @Schema(examples = {"El proveedor con ese nombre ya existe en la base de datos", "El proveedor con ese CUIT y existe en la base de datos"})

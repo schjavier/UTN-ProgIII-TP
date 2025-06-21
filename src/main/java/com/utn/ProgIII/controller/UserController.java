@@ -27,7 +27,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/users")
-@ApiResponse(responseCode = "403", description = "Acceso prohibido/direccion no encontrada", content = @Content())
+@ApiResponse(responseCode = "403", description = "Acceso prohibido/dirección no encontrada", content = @Content())
 @Tag(name = "Usuarios", description = "Operaciones relacionadas con los usuarios")
 public class UserController {
     private final UserService userService;
@@ -42,7 +42,7 @@ public class UserController {
      * @param id El ID del usuario que se desea ver su información
      * @return Una respuesta en formato json para mostrar los datos del usuario deseado
      */
-    @Operation(summary = "Obtener un usuario por id", description = "Obtiene un usuario mediante id")
+    @Operation(summary = "Obtener un usuario por ID", description = "Obtiene un usuario mediante ID")
     @ApiResponse(responseCode = "200",description = "Usuario encontrado", content = @Content(
             schema = @Schema(implementation = UserWithCredentialDTO.class)
     ))
@@ -182,7 +182,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(
             @PathVariable Long id,
-            @RequestParam(defaultValue = "soft") @Parameter(description = "soft = baja lógica<br>hard = baja fisica") String deletionType) {
+            @RequestParam(defaultValue = "soft") @Parameter(description = "soft = baja lógica<br>hard = baja física") String deletionType) {
 
         userService.deleteOrRemoveUser(id, deletionType);
         return ResponseEntity.noContent().build();

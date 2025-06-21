@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @Tag(name = "Sesión y cuenta", description = "Inicio de sesión")
-@ApiResponse(responseCode = "403", description = "dirección no encontrada", content = @Content())
+@ApiResponse(responseCode = "403", description = "Dirección no encontrada", content = @Content())
 public class AuthController {
 
     private final AuthService authService;
