@@ -1,6 +1,7 @@
 package com.utn.ProgIII.serviceTest;
 
 import com.utn.ProgIII.dto.ProductDTO;
+import com.utn.ProgIII.exceptions.InvalidProductStatusException;
 import com.utn.ProgIII.exceptions.ProductNotFoundException;
 import com.utn.ProgIII.mapper.ProductMapper;
 import com.utn.ProgIII.model.Product.Product;
@@ -46,16 +47,17 @@ public class ProductServiceTest {
     ProductServiceImpl productService;
 
     private static final Long PRODUCT_ID = 1L;
-    private static final String PRODUCT_NAME = "producto1";
+    private static final String PRODUCT_NAME = "product One";
     private static final Long PRODUCT2_ID = 3L;
-    private static final String PRODUCT2_NAME = "producto1";
+    private static final String PRODUCT2_NAME = "One product";
     private static final ProductStatus STATUS = ProductStatus.ENABLED;
     private static final ProductStatus STATUS_DISABLED = ProductStatus.DISABLED;
-
+    private static final String INVALID_STATUS = "Enbled";
     private static final Long NON_EXISTING_ID = 2L;
 
     private Product productMock;
     private Product disabledProductMock;
+    private Product savedProduct;
     private ProductDTO productDTOMock;
     private ProductDTO productDTOMock2;
     private List<Product> productList;
@@ -66,9 +68,17 @@ public class ProductServiceTest {
 
         productMock = new Product();
         productMock.setIdProduct(PRODUCT_ID);
+        productMock.setName(PRODUCT_NAME);
+        productMock.setStatus(STATUS);
+
+        savedProduct = new Product();
+        savedProduct.setIdProduct(PRODUCT_ID);
+        savedProduct.setName(PRODUCT_NAME);
+        savedProduct.setStatus(STATUS);
 
         disabledProductMock = new Product();
         disabledProductMock.setIdProduct(PRODUCT_ID);
+        disabledProductMock.setName(PRODUCT2_NAME);
         disabledProductMock.setStatus(STATUS_DISABLED);
 
         productDTOMock = new ProductDTO(PRODUCT_ID, PRODUCT_NAME, STATUS.toString());
@@ -176,5 +186,74 @@ public class ProductServiceTest {
 
 
     }
+
+    @Test
+    void getAllProductsByState_shouldReturnListOfSameStateProducts(){
+
+        when(productRepository.findByStatus(STATUS)).thenAnswer(
+                invocationOnMock -> onlyEnabledProductList
+        );
+        when(productMapper.toProductDTO(productMock)).thenReturn(productDTOMock);
+
+        List<ProductDTO> result = productService.getAllProductByStatus(STATUS.toString());
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertTrue(result.contains(productDTOMock));
+
+    }
+
+    @Test
+    void getAllProductsByStatus_shouldThrowAnException_whenStatusIsInvalid(){
+
+       InvalidProductStatusException exception = assertThrows(InvalidProductStatusException.class,
+        () -> productService.getAllProductByStatus(INVALID_STATUS));
+
+       assertEquals("El estado ingresado es invalido", exception.getMessage());
+
+       verifyNoInteractions(productRepository);
+       verifyNoInteractions(productMapper);
+
+    }
+
+    @Test
+    void getProductByName_shouldReturnAListOfEnabledProducts_whenUserEmployee(){
+
+        when(productRepository.findByNameContaining("One")).thenAnswer(
+                invocationOnMock -> onlyEnabledProductList
+        );
+        when(authService.isEmployee()).thenReturn(true);
+        when(productMapper.toProductDTO(productMock)).thenReturn(productDTOMock);
+
+        List<ProductDTO> result = productService.getProductByName("One");
+
+        assertEquals(1, result.size());
+        assertEquals(result.get(0).name(), "product One");
+        assertEquals(result.get(0).status(), "ENABLED");
+        verify(productRepository).findByNameContaining("One");
+        verify(productMapper).toProductDTO(productMock);
+    }
+
+    @Test
+    void getProductByName_shouldReturnAListOfAllProducts_whenUserManager(){
+
+        when(productRepository.findByNameContaining("One")).thenAnswer(
+                invocationOnMock -> productList
+        );
+        when(authService.isEmployee()).thenReturn(false);
+        when(productMapper.toProductDTO(productMock)).thenReturn(productDTOMock);
+        when(productMapper.toProductDTO(disabledProductMock)).thenReturn(productDTOMock2);
+
+        List<ProductDTO> result = productService.getProductByName("One");
+
+        assertEquals(2, result.size());
+        assertEquals(result.get(0).name(), "product One");
+        assertEquals(result.get(0).status(), "ENABLED");
+        assertEquals(result.get(1).name(), "One product");
+        assertEquals(result.get(1).status(), "DISABLED");
+        verify(productRepository).findByNameContaining("One");
+        verify(productMapper).toProductDTO(productMock);
+    }
+
 
 }
