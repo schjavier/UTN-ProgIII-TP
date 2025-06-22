@@ -3,6 +3,7 @@ package com.utn.ProgIII.serviceTest;
 import com.utn.ProgIII.dto.ProductDTO;
 import com.utn.ProgIII.exceptions.DuplicateEntityException;
 import com.utn.ProgIII.exceptions.InvalidProductStatusException;
+import com.utn.ProgIII.exceptions.InvalidRequestException;
 import com.utn.ProgIII.exceptions.ProductNotFoundException;
 import com.utn.ProgIII.mapper.ProductMapper;
 import com.utn.ProgIII.model.Product.Product;
@@ -348,7 +349,53 @@ public class ProductServiceTest {
 
     }
 
-    // Faltan mas tests pero estoy cansado jefe!
+    @Test
+    void updateProduct_shouldThrowAnException_whenStatusInvalid(){
 
+        ProductDTO invalidDTO = new ProductDTO(PRODUCT_ID, PRODUCT_NAME, INVALID_STATUS);
+
+        InvalidRequestException exception = assertThrows(InvalidRequestException.class,
+                () -> productService.updateProduct(PRODUCT_ID, invalidDTO));
+
+        assertEquals("El estado de producto ingresado, no es valido", exception.getMessage());
+        verify(productRepository, never()).save(any());
+        verify(productMapper, never()).toProductDTO(any());
+
+    }
+
+    @Test
+    void deleteProduct_shouldDisableProductAndRemoveSupplier_whenProductExists(){
+
+        when(productRepository.findById(PRODUCT_ID)).thenReturn(Optional.of(product));
+
+        doNothing().when(productSupplierRepository).removeAllByProduct_IdProduct(PRODUCT_ID);
+
+        productService.deleteProduct(PRODUCT_ID);
+
+        assertEquals(ProductStatus.DISABLED, product.getStatus());
+
+        verify(productRepository).findById(PRODUCT_ID);
+        verify(productSupplierRepository).removeAllByProduct_IdProduct(PRODUCT_ID);
+        verify(productRepository).save(product);
+
+        ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
+        verify(productRepository).save(productCaptor.capture());
+        Product savedProduct = productCaptor.getValue();
+        assertEquals(ProductStatus.DISABLED, savedProduct.getStatus());
+
+    }
+
+    @Test
+    void deleteProduct_shouldThrowException_whenProductNotFound(){
+
+        when(productRepository.findById(NON_EXISTING_ID)).thenReturn(Optional.empty());
+
+        assertThrows(ProductNotFoundException.class,
+                () -> productService.deleteProduct(NON_EXISTING_ID));
+
+        verify(productRepository, never()).save(any());
+        verify(productSupplierRepository, never()).removeAllByProduct_IdProduct(any());
+
+    }
 
 }
