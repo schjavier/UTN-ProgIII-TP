@@ -16,6 +16,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collection;
 
+/**
+ *
+ * Filtro de Jwt, se encarga de la autenticación con JSON Web Token.<br>
+ * Lee la cabecera de la request, verifica que contenga el token y que además sea válido, realiza la autenticación y
+ * actualiza el SecurityContextHolder.
+ *
+ * @see SecurityContextHolder
+ *
+ */
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 

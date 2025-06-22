@@ -20,6 +20,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 
+/**
+ * Clase utilitaria, con métodos para generar el token, validarlo, extraer las claims, obtener el username,
+ * obtener la firma, verificar si está expirado.
+ */
+
 @Component
 public class JwtUtil {
 
