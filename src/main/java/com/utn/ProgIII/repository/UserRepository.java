@@ -7,6 +7,7 @@ import com.utn.ProgIII.model.User.UserStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Clase que se encarga de interactuar con el ORM y el servicio de usuarios
@@ -24,5 +25,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     List<User> findByCredential_RoleAndStatus(Role role, UserStatus userStatus);
 
     User findByCredential(Credential credential);
+
+    Optional<User> findByCredential_Username(String credentialUsername);
 
 }

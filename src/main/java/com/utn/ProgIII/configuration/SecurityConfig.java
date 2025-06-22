@@ -13,7 +13,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,6 +20,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+  Clase de configuración, crea el filtro de seguridad, que permite o deniega determinadas rutas dependiendo de los
+ roles de usuario, además determina la jerarquía de roles, el manager de autenticación y el encoder para las contraseñas.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -35,26 +38,24 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
 
-                        .requestMatchers("/user/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/product/**").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.PUT, "/product/**").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.DELETE, "/product/**").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/product/**").hasRole("EMPLOYEE")
+                        .requestMatchers("/users/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/products/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.GET, "/products/**").hasRole("EMPLOYEE")
 
                         .requestMatchers(HttpMethod.POST, "/productSupplier/**").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.PATCH,  "/productSupplier/**").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.GET, "/productSupplier/**").hasRole("EMPLOYEE")
 
-                        .requestMatchers(HttpMethod.POST, "/supplier/**").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.PUT, "/supplier/**").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.DELETE, "/supplier/**").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/supplier/**").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.POST, "/suppliers/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/suppliers/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/suppliers/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.GET, "/suppliers/**").hasRole("EMPLOYEE")
 
                         .requestMatchers(HttpMethod.GET, "/misc/dollar").hasRole("MANAGER")
 
-
                         .requestMatchers(HttpMethod.GET,"/docs/**","/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**").permitAll()
-
                         .anyRequest().authenticated()
 
                 )

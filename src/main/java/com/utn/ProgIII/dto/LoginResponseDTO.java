@@ -1,4 +1,9 @@
 package com.utn.ProgIII.dto;
 
-public record LoginResponseDTO(String token) {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public record LoginResponseDTO(
+        @Schema(example = "(jwt)")
+        String token
+) {
 }

@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 
-public record ProductPriceSupplierManagerDTO(
+public record ProductPriceSupplierManagerDTONoDollarPrice(
         @Schema(example = "1")
         Long PriceId,
         @Schema(example = "1")
@@ -17,8 +17,8 @@ public record ProductPriceSupplierManagerDTO(
         BigDecimal profitMargin,
         @Schema(example = "200")
         BigDecimal price,
-        @Schema(example = "0.01")
-        BigDecimal dollarPrice
+        @Schema(example = "not available")
+        String dollarPrice
 ) {
 
 }

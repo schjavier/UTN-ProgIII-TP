@@ -9,7 +9,7 @@ import com.utn.ProgIII.model.Supplier.Supplier;
 import org.springframework.stereotype.Component;
 
 /**
- * Convierte Objetos de Java a objetos DTO y viceversa
+ * Convierte objetos de Java a objetos DTO y viceversa
  */
 @Component
 public class SupplierMapper {
@@ -48,7 +48,7 @@ public class SupplierMapper {
 
         if(supplierDTO.address() == null)
         {
-            throw new NullAddressException("La direccion esta faltante.");
+            throw new NullAddressException("La dirección está faltante.");
         }
 
         sup.setCompanyName(supplierDTO.companyName());
@@ -84,7 +84,7 @@ public class SupplierMapper {
 
         if(supplierDTO.address() == null)
         {
-            throw new NullAddressException("La direccion esta faltante.");
+            throw new NullAddressException("La dirección está faltante.");
         }
 
         address.setIdAddress(supplierDTO.address().idaddress());

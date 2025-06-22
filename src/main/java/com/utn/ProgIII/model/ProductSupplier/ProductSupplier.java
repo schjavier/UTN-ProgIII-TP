@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -19,7 +20,7 @@ import java.math.RoundingMode;
 @NoArgsConstructor
 @ToString
 @Builder
-
+@Audited
 public class ProductSupplier {
 
     @Id
@@ -40,8 +41,8 @@ public class ProductSupplier {
     @Positive(message = "El costo no puede ser negativo")
     private BigDecimal cost;
 
-    @NotNull(message = "El margen de ganancia no puede estar vacio")
-    @PositiveOrZero(message = "El margen de ganancias tiene que ser mayor a cero")
+    @NotNull(message = "El margen de ganancia no puede estar vacío")
+    @PositiveOrZero(message = "El margen de ganancia tiene que ser mayor a cero")
     private BigDecimal profitMargin;
 
     @Positive(message = "El precio no puede ser menor a cero.")
