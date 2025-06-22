@@ -13,7 +13,6 @@ import com.utn.ProgIII.repository.ProductSupplierRepository;
 import com.utn.ProgIII.service.implementations.ProductServiceImpl;
 import com.utn.ProgIII.service.interfaces.AuthService;
 import com.utn.ProgIII.validations.ProductValidations;
-import org.apache.commons.lang3.EnumUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -361,6 +360,41 @@ public class ProductServiceTest {
         assertEquals("El estado de producto ingresado, no es valido", exception.getMessage());
         verify(productRepository, never()).save(any());
         verify(productMapper, never()).toProductDTO(any());
+
+    }
+
+    @Test
+    void deleteProduct_shouldDisableProductAndRemoveSupplier_whenProductExists(){
+
+        when(productRepository.findById(PRODUCT_ID)).thenReturn(Optional.of(product));
+
+        doNothing().when(productSupplierRepository).removeAllByProduct_IdProduct(PRODUCT_ID);
+
+        productService.deleteProduct(PRODUCT_ID);
+
+        assertEquals(ProductStatus.DISABLED, product.getStatus());
+
+        verify(productRepository).findById(PRODUCT_ID);
+        verify(productSupplierRepository).removeAllByProduct_IdProduct(PRODUCT_ID);
+        verify(productRepository).save(product);
+
+        ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
+        verify(productRepository).save(productCaptor.capture());
+        Product savedProduct = productCaptor.getValue();
+        assertEquals(ProductStatus.DISABLED, savedProduct.getStatus());
+
+    }
+
+    @Test
+    void deleteProduct_shouldThrowException_whenProductNotFound(){
+
+        when(productRepository.findById(NON_EXISTING_ID)).thenReturn(Optional.empty());
+
+        assertThrows(ProductNotFoundException.class,
+                () -> productService.deleteProduct(NON_EXISTING_ID));
+
+        verify(productRepository, never()).save(any());
+        verify(productSupplierRepository, never()).removeAllByProduct_IdProduct(any());
 
     }
 
