@@ -101,6 +101,8 @@
         <!--End Security Dependencies-->
 
         <!-- Local Library -->
+
+        <!-- https://github.com/juliganga/UTN-prograIII-http-lib -->
         <dependency>
             <groupId>org.juliganga</groupId>
             <artifactId>backend-request-maker</artifactId>
@@ -109,7 +111,6 @@
             <systemPath>${project.basedir}/src/main/resources/backend-request-maker-1.0.jar</systemPath>
         </dependency>
 
-        <!-- (^^^^ como haces para agregar la libreria que usa el jar este ^^^^) -->
 
         <dependency>
             <groupId>org.json</groupId>

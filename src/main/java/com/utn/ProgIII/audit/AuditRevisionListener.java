@@ -18,6 +18,10 @@ public class AuditRevisionListener implements RevisionListener {
         AuditRevisionListener.userRepository = userRepository;
     }
 
+    /**
+     * Método que se dispara cuando se hace un cambio a cualquier entidad
+     * @param revisionEntity Objeto con los cambios realizados
+     */
     @Override
     public void newRevision(Object revisionEntity) {
         AuditRevisionEntity auditRevisionEntity = (AuditRevisionEntity) revisionEntity;
