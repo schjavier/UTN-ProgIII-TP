@@ -17,6 +17,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * Clase encargada de Validar y crear el usuario en el contexto de Spring Security.
+ */
+
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
 

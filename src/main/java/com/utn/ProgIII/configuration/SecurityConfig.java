@@ -20,12 +20,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+  Clase de configuración, crea el filtro de seguridad, que permite o deniega determinadas rutas dependiendo de los
+ roles de usuario, además determina la jerarquía de roles, el manager de autenticación y el encoder para las contraseñas.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-/*
-  Clase para configurar la jerarquía y permisos de roles con SpringSecurity
- */
 public class SecurityConfig {
 
     @Bean
@@ -54,9 +55,7 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET, "/misc/dollar").hasRole("MANAGER")
 
-
                         .requestMatchers(HttpMethod.GET,"/docs/**","/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**").permitAll()
-
                         .anyRequest().authenticated()
 
                 )
