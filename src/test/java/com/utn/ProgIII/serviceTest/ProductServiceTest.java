@@ -3,6 +3,7 @@ package com.utn.ProgIII.serviceTest;
 import com.utn.ProgIII.dto.ProductDTO;
 import com.utn.ProgIII.exceptions.DuplicateEntityException;
 import com.utn.ProgIII.exceptions.InvalidProductStatusException;
+import com.utn.ProgIII.exceptions.InvalidRequestException;
 import com.utn.ProgIII.exceptions.ProductNotFoundException;
 import com.utn.ProgIII.mapper.ProductMapper;
 import com.utn.ProgIII.model.Product.Product;
@@ -12,6 +13,7 @@ import com.utn.ProgIII.repository.ProductSupplierRepository;
 import com.utn.ProgIII.service.implementations.ProductServiceImpl;
 import com.utn.ProgIII.service.interfaces.AuthService;
 import com.utn.ProgIII.validations.ProductValidations;
+import org.apache.commons.lang3.EnumUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -348,7 +350,18 @@ public class ProductServiceTest {
 
     }
 
-    // Faltan mas tests pero estoy cansado jefe!
+    @Test
+    void updateProduct_shouldThrowAnException_whenStatusInvalid(){
 
+        ProductDTO invalidDTO = new ProductDTO(PRODUCT_ID, PRODUCT_NAME, INVALID_STATUS);
+
+        InvalidRequestException exception = assertThrows(InvalidRequestException.class,
+                () -> productService.updateProduct(PRODUCT_ID, invalidDTO));
+
+        assertEquals("El estado de producto ingresado, no es valido", exception.getMessage());
+        verify(productRepository, never()).save(any());
+        verify(productMapper, never()).toProductDTO(any());
+
+    }
 
 }
