@@ -23,7 +23,7 @@ public class SupplierValidations {
     }
 
     /**
-     * Se verifica si una empresa ya tiene ese nombre cuando se modifica otra
+     * Verifica si una empresa ya tiene ese nombre cuando se modifica otra
      * @param currentCompanyName Nombre actual
      * @param newCompanyName Nombre nuevo
      */
@@ -34,8 +34,8 @@ public class SupplierValidations {
     }
 
     /**
-     * Se verifica si un proveedor existente con ese CUIT
-     * @param cuit El cuit a consultar
+     * Verifica si ya hay un proveedor con ese CUIT
+     * @param cuit El CUIT a consultar
      */
     public void validateSupplierByCuit(String cuit) {
         if(supplierRepository.existsByCuit(cuit)) {
@@ -44,9 +44,9 @@ public class SupplierValidations {
     }
 
     /**
-     * Se verifica si una empresa ya tiene ese nombre cuando se modifica otra
-     * @param currentCuit Cuit actual
-     * @param newCuit Cuit nuevo
+     * Verifica si una empresa ya tiene ese nombre cuando se modifica otra
+     * @param currentCuit CUIT actual
+     * @param newCuit CUIT nuevo
      */
     public void validateModifiedSupplierByCuit(String currentCuit, String newCuit){
         if(supplierRepository.existsByCuit(newCuit) && !currentCuit.equals(newCuit)){

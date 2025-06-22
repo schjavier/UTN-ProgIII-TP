@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 
 @Component
-/**
+/*
  * Una clase que se dedica a convertir un JSON a un dto
  */
 public class DollarMapper {

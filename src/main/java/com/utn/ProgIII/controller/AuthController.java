@@ -3,7 +3,6 @@ package com.utn.ProgIII.controller;
 import com.utn.ProgIII.dto.LoginRequestDTO;
 import com.utn.ProgIII.dto.LoginResponseDTO;
 import com.utn.ProgIII.service.interfaces.AuthService;
-import com.utn.ProgIII.service.interfaces.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,13 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
-@RestController
-@RequestMapping("/auth")
-@Tag(name = "Sesion y cuenta", description = "Inicio de sesion")
 /**
  * Clase para manejar requests de manejo de cuentas
  */
+@RestController
+@RequestMapping("/auth")
+@Tag(name = "Sesión y cuenta", description = "Inicio de sesión")
+@ApiResponse(responseCode = "403", description = "Dirección no encontrada", content = @Content())
 public class AuthController {
 
     private final AuthService authService;
@@ -31,14 +30,14 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    @Operation(summary = "Inicio de sesion", description = "Metodo para iniciar seción")
+    @Operation(summary = "Inicio de sesión", description = "Método para iniciar sesión")
     @ApiResponse(responseCode = "200", description = "Retorna un token", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(implementation = LoginResponseDTO.class)
     ))
     @ApiResponse(responseCode = "201", description = "Usuario inexistente", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
-            schema = @Schema(example = "El usuario y la contraseña no coinciden")
+            schema = @Schema(example = "Usuario no encontrado")
     ))
     public ResponseEntity<LoginResponseDTO> userLogin(@RequestBody LoginRequestDTO loginRequest) {
 

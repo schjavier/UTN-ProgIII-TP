@@ -3,10 +3,8 @@ package com.utn.ProgIII.service.implementations;
 import com.utn.ProgIII.dto.CreateCredentialDTO;
 import com.utn.ProgIII.dto.CreateUserDTO;
 import com.utn.ProgIII.dto.UserWithCredentialDTO;
-import com.utn.ProgIII.exceptions.ForbiddenModificationException;
-import com.utn.ProgIII.exceptions.InvalidRequestException;
-import com.utn.ProgIII.exceptions.SelfDeleteUserException;
-import com.utn.ProgIII.exceptions.UserNotFoundException;
+import com.utn.ProgIII.dto.ViewSupplierDTO;
+import com.utn.ProgIII.exceptions.*;
 import com.utn.ProgIII.mapper.UserMapper;
 import com.utn.ProgIII.model.Credential.Role;
 import com.utn.ProgIII.model.User.User;
@@ -18,6 +16,8 @@ import com.utn.ProgIII.service.interfaces.UserService;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.EnumUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Clase que se encarga de la logica entre el repositorio y el mapper
+ * Clase que se encarga de la lógica entre el repositorio y el mapper
  */
 @Service
 public class UserServiceImpl implements UserService {
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
                     .build());
 
             System.out.println("No se han encontrado administradores, se ha creado uno por defecto");
-            System.out.println("El usuario es 'admin' y la contrasenia es 'admin1234'");
+            System.out.println("El usuario es 'admin' y la contraseña es 'admin1234'");
         }
     }
 
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Se crea un nuevo usuario y credenciales en el sistema, a partir de la informacion recibida en la request
+     * Se crea un nuevo usuario y credenciales en el sistema, a partir de la información recibida en la request
      * @param dto El objeto de transferencia recibido desde la request
      * @return Un DTO para mostrar los datos cargados y su id correspondiente, como una respuesta
      */
@@ -91,9 +91,9 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Muestra los datos del usuario con el id solicitado por parametro
-     * @param id El id correspondiente al usuario que se solicito ver sus datos
-     * @return Un DTO para mostrar la informacion de tal usuario
+     * Muestra los datos del usuario con el ID solicitado por parámetro
+     * @param id El ID correspondiente al usuario que se solicitó ver sus datos
+     * @return Un DTO para mostrar la información de tal usuario
      * @throws UserNotFoundException Si el usuario no existe
      */
     @Override
@@ -105,11 +105,31 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Muestra los datos de todos los usuarios presentes en el sistema, segun el rol o estado
+     * Una página que contiene los datos de usuarios.
+     * <p>Se puede definir el tamaño con ?size=?</p>
+     * <p>Se puede definir el número de página con ?page=?</p>
+     * <p>Se puede ordenar según parámetro de objeto con ?sort=?</p>
+     * @param paginacion Una página con contenido e información
+     * @return Una página con contenido e información
+     */
+    public Page<UserWithCredentialDTO> getUsersPage(Pageable paginacion)
+    {
+        Page<UserWithCredentialDTO> page = userRepository.findAll(paginacion).map(userMapper::toUserWithCredentialDTO);
+
+        if(page.getNumberOfElements() == 0)
+        {
+            throw new UserNotFoundException("No hay usuarios");
+        }
+
+        return page;
+    }
+
+    /**
+     * Muestra los datos de todos los usuarios presentes en el sistema, según el rol o estado
      * @param role El rol de los usuarios que se desea ver
      * @param status El estado de los usuarios que se desea ver
      * @return Una lista con los DTO de cada usuario existente en el sistema
-     * @throws InvalidRequestException Si alguno de los parametros tiene valores erroneos
+     * @throws InvalidRequestException Si alguno de los parámetros tiene valores erróneos
      * <p>
      */
     @Override
@@ -117,8 +137,8 @@ public class UserServiceImpl implements UserService {
         List<User> users;
         List<UserWithCredentialDTO> usersDTO = new ArrayList<>();
 
-        if(role!= null && !EnumUtils.isValidEnum(Role.class, role.toUpperCase())) throw new InvalidRequestException("Ese rol no esta presente");
-        if(status != null && !EnumUtils.isValidEnum(UserStatus.class, status.toUpperCase())) throw new InvalidRequestException("Ese estado no esta presente");
+        if(role!= null && !EnumUtils.isValidEnum(Role.class, role.toUpperCase())) throw new InvalidRequestException("Ese rol no está presente");
+        if(status != null && !EnumUtils.isValidEnum(UserStatus.class, status.toUpperCase())) throw new InvalidRequestException("Ese estado no está presente");
 
         if (role == null && status == null) {
             users = userRepository.findAll();
@@ -138,8 +158,8 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Obtiene los datos del usuario solicitado por parametro y los reemplaza por los enviados en la request.
-     * @param id El id correspondiente al usuario que se solicito modificar sus datos
+     * Obtiene los datos del usuario solicitado por parámetro y los reemplaza por los enviados en la request.
+     * @param id El ID correspondiente al usuario que se solicitó modificar sus datos
      * @param dto El objeto de transferencia con los nuevos datos recibidos desde la request
      * @return Un DTO para mostrar los nuevos datos cargados, como una respuesta
      * @throws UserNotFoundException Si el usuario no existe
@@ -157,12 +177,12 @@ public class UserServiceImpl implements UserService {
 
         if(userValidations.checkifRequestedUserIsTheSame(newUserData) && newUserData.getStatus() == UserStatus.DISABLED)
         {
-            throw new ForbiddenModificationException("No podes desactivar tu usuario");
+            throw new ForbiddenModificationException("No puede desactivarse el mismo usuario que ejecuta la operación");
         }
 
         if(userValidations.checkifRequestedUserIsTheSame(newUserData) && newUserData.getCredential().getRole() != Role.ADMIN)
         {
-            throw new ForbiddenModificationException("No podes cambiarte a ese rol");
+            throw new ForbiddenModificationException("Administradores no pueden cambiar a ese rol");
         }
 
         newUserData.setIdUser(currentUserData.getIdUser());
@@ -175,9 +195,9 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Un metodo que elimina un usuario de manera logica o fisica (permanente)
-     * @param id El id del usuario
-     * @param method El metodo de eliminacion (hard o soft)
+     * Un método que elimina un usuario de manera lógica o física (permanente)
+     * @param id El ID del usuario
+     * @param method El método de eliminación (hard o soft)
      */
     @Override
     public void deleteOrRemoveUser(Long id, String method) {
@@ -185,7 +205,7 @@ public class UserServiceImpl implements UserService {
 
         if(userValidations.checkifRequestedUserIsTheSame(user))
         {
-            throw new SelfDeleteUserException("No podes eliminar tu usuario");
+            throw new SelfDeleteUserException("No puede eliminarse el mismo usuario que ejecuta la operación");
         }
 
         switch (method.toUpperCase())
@@ -197,14 +217,14 @@ public class UserServiceImpl implements UserService {
                 deleteUserSoft(user);
                 break;
             default:
-                throw new InvalidRequestException("La opcion de eliminacion no es correcta");
+                throw new InvalidRequestException("La opción de eliminación no es correcta");
         }
 
     }
 
     /**
-     * Hace baja logica del sistema al usuario con el id solicitado por parametro
-     * @param user El usuario que se dara de baja temporal
+     * Hace baja lógica del sistema al usuario con el ID solicitado por parámetro
+     * @param user El usuario que se le dará baja temporal
      */
     @Transactional
     private void deleteUserSoft(User user) {
@@ -213,8 +233,8 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Elimina fisicamente del sistema al usuario con el id solicitado por parametro
-     * @param user El usuario que se eliminara
+     * Elimina físicamente del sistema al usuario con el ID solicitado por parámetro
+     * @param user El usuario que se eliminará
      */
     @Transactional
     private void deleteUserHard(User user) {

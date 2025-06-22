@@ -16,21 +16,16 @@ public class UserValidations {
         this.userRepository = userRepository;
     }
 
-
-    /**
-     * Se verifica si un usuario
-     * @param dni
-     */
     public void validateUserByDni(String dni){
         if(userRepository.existsByDni(dni)){
-            throw new DuplicateEntityException("El dni ingresado ya se encuentra registrado");
+            throw new DuplicateEntityException("El DNI ingresado ya se encuentra registrado");
         }
 
     }
 
     public void validateModifiedUserByDni(String currentDni, String newDni){
         if(userRepository.existsByDni(newDni) && !currentDni.equals(newDni)){
-            throw new DuplicateEntityException("El dni ingresado ya se encuentra registrado");
+            throw new DuplicateEntityException("El DNI ingresado ya se encuentra registrado");
         }
     }
 

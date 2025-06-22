@@ -1,6 +1,5 @@
 package com.utn.ProgIII.dto;
 
-import com.utn.ProgIII.model.Credential.Credential;
 import com.utn.ProgIII.model.User.UserStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -18,6 +17,6 @@ public record UserWithCredentialDTO(
         String dni,
         @Schema(implementation = UserStatus.class)
         String status,
-        ViewCredentialsDTO credential /*Necesita ser un DTO, esto es la implementacion de la clase*/
+        ViewCredentialsDTO credential /*Necesita ser un DTO, esto es la implementación de la clase*/
 ) {
 }
