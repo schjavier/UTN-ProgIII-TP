@@ -117,11 +117,13 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
 
     /**
      * Lista las relaciones según el nombre de la empresa, los datos mostrados varían según el nivel de acceso del usuario
+     *
      * @param companyName Nombre de proveedor para buscar
+     * @param price Tipo de cotizacion de dolarapi.com
      * @return Una lista de DTO con los datos para mostrar
      */
     @Override
-    public SupplierProductListDTO listProductsBySupplier(String companyName) {
+    public SupplierProductListDTO listProductsBySupplier(String companyName, String price) {
 
         Supplier supplier = supplierRepository.findByCompanyName(companyName)
                 .orElseThrow(() -> new SupplierNotFoundException("El proveedor no existe"));
@@ -131,7 +133,7 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
 
         if (!authService.isEmployee()) {
             try {
-                BigDecimal dolar = miscService.searchDollarPrice().venta();
+                BigDecimal dolar = miscService.searchDollarPrice(price).venta();
 
                 priceList = productSupplierRepository.productsBySupplierManager(supplier.getIdSupplier(),dolar);
             } catch (UnexpectedServerErrorException e) {
@@ -152,10 +154,12 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
 
     /**
      * Lista las relaciones según el ID de un producto cargado, los datos mostrados varían según el nivel de acceso del usuario
+     *
      * @param idProduct El ID del producto
+     * @param price Tipo de cotizacion de dolarapi.com
      * @return Una lista de DTO para mostrar
      */
-    public ProductPricesDTO listPricesByProduct(Long idProduct) {
+    public ProductPricesDTO listPricesByProduct(Long idProduct, String price) {
         Product product = productRepository.findById(idProduct).orElseThrow(() -> new ProductNotFoundException("El producto no existe"));
 
         if (product.getStatus() == ProductStatus.DISABLED) {
@@ -167,7 +171,7 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
       
         if(!authService.isEmployee()){
             try {
-                BigDecimal dolar = miscService.searchDollarPrice().venta();
+                BigDecimal dolar = miscService.searchDollarPrice(price).venta();
 
                 priceList = productSupplierRepository.listPricesByProductManager(idProduct,dolar);
             } catch (UnexpectedServerErrorException e) {

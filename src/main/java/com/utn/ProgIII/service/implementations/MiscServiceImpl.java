@@ -24,18 +24,30 @@ public class MiscServiceImpl implements MiscService {
     @Autowired
     private DollarMapper dollarmapper;
 
+    /**
+     * Busca el valor del dólar actual según cotización, valor por defecto es oficial
+     * @param cotizacion Cotización del dólar en dolarapi.com
+     * @return Un DTO con los datos de esa cotización
+     */
     @Override
-    public ViewDolarDTO searchDollarPrice() {
+    public ViewDolarDTO searchDollarPrice(String cotizacion) {
         JSONObject dolar;
         try {
-            BackendRequest dollarrequest = new BackendRequest(dolar_api_url, "dolares/oficial");
+            BackendRequest dollarrequest = new BackendRequest(dolar_api_url, "dolares/" + cotizacion);
             dolar = JSONConverter.makeJsonObject(dollarrequest.searchData());
         } catch (IOException e) {
             throw new UnexpectedServerErrorException("Ocurrió un error conectando a la API del precio del dólar");
         } catch (InterruptedException | IncorrectParseMethodException e) {
             throw new UnexpectedServerErrorException("Un error inesperado ocurrió en el servicio.");
         } catch (BadRequestException e) {
-            throw new UnexpectedServerErrorException("Un error inesperado ocurrió en la API, puede no estar disponible", e.getHttpCode());
+
+            if(e.getHttpCode() != 404)
+            {
+                throw new UnexpectedServerErrorException("Un error inesperado ocurrió en la API, puede no estar disponible", e.getHttpCode());
+            } else {
+                throw new UnexpectedServerErrorException("Esa cotización no existe",e.getHttpCode());
+            }
+
         }
         return dollarmapper.dollarJsonObjectToDTO(dolar);
     }

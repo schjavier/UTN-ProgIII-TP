@@ -80,6 +80,10 @@ public class ProductController {
             mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = ProductDTO.class))
     ))
+    @ApiResponse(responseCode = "404", description = "Productos no encontrados", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "No hay resultados")
+    ))
     public ResponseEntity<List<ProductDTO>> getAllProduct (){
         List <ProductDTO> response = productService.getAllProduct();
 
@@ -96,8 +100,11 @@ public class ProductController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "El estado ingresado es inválido")
     ))
+    @ApiResponse(responseCode = "404", description = "Productos no encontrados", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "No hay resultados")
+    ))
     @Operation(summary = "Se muestra una lista de productos por su estado", description = "Se muestra una lista según su estado")
-
     public ResponseEntity<List<ProductDTO>> getAllProductByStatus(@PathVariable @Parameter(description = "El estado de un producto (ENABLED, DISABLED)", example = "ENABLED") String status){
 
         List <ProductDTO> response = productService.getAllProductByStatus(status);
@@ -109,6 +116,10 @@ public class ProductController {
     @GetMapping("/search/name/{name}")
     @Operation(summary = "Se muestra una lista de productos por nombres", description = "Se muestra una lista de productos por nombres")
     @ApiResponse(responseCode = "200", description = "Lista de productos según nombre")
+    @ApiResponse(responseCode = "404",description = "Productos no encontrados", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "No hay resultados")
+    ))
     public ResponseEntity<List<ProductDTO>> getProductByName(@PathVariable @Parameter(description = "El nombre de un producto", example = "Manzana") String name){
 
         List<ProductDTO> response = productService.getProductByName(name);
