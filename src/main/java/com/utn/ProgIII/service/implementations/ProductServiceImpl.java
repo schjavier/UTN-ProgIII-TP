@@ -197,6 +197,7 @@ public class ProductServiceImpl implements ProductService {
      * @see ProductDTO
      */
     @Override
+    @Transactional
     public ProductDTO updateProduct(Long id, ProductDTO productDto) {
 
         if(!EnumUtils.isValidEnum(ProductStatus.class,productDto.status()))
@@ -212,7 +213,7 @@ public class ProductServiceImpl implements ProductService {
 
         if(product.getStatus() == ProductStatus.DISABLED)
         {
-            productSupplierRepository.removeAllByProduct_IdProduct(product.getIdProduct());
+            productSupplierRepository.removeAllByProduct_IdProduct(id);
         }
 
         product = productRepository.save(product);
