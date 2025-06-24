@@ -223,7 +223,7 @@ public class ProductServiceTest {
        InvalidProductStatusException exception = assertThrows(InvalidProductStatusException.class,
         () -> productService.getAllProductByStatus(INVALID_STATUS));
 
-       assertEquals("El estado ingresado es invalido", exception.getMessage());
+       assertEquals("El estado ingresado es inválido", exception.getMessage());
 
        verifyNoInteractions(productRepository);
        verifyNoInteractions(productMapper);
@@ -357,7 +357,7 @@ public class ProductServiceTest {
         InvalidRequestException exception = assertThrows(InvalidRequestException.class,
                 () -> productService.updateProduct(PRODUCT_ID, invalidDTO));
 
-        assertEquals("El estado de producto ingresado, no es valido", exception.getMessage());
+        assertEquals("El estado de producto ingresado no es válido", exception.getMessage());
         verify(productRepository, never()).save(any());
         verify(productMapper, never()).toProductDTO(any());
 
