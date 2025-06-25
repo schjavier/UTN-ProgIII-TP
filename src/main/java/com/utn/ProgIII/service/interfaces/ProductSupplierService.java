@@ -8,8 +8,8 @@ public interface ProductSupplierService {
 
     ResponseProductSupplierDTO createProductSupplier(CreateProductSupplierDTO createProductSupplierDTO);
     ResponseProductSupplierDTO updateProductSupplier(UpdateProductSupplierDTO updateProductSupplierDTO, Long id);
-    SupplierProductListDTO listProductsBySupplier(String companyName, String price);
-    ProductPricesDTO listPricesByProduct(Long idProduct, String price);
+    SupplierProductListDTO listProductsBySupplier(String companyName, String exchange_rate);
+    ProductPricesDTO listPricesByProduct(Long idProduct, String exchange_rate);
     String uploadCsv(String filepath, Long idSupplier);
     String uploadCsv(String filepath, Long idSupplier, BigDecimal bulkProfitMargin);
 }

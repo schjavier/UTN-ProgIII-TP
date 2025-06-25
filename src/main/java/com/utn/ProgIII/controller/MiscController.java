@@ -42,8 +42,8 @@ public class MiscController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "Un error inesperado ocurrió en el servicio.")
     ))
-    public ResponseEntity<ViewDolarDTO> viewDollarPrice(@Parameter(description = "Un tipo de cotización disponible en dolarapi.com",required = false) @RequestParam(required = false, defaultValue = "oficial") String price)
+    public ResponseEntity<ViewDolarDTO> viewDollarPrice(@Parameter(description = "Un tipo de cotización disponible en dolarapi.com",required = false) @RequestParam(required = false, defaultValue = "oficial") String exchange_rate)
     {
-        return ResponseEntity.ok().body(miscservice.searchDollarPrice(price));
+        return ResponseEntity.ok().body(miscservice.searchDollarPrice(exchange_rate));
     }
 }

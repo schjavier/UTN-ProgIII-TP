@@ -26,14 +26,15 @@ public class MiscServiceImpl implements MiscService {
 
     /**
      * Busca el valor del dólar actual según cotización, valor por defecto es oficial
-     * @param cotizacion Cotización del dólar en dolarapi.com
+     *
+     * @param exchange_rate Cotización del dólar en dolarapi.com
      * @return Un DTO con los datos de esa cotización
      */
     @Override
-    public ViewDolarDTO searchDollarPrice(String cotizacion) {
+    public ViewDolarDTO searchDollarPrice(String exchange_rate) {
         JSONObject dolar;
         try {
-            BackendRequest dollarrequest = new BackendRequest(dolar_api_url, "dolares/" + cotizacion);
+            BackendRequest dollarrequest = new BackendRequest(dolar_api_url, "dolares/" + exchange_rate);
             dolar = JSONConverter.makeJsonObject(dollarrequest.searchData());
         } catch (IOException e) {
             throw new UnexpectedServerErrorException("Ocurrió un error conectando a la API del precio del dólar");

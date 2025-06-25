@@ -108,9 +108,9 @@ public class ProductSupplierController {
             schema = @Schema(example = "El proveedor no existe")
     ))
     @GetMapping("/filter/{companyName}")
-    public ResponseEntity<SupplierProductListDTO> listAllProductsBySupplier(@PathVariable @Parameter(description = "El nombre de una empresa") String companyName, @RequestParam(defaultValue = "oficial",required = false) @Parameter(description = "Un tipo de cotización disponible en dolarapi.com", required = false) String price){
+    public ResponseEntity<SupplierProductListDTO> listAllProductsBySupplier(@PathVariable @Parameter(description = "El nombre de una empresa") String companyName, @RequestParam(defaultValue = "oficial",required = false) @Parameter(description = "Un tipo de cotización disponible en dolarapi.com", required = false) String exchange_rate){
 
-        SupplierProductListDTO response = productSupplierService.listProductsBySupplier(companyName, price);
+        SupplierProductListDTO response = productSupplierService.listProductsBySupplier(companyName, exchange_rate);
         return ResponseEntity.ok(response);
 
     }
@@ -149,8 +149,8 @@ public class ProductSupplierController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "El producto está desactivado, y no tendrá precios.")
     ))
-    public ResponseEntity<ProductPricesDTO> listAllPricesByProduct(@PathVariable @Parameter(description = "El ID de un producto", example = "1") Long productId, @RequestParam(defaultValue = "oficial",required = false) @Parameter(description = "Un tipo de cotización disponible en dolarapi.com", required = false) String price){
-        return ResponseEntity.ok(productSupplierService.listPricesByProduct(productId, price));
+    public ResponseEntity<ProductPricesDTO> listAllPricesByProduct(@PathVariable @Parameter(description = "El ID de un producto", example = "1") Long productId, @RequestParam(defaultValue = "oficial",required = false) @Parameter(description = "Un tipo de cotización disponible en dolarapi.com", required = false) String exchange_rate){
+        return ResponseEntity.ok(productSupplierService.listPricesByProduct(productId, exchange_rate));
     }
 
 
