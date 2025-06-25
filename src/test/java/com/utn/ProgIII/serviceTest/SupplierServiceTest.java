@@ -207,6 +207,10 @@ public class SupplierServiceTest {
     @Test
     void createSupplier_ShouldThrowAnException_whenRepeatSupplierCuit() // Doesn't work????? -> Caused by: java.lang.NullPointerException: Cannot invoke "com.utn.ProgIII.model.Supplier.Supplier.getCuit()" because "supplier" is null
     {
+        when(suppliermapper.toObjectFromAddSupplierDTO(addSupplierDTO)).thenReturn(supplier);
+        // ahi esta arreglado el test, pasaba que era null pointer por que faltaba determinar el comportamiento
+        // del mapper...
+
         doThrow(new DuplicateEntityException("El proveedor con ese nombre ya existe en la base de datos"))
                 .when(supplierValidations).validateSupplierByCuit(supplier.getCuit());
 
