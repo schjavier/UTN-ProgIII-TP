@@ -163,6 +163,10 @@ public class ProductSupplierController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "Productos no subidos:\nProduct 1\nProduct 3")
     ))
+    @ApiResponse(responseCode = "404",description = "El proveedor elegido no existe", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "El proveedor asignado no existe")
+    ))
     @ApiResponse(responseCode = "500",description = "El servidor no pudo procesar el archivo", content = @Content())
     @PostMapping(path = "/upload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<String> updateWithFile(@RequestParam("file") MultipartFile file,@RequestParam @Parameter(example = "1", description = "El ID de un proveedor") Long idSupplier) {
@@ -189,6 +193,10 @@ public class ProductSupplierController {
     @ApiResponse(responseCode = "200",description = "Actualización realizada, devuelve listado con aquellos productos que no pudieron ser cargados (productos desactivados o no existentes)", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "Productos no subidos:\nProduct 1\nProduct 3")
+    ))
+    @ApiResponse(responseCode = "404",description = "El proveedor elegido no existe", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "El proveedor asignado no existe")
     ))
     @ApiResponse(responseCode = "500",description = "El servidor no pudo procesar el archivo", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
