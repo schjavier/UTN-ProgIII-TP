@@ -112,8 +112,6 @@ public class SupplierServiceTest {
         addSupplierDTO = createAddSupplierDTO();
         viewSupplierDTO = createViewSupplierDTO();
         viewAddressDTO = createViewAddressDTO();
-        System.out.println(supplier);
-        System.out.println(addSupplierDTO);
     }
 
 
