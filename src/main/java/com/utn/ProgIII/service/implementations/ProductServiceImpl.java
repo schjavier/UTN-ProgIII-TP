@@ -85,6 +85,11 @@ public class ProductServiceImpl implements ProductService {
 
         }
 
+        if(products.isEmpty())
+        {
+            throw new ProductNotFoundException("No hay resultados");
+        }
+
         List<ProductDTO> productDTOList = new ArrayList<>();
 
         for (Product product : products){
@@ -113,8 +118,13 @@ public class ProductServiceImpl implements ProductService {
             for (Product product : products){
                 productDTOList.add(productMapper.toProductDTO(product));
             }
-            return productDTOList;
 
+            if(productDTOList.isEmpty())
+            {
+                throw new ProductNotFoundException("No hay resultados");
+            }
+
+            return productDTOList;
         } catch (IllegalArgumentException e){
             throw new InvalidProductStatusException("El estado ingresado es inválido");
         }
@@ -139,6 +149,11 @@ public class ProductServiceImpl implements ProductService {
 
         for(Product product : products){
             productDTOS.add(productMapper.toProductDTO(product));
+        }
+
+        if(productDTOS.isEmpty())
+        {
+            throw new ProductNotFoundException("No hay resultados");
         }
 
         return productDTOS;
