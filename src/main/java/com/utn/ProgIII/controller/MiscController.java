@@ -3,6 +3,7 @@ package com.utn.ProgIII.controller;
 import com.utn.ProgIII.dto.ViewDolarDTO;
 import com.utn.ProgIII.service.interfaces.MiscService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -32,12 +34,16 @@ public class MiscController {
             mediaType = "application/json",
             schema = @Schema(implementation = ViewDolarDTO.class)
     ))
+    @ApiResponse(responseCode = "404", description = "Cotización no existente", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "Esa cotización no existe")
+    ))
     @ApiResponse(responseCode = "500",description = "Error interno en el servidor", content = @Content(
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "Un error inesperado ocurrió en el servicio.")
     ))
-    public ResponseEntity<ViewDolarDTO> viewDollarPrice()
+    public ResponseEntity<ViewDolarDTO> viewDollarPrice(@Parameter(description = "Un tipo de cotización disponible en dolarapi.com",required = false) @RequestParam(required = false, defaultValue = "oficial") String exchange_rate)
     {
-        return ResponseEntity.ok().body(miscservice.searchDollarPrice());
+        return ResponseEntity.ok().body(miscservice.searchDollarPrice(exchange_rate));
     }
 }
