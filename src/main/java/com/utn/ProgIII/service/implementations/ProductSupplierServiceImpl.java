@@ -191,6 +191,12 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
      */
     @Override
     public String uploadCsv(String filepath, Long idSupplier) {
+
+        if(!supplierRepository.existsById(idSupplier))
+        {
+            throw new SupplierNotFoundException("El proveedor asignado no existe");
+        }
+
         return csvReader.uploadToDatabase(filepath,idSupplier);
     }
 
@@ -203,7 +209,12 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
      * @see CsvReader
      */
     @Override
-    public String uploadCsv(String filepath, Long idSupplier, BigDecimal bulkProfitMargin) {
+    public String  uploadCsv(String filepath, Long idSupplier, BigDecimal bulkProfitMargin) {
+
+        if(!supplierRepository.existsById(idSupplier))
+        {
+            throw new SupplierNotFoundException("El proveedor asignado no existe");
+        }
 
         if (0 > bulkProfitMargin.compareTo(BigDecimal.valueOf(0))) {
             throw new InvalidRequestException("El porcentaje de ganancia no es válido");
